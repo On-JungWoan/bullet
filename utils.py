@@ -1,6 +1,6 @@
 from os import path
 from selenium import webdriver
-from cases import build_special_function
+from cases import build_obj
 
 def pat_post_process(
         PAT:str, replace_value:str,
@@ -20,5 +20,5 @@ def load_chrome_driver(chrome_version):
 
 
 def prepare(args):
-    obj = build_special_function(args)
+    obj = build_obj(args)
     return obj

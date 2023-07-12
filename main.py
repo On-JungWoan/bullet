@@ -1,3 +1,5 @@
+import os
+import json
 import argparse
 from lxml import html
 from typing import Tuple
@@ -9,29 +11,16 @@ from arguments import get_args_parser
 from utils import pat_post_process, load_chrome_driver, prepare
 
 
-def special_func(tree:html, idx:int) -> Tuple():
-    is_announce = tree.xpath(f'//*[@id="ctl00_ctl00_ContentPlaceHolder1_PageContent_ctl00_rptList_ctl{idx:02}_lbl_RowNum"]')[0]
-    is_announce = is_announce.text == '공지'
-    msg = 'announce skip'
-
-    return is_announce, msg, None
-
-
 def test_eight_components(obj,
         driver:webdriver, tree:html, page_num:int, target_day:int
     ) -> Tuple[int, bool]:
-    TARGET_DAY = args.target_day
 
-    NOTICE_PATH = 'https://www.jnu.ac.kr/WebApp/web/HOM/COM/Board/board.aspx?boardID=5'
-    DATE_PAT = f'//*[@id="grvw_board_list"]/tbody/tr[****PAT****]/td[4]/text()'
-    TITLE_PAT = f'//*[@id="ctl00_ctl00_ContentPlaceHolder1_PageContent_ctl00_rptList_ctl****PAT****_hy_Title"]/text()'
-    HREF_PAT = f'//*[@id="ctl00_ctl00_ContentPlaceHolder1_PageContent_ctl00_rptList_ctl****PAT****_hy_Title"]/@href'
+    DATE_PAT, TITLE_PAT, HREF_PAT = [v for v in obj.pat.values()]
 
     idx = 1
-
     while True:
         try:
-            is_skip, return_msg, return_value = special_func(tree, idx)
+            is_skip, return_msg, return_value = obj.special_func(tree, idx)
             if is_skip:
                 print(return_msg)
                 idx += 1
@@ -42,13 +31,20 @@ def test_eight_components(obj,
             date = datetime.strptime(str(date), '%Y-%m-%d')
             title = tree.xpath(pat_post_process(TITLE_PAT, f'{idx:02}'))[0]
             title_href = tree.xpath(pat_post_process(HREF_PAT, f'{idx:02}'))[0]
-            title_href = 'https://www.jnu.ac.kr/' + title_href
+            title_href = obj.parent_path + title_href
             
-            margin_date = datetime.now() - timedelta(days=TARGET_DAY)
+            margin_date = datetime.now() - timedelta(days=target_day)
             if date < margin_date:
                 return page_num, True
 
-            print(title, date, title_href)
+            save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}.json')
+            res = {
+                'title':title,
+                'date':date.strftime('%Y-%m-%d'),
+                'href':title_href,
+            }
+            with open(save_file, 'w') as f:
+                json.dump(res, f)
             idx += 1
         except:
             next_btn = driver.find_element(by=By.XPATH, value='//*[@id="ctl00_ctl00_ContentPlaceHolder1_PageContent_pnlBoard"]/div[3]/ul/li[8]/a')
@@ -73,7 +69,7 @@ def main(args):
         page = driver.page_source
         tree = html.fromstring(page)
 
-        page_num, is_done = test_eight_components(driver, obj, tree, page_num, args.target_day)
+        page_num, is_done = test_eight_components(obj, driver, tree, page_num, args.period)
 
     driver.quit()
 
@@ -81,5 +77,9 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('pipeline script', parents=[get_args_parser()])
     args = parser.parse_args()
+
+    if not os.path.isdir(args.output_dir):
+        os.mkdir(args.output_dir)
+
     main(args)
     pass
