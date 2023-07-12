@@ -1,3 +1,10 @@
+# general
+*__pycache__*
+*.pyc
+.vscode*
+launch.json
+
+# backend
 *.pyc
 *.sqlite3
 secrets.json
