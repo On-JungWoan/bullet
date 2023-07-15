@@ -8,5 +8,6 @@ class Post(models.Model):
     url = models.CharField(max_length=200)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     keyword = models.ForeignKey(Keyword, on_delete=models.CASCADE)
+    date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

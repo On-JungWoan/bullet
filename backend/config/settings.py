@@ -64,7 +64,8 @@ INSTALLED_APPS = [
 
     #apps
     'service',
-    'users',
+    'user',
+    'post',
 ]
 
 MIDDLEWARE = [
@@ -101,16 +102,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default' : {
-#         'ENGINE': get_secret("DATABASE_ENGINE"),    
-#         'NAME': get_secret("DATABASE_NAME"),                  
-#         'USER': get_secret("DATABASE_USER"),                          
-#         'PASSWORD': get_secret("DATABASE_PASSWORD"),                  
-#         'HOST': get_secret("DATABASE_HOST" ),                    
-#         'PORT': get_secret("DATABASE_PORT"),                          
-#     }
-# }
+DATABASES = {
+    'default' : {
+        'ENGINE': get_secret("DATABASE_ENGINE"),    
+        'NAME': get_secret("DATABASE_NAME"),                  
+        'USER': get_secret("DATABASE_USER"),                          
+        'PASSWORD': get_secret("DATABASE_PASSWORD"),                  
+        'HOST': get_secret("DATABASE_HOST" ),                    
+        'PORT': get_secret("DATABASE_PORT"),                          
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
