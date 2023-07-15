@@ -36,4 +36,4 @@ def cronMethod(method, term=1):
 
 #app이 시작할 때 작동함.
 def backgroundApp():
-    cronMethod(pullNewPost, 100)
+    cronMethod(savePost, 100)
