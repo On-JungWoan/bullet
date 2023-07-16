@@ -3,7 +3,7 @@ import os
 from .forms import PostCreateForm
 from apscheduler.schedulers.background import BackgroundScheduler
 #새로운 뉴스를 끌고 오는 함수
-def savePost(self):
+def savePost():
         # 상위의 상위의 경로 가져오기
         parent_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         # 상위 디렉토리에서 한 단계 아래 디렉토리의 경로 만들기

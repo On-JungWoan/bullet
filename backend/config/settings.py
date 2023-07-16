@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 import json
 from django.core.exceptions import ImproperlyConfigured
+#토큰 유효기간을 설정하기 위한 라이브러리
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -66,6 +68,9 @@ INSTALLED_APPS = [
     'service',
     'user',
     'post',
+
+    #토큰
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -155,7 +160,23 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-   'rest_framework.authentication.TokenAuthentication',
-   )
+    #로그인 여부를 확인하는 인증 클래스
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    #로그인 시 토큰을 발급하는 클래스
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+#발급받은 토큰은 7일 후에 파괴된다. 토큰을 갱신할 경우 28일 내에 새로운 토큰으로 교체 가능
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
 }
