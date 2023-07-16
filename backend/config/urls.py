@@ -31,8 +31,8 @@ urlpatterns = [
    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
    #기능 url
    path('', include('service.urls')),#서비스 로직 관련 urls.py를 포함시킨다.
-   path('user/', include('user.urls')),#유저관련 urls.py를 포함시킨다.
-   path('post/', include('post.urls')),#post관련 urls.py를 포함시킨다.
+   path('', include('user.urls')),#유저관련 urls.py를 포함시킨다.
+   path('', include('post.urls')),#post관련 urls.py를 포함시킨다.
 
    #swagger view
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
