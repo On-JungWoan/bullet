@@ -6,10 +6,14 @@ from rest_framework.decorators import api_view
 def signup(request):
     return Response("Hello, world. You're at the users index.")
 
-@api_view(["GET","POST"])
+@api_view(["POST"])
 def login(request):
-    return Response("loginpage")
+    return Response("login")
 
 @api_view(["POST"])
 def check(request):
     return Response('check')
+
+@api_view(["GET"])
+def findById(request):
+    return Response('findById')

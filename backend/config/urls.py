@@ -23,7 +23,8 @@ urlpatterns = [
    path('api-auth/',include('rest_framework.urls')),#api-auth url
    path('', include('service.urls')),#서비스 로직 관련 urls.py를 포함시킨다.
    path('user/', include('user.urls')),#유저관련 urls.py를 포함시킨다.
-   
+   path('post/', include('user.urls')),#post관련 urls.py를 포함시킨다.
+
    #swagger view
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -10,6 +10,9 @@ class User(models.Model):
     keywordCount = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    keywords = models.ManyToManyField(Keyword, through='UserKeyword')
+    sites = models.ManyToManyField(Site, through='UserSite')
+    posts = models.ManyToManyField(Post, through='UserPost')
     def __str__(self):
             """String for representing the Model object."""
             return self.name
