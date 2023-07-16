@@ -8,14 +8,30 @@ from django.contrib.auth.hashers import check_password
 from .models import User
 
 # Create your views here.
-@api_view(["GET","POST"])
+@api_view(["POST"])
 def signup(request):
-    return Response("Hello, world. You're at the users index.")
+    '''
+    - Request: name, email, password, keywordCount
+    '''
+    #프론트에서 받아온 데이터
+    name = request.data.get('name')
+    email = request.data.get('email')
+    password = request.data.get('password')
+    keywordCount = request.data.get('keywordCount')
+    #유저 모델에 저장
+    user = User.objects.create(
+        name=name,
+        email=email,
+        password=password,
+        keywordCount=keywordCount
+    )
+    #유저 모델을 저장하면서 생성된 id를 프론트에 전달
+    return Response(user.id)
 
 @api_view(["POST"])
 def login(request):
-    email = request.POST.get('email')#프론트에서 받아온 이메일
-    password = request.POST.get('password')#프론트에서 받아온 비밀번호
+    email = request.data.get('email')#프론트에서 받아온 이메일
+    password = request.data.get('password')#프론트에서 받아온 비밀번호
     
     #로그인 유효성 확인 로직이 들어갈 부분
     user = User.objects.filter(username=email).first()
@@ -59,8 +75,10 @@ def login(request):
 
 @api_view(["POST"])
 def check(request):
+    email = request.data.get('email')
+
     return Response('check')
 
 @api_view(["GET"])
-def findById(request):
+def findById(request, id):
     return Response('findById')

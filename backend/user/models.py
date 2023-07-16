@@ -7,29 +7,29 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 #models의 baseUserManager를 상속받아 커스텀 userManager를 만듬. 이를 통해 user를 생성할 수 있다.
 class UserManager(BaseUserManager):    
    
-   use_in_migrations = True    
-   
-   def create_user(self, email, password):        
-       if not email:            
-           raise ValueError('must have user email')
-       if not password:            
-           raise ValueError('must have user password')
-       user = self.model(            
-           email=self.normalize_email(email),             
-       )        
-       user.set_password(password)        
-       user.save(using=self._db)        
-       return user
+    use_in_migrations = True    
 
-   def create_superuser(self, email, password):        
-       user = self.create_user(            
-           email = self.normalize_email(email),                      
-           password=password,       
-       )
-       user.is_admin = True
-       user.is_superuser = True
-       user.save(using=self._db)
-       return user
+    def create_user(self, email, password):        
+        if not email:            
+            raise ValueError('must have user email')
+        if not password:            
+            raise ValueError('must have user password')
+        user = self.model(            
+            email=self.normalize_email(email),             
+        )        
+        user.set_password(password)        
+        user.save(using=self._db)        
+        return user
+
+    def create_superuser(self, email, password):        
+        user = self.create_user(            
+            email = self.normalize_email(email),                      
+            password=password,       
+        )
+        user.is_admin = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
     
 #user를 저장하는 테이블
 class User(AbstractBaseUser, PermissionsMixin):
@@ -42,6 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     keywordCount = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -60,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     #권한 확인 부분. admin이나 superuser인지 확인하는 부분. 구현x
     @property
     def is_staff(self):
-        return self.is_admin
+        return self.is_superuser
     
 #user가 등록한 site를 저장하는 테이블
 class UserSite(models.Model):
