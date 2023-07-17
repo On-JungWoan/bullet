@@ -12,8 +12,9 @@ from utils import pat_post_process, load_chrome_driver, prepare
 
 
 def test_eight_components(obj,
-        driver:webdriver, tree:html, page_num:int, target_day:int
-    ) -> Tuple[int, bool]:
+        driver:webdriver, tree:html, page_num:int,
+        target_day:int, res:dict
+    ) -> Tuple[int, bool, dict]:
 
     DATE_PAT, TITLE_PAT, HREF_PAT = [v for v in obj.pat.values()]
 
@@ -22,35 +23,36 @@ def test_eight_components(obj,
         try:
             is_skip, return_msg, return_value = obj.special_func(tree, idx)
             if is_skip:
-                print(return_msg)
+                if return_msg is not None:
+                    print(return_msg)
                 idx += 1
                 continue
 
             # get details of announcement
             date = tree.xpath(pat_post_process(DATE_PAT, f'{idx:02}'))[0]
-            date = datetime.strptime(str(date), '%Y-%m-%d')
+            date = datetime.strptime(str(date), obj.date_format)
             title = tree.xpath(pat_post_process(TITLE_PAT, f'{idx:02}'))[0]
             title_href = tree.xpath(pat_post_process(HREF_PAT, f'{idx:02}'))[0]
             title_href = obj.parent_path + title_href
-            
+
+            if args.debug:
+                print(f'[제목]{title}\n[링크] {title_href}\n[작성일자] {date}')
+                
             margin_date = datetime.now() - timedelta(days=target_day)
             if date < margin_date:
-                return page_num, True
+                return page_num, True, res
 
-            save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}.json')
-            res = {
-                'title':title,
-                'date':date.strftime('%Y-%m-%d'),
+            res[title] = {
+                'date':date.strftime(obj.date_format),
                 'href':title_href,
             }
-            with open(save_file, 'w') as f:
-                json.dump(res, f)
+
             idx += 1
         except:
-            next_btn = driver.find_element(by=By.XPATH, value='//*[@id="ctl00_ctl00_ContentPlaceHolder1_PageContent_pnlBoard"]/div[3]/ul/li[8]/a')
+            next_btn = driver.find_element(by=By.XPATH, value=obj.next_btn)
             next_btn.click()
 
-            return page_num + 1, False
+            return page_num + 1, False, res
 
 
 def main(args):
@@ -63,14 +65,22 @@ def main(args):
 
     page_num = 1
     is_done = False
+    result = {}
 
     while not is_done:
         # get page source
         page = driver.page_source
         tree = html.fromstring(page)
 
-        page_num, is_done = test_eight_components(obj, driver, tree, page_num, args.period)
+        page_num, is_done, result = test_eight_components(obj, driver, tree, page_num, args.period, result)
 
+    if len(result) > 0:
+        save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}_{datetime.now().strftime("%m%d_%H%M")}.json')
+        with open(save_file, 'w') as f:
+            json.dump(result, f)
+    else:
+        if args.debug:
+            print('기간 내에 존재하는 데이터가 없습니다.')
     driver.quit()
 
 
