@@ -6,3 +6,6 @@ def build_obj(args):
         if args.univ_name == 'jnu':
             from .university import jnu
             return jnu()
+        elif args.univ_name == 'grad_unist':
+            from .university import grad_unist
+            return grad_unist()        

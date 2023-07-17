@@ -14,7 +14,7 @@ def get_args_parser():
                         help='결과의 저장 경로입니다.')
 
     # announce
-    parser.add_argument('--univ_name', default='jnu', choices=['jnu'], type=str, \
-                        help='공지사항을 불러올 대학 이름을 설정합니다. (available : jnu)')
+    parser.add_argument('--univ_name', default='jnu', choices=['jnu', 'grad_unist'], type=str, \
+                        help='공지사항을 불러올 대학 이름을 설정합니다.')
 
     return parser

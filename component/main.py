@@ -23,7 +23,8 @@ def test_eight_components(obj,
         try:
             is_skip, return_msg, return_value = obj.special_func(tree, idx)
             if is_skip:
-                print(return_msg)
+                if return_msg is not None:
+                    print(return_msg)
                 idx += 1
                 continue
 
@@ -42,10 +43,10 @@ def test_eight_components(obj,
                 'date':date.strftime('%Y-%m-%d'),
                 'href':title_href,
             }
- 
+
             idx += 1
         except:
-            next_btn = driver.find_element(by=By.XPATH, value='//*[@id="ctl00_ctl00_ContentPlaceHolder1_PageContent_pnlBoard"]/div[3]/ul/li[8]/a')
+            next_btn = driver.find_element(by=By.XPATH, value=obj.next_btn)
             next_btn.click()
 
             return page_num + 1, False, res
