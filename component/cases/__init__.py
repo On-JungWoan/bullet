@@ -8,4 +8,7 @@ def build_obj(args):
             return jnu()
         elif args.univ_name == 'grad-unist':
             from .university import grad_unist
-            return grad_unist()        
+            return grad_unist()
+        elif args.univ_name == 'jbnu':
+            from .university import jbnu
+            return jbnu()        

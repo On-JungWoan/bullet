@@ -47,6 +47,8 @@ class jnu(university):
     
 
 # 유니스트 대학원 공지사항
+# FIXME: unist는 next_btn xpath가 계속 바뀜
+#        바뀌는 패턴이 있어서 special_func에 정의해주면 될 듯.
 class grad_unist(university):
     def __init__(self):
         super().__init__(
@@ -54,4 +56,16 @@ class grad_unist(university):
             title_pat=f'//*[@id="post-23"]/div/table/tbody/tr[****PAT****]/td[1]/a',
             notice_path='https://adm-g.unist.ac.kr/category/info/notice/',
             next_btn='//*[@id="post-23"]/div/div[2]/ul/li[6]/a',
+            date_format='%Y.%m.%d')
+        
+
+# 전북대학교 전체 공지
+class jbnu(university):
+    def __init__(self):
+        super().__init__(
+            date_pat=f'//*[@id="print_area"]/div[2]/table/tbody/tr[****PAT****]/td[5]/text()',
+            title_pat=f'//*[@id="print_area"]/div[2]/table/tbody/tr[****PAT****]/td[2]/span/a',
+            parent_path='https://www.jbnu.ac.kr/kor/',
+            notice_path='https://www.jbnu.ac.kr/kor/?menuID=139',
+            next_btn='//*[@id="print_area"]/div[3]/a[11]',
             date_format='%Y.%m.%d')
