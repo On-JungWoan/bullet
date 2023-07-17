@@ -30,7 +30,7 @@ def test_eight_components(obj,
 
             # get details of announcement
             date = tree.xpath(pat_post_process(DATE_PAT, f'{idx:02}'))[0]
-            date = datetime.strptime(str(date), '%Y-%m-%d')
+            date = datetime.strptime(str(date), obj.date_format)
             title = tree.xpath(pat_post_process(TITLE_PAT, f'{idx:02}'))[0]
             title_href = tree.xpath(pat_post_process(HREF_PAT, f'{idx:02}'))[0]
             title_href = obj.parent_path + title_href
@@ -40,7 +40,7 @@ def test_eight_components(obj,
                 return page_num, True, res
 
             res[title] = {
-                'date':date.strftime('%Y-%m-%d'),
+                'date':date.strftime(obj.date_format),
                 'href':title_href,
             }
 
@@ -72,9 +72,14 @@ def main(args):
         page_num, is_done, result = test_eight_components(obj, driver, tree, page_num, args.period, result)
 
     if len(result) > 0:
+        if args.debug:
+            print(result)
         save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}_{datetime.now().strftime("%m%d_%H%M")}.json')
         with open(save_file, 'w') as f:
             json.dump(result, f)
+    else:
+        if args.debug:
+            print('기간 내에 존재하는 데이터가 없습니다.')
     driver.quit()
 
 

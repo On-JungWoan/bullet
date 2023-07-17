@@ -12,9 +12,11 @@ def get_args_parser():
                         help='얻고자하는 데이터의 기간(일)을 설정합니다. 설정된 기간보다 오래된 데이터는 수집하지 않습니다.')
     parser.add_argument('--output_dir', default='result', type=str, \
                         help='결과의 저장 경로입니다.')
+    parser.add_argument('--debug', default=False, action='store_true', \
+                        help='디버깅용')
 
     # announce
-    parser.add_argument('--univ_name', default='jnu', choices=['jnu', 'grad_unist'], type=str, \
+    parser.add_argument('--univ_name', default='jnu', choices=['jnu', 'grad-unist'], type=str, \
                         help='공지사항을 불러올 대학 이름을 설정합니다.')
 
     return parser
