@@ -1,3 +1,18 @@
+## 0. Installation
+
+```
+# conda 환경 생성
+conda create -n bullet python==3.9
+
+# 환경 activate
+conda activate bullet
+
+# installation
+pip install -r requirements.txt
+```
+
+<br>
+
 ## 1. commit prefix
 
 ### 1-1. 코드 관련
