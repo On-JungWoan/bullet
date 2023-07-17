@@ -34,13 +34,13 @@ def test_eight_components(obj,
             title = tree.xpath(pat_post_process(TITLE_PAT, f'{idx:02}'))[0]
             title_href = tree.xpath(pat_post_process(HREF_PAT, f'{idx:02}'))[0]
             title_href = obj.parent_path + title_href
-
-            if args.debug:
-                print(f'[제목]{title}\n[링크] {title_href}\n[작성일자] {date}')
                 
             margin_date = datetime.now() - timedelta(days=target_day)
             if date < margin_date:
                 return page_num, True, res
+
+            if args.debug:
+                print(f'[제목]{title}\n[링크] {title_href}\n[작성일자] {date}\n')
 
             res[title] = {
                 'date':date.strftime(obj.date_format),
