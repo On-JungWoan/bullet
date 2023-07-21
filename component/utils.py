@@ -15,7 +15,9 @@ def load_chrome_driver(chrome_version):
     
     if not path.isfile(driver_path):
         print('There is not matched chromedriver version.')
-        return webdriver.Chrome('chromedriver_113.exe')
+        # return webdriver.Chrome('chromedriver_113.exe')
+        return webdriver.Chrome()
+    # return webdriver.Chrome(driver_path)
     return webdriver.Chrome(driver_path)
 
 

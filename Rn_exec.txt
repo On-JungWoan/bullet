@@ -1,0 +1,7 @@
+-RN 설치 및 설명
+
+// node 필수!
+
+// expo-cli를 이용해서 개발할 것
+// 기본적인 기능들은 import를 통해 불러와서 편함, but expo자체에서 기능을 변경하거나 지원을 끊으면 기능을 사용 못함
+npm install -g expo-cli
