@@ -1,15 +1,24 @@
 from django.shortcuts import render
 #REST API
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import viewsets
 #models
 from .models import Post
 from user.models import User, UserPost
+from .serializers import PostSerializer
 #유저는 데이터를 조회 이외에는 하지 않는다. 유저는 데이터 조회를 위해 토큰 소유를 인증해야 한다.
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 #from rest_framework_simplejwt.authentication import JSONWebTokenAuthentication
 #프론트에서 id를 통해 post를 검색
+
+class PostModelViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
 @api_view(['GET'])
 def findById(request):
     id=request.GET.get('id')
@@ -30,15 +39,8 @@ def findByUserId(request):
 @api_view(['POST'])
 def create(request):
     #프론트에서 받은 데이터
-    title=request.data.get('title')
-    content=request.data.get('content')
-    url=request.data.get('url')
-    site=request.data.get('site')
-    keyword=request.data.get('keyword')
-    date=request.data.get('date')
-    #프론트에서 받은 데이터를 통해 post 인스턴스 생성
-    post=Post(title=title, content=content, url=url, site=site, keyword=keyword, date=date)
+    serializer = PostSerializer(data=request.data)
     #post 인스턴스 저장
-    post.save()
-    return Response(post)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 # Create your views here.

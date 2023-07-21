@@ -6,6 +6,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 #유저 모델 호출
 from .models import User
+#데이터 전송 객체 호출
+from .serializers import UserSerializer
 
 # Create your views here.
 @api_view(["POST"])
@@ -14,19 +16,12 @@ def signup(request):
     - Request: name, email, password, keywordCount
     '''
     #프론트에서 받아온 데이터
-    name = request.data.get('name')
-    email = request.data.get('email')
-    password = request.data.get('password')
-    keywordCount = request.data.get('keywordCount')
+    serializer = UserSerializer(data=request.data)
     #유저 모델에 저장
-    user = User.objects.create(
-        name=name,
-        email=email,
-        password=password,
-        keywordCount=keywordCount
-    )
-    #유저 모델을 저장하면서 생성된 id를 프론트에 전달
-    return Response(user.id)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 def login(request):
@@ -76,9 +71,10 @@ def login(request):
 @api_view(["POST"])
 def check(request):
     email = request.data.get('email')
-
     return Response('check')
 
 @api_view(["GET"])
 def findById(request, id):
-    return Response('findById')
+    user = User.objects.get(id=id)
+    serializer = UserSerializer(user)
+    return Response(serializer)
