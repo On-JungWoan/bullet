@@ -42,7 +42,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     keywordCount = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -27,4 +27,18 @@ def findByUserId(request):
     posts = UserPost.objects.filter(user=user).prefetch_related('post')
     return Response(posts)
 
+@api_view(['POST'])
+def create(request):
+    #프론트에서 받은 데이터
+    title=request.data.get('title')
+    content=request.data.get('content')
+    url=request.data.get('url')
+    site=request.data.get('site')
+    keyword=request.data.get('keyword')
+    date=request.data.get('date')
+    #프론트에서 받은 데이터를 통해 post 인스턴스 생성
+    post=Post(title=title, content=content, url=url, site=site, keyword=keyword, date=date)
+    #post 인스턴스 저장
+    post.save()
+    return Response(post)
 # Create your views here.

@@ -34,7 +34,6 @@ class SavePost_test(TestCase):
         form.content = "요약데이터가 들어갈 공간입니다."
         form.url = jsonData['href']
         form.date = jsonData['date']
-        
         if form.is_valid():
             print("데이터가 유효합니다.")
             form.save(commit=False)
