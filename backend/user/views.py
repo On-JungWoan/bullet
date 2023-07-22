@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 #유저 모델 호출
-from .models import User
+from .models import User, UserSite, UserKeyword
 #데이터 전송 객체 호출
 from . import serializers
 #문서 관련
@@ -81,3 +81,21 @@ class UserViewSet(viewsets.ViewSet):
         user = User.objects.get(id=id)
         serializer = serializer(user)
         return Response(serializer)
+    
+class UserSiteViewSet(viewsets.ViewSet):
+    queryset = UserSite.objects.all()
+
+    @swagger_auto_schema(request_body=serializers.UserSiteSerializer())
+    def createUserSite(self, request):
+        serializer = serializers.UserSiteSerializer(data = request.data)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class UserKeywordViewSet(viewsets.ViewSet):
+    queryset = UserKeyword.objects.all()
+
+    @swagger_auto_schema(request_body=serializers.UserKeywordSerializer())
+    def createUserKeyword(self, request):
+        serializer = serializers.UserKeywordSerializer(data = request.data)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

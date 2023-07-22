@@ -6,29 +6,29 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 
 #models의 baseUserManager를 상속받아 커스텀 userManager를 만듬. 이를 통해 user를 생성할 수 있다.
 class UserManager(BaseUserManager):
-    # 일반 user 생성
-    def create_user(self, email, name, password=None):
-        if not email:
-            raise ValueError('must have user email')
-
-        if not name:
-            raise ValueError('must have user name')
+    def create_user(self, username, password, email):
         user = self.model(
+            username = username,
             email = self.normalize_email(email),
-            name = name
+            is_superuser = 0,
+            is_staff = 0,
+            is_active = 1,
         )
         user.set_password(password)
         user.save(using=self._db)
+        
         return user
 
-    # 관리자 user 생성
-    def create_superuser(self, email, name, password=None):
+    # Method Overriding
+    def create_superuser(self, username, email, password):
         user = self.create_user(
-            email,
+            username = username,
             password = password,
-            name = name
+            email = email
         )
-        user.is_admin = True
+        user.is_superuser = 1
+        user.is_staff = 1
+        user.is_admin = 1
         user.save(using=self._db)
         return user
     
@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     #user의 테이블 속성들 정의
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=200, unique=True)
-    name = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     keywordCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -48,7 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # User 모델의 필수 field
     is_active = models.BooleanField(default=True)    
     is_admin = models.BooleanField(default=False)
-
+    is_staff = models.BooleanField(default=False)
     #다대다 관계는 테이블이 추가되는데 자동으로 생성된다. 하지만 중간 테이블을 직접 만들면 추가적인 정보를 저장할 수 있다.
     keywords = models.ManyToManyField(Keyword, through='UserKeyword')
     sites = models.ManyToManyField(Site, through='UserSite')
@@ -56,15 +56,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     USERNAME_FIELD = 'email'
     # 필수로 작성해야하는 field
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
             """String for representing the Model object."""
-            return self.name
+            return self.username
 
-    @property
-    def is_staff(self):
-        return self.is_superuser
+    def has_perm(self, perm, obj=None):
+        return True
+    
+    def has_module(self, app_label):
+        return True
+    
 
     
 
@@ -89,7 +92,7 @@ class UserKeyword(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         """String for representing the Model object."""
-        return self.keyword
+        return self.keyword.name
     
 class UserPost(models.Model):
     id = models.AutoField(primary_key=True)

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import User, UserKeyword, UserSite, UserPost
 from post.models import Post
-
+from service.models import Keyword
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -52,11 +52,16 @@ class UserKeywordSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        userKeyword = UserKeyword.objects.create(
-            user=validated_data['user'],
-            keyword=validated_data['keyword']
-        )
-        return userKeyword
+        keyword_name = validated_data['keyword_name']
+        user = self.context['request'].user
+
+        try:
+            keyword = Keyword.objects.get(name=keyword_name)
+        except Keyword.DoesNotExist:
+            keyword = Keyword.objects.create(name=keyword_name)
+
+        user_keyword = UserKeyword.objects.get_or_create(user=user, keyword=keyword)
+        return user_keyword
 
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class UserSiteSerializer(serializers.ModelSerializer):

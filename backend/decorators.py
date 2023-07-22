@@ -16,7 +16,7 @@ def dataIO(func):
         # 커서 생성
         cursor = conn.cursor()
         # SELECT 쿼리 작성
-        select_query = "SELECT DISTINCT S.site_id, K.keyword_id FROM UserSite S CROSS JOIN UserKeyword K S.user_id=K.user_id;"
+        select_query = "select S.name, K.name from (SELECT DISTINCT S.site_id, K.keyword_id FROM user_UserSite S CROSS JOIN user_UserKeyword K) SK inner join service_site S inner join service_keyword K;"
         # 쿼리 실행
         cursor.execute(select_query)
         # 결과 가져오기
