@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.urls import path, include
 from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -23,6 +22,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+   #admin url
    path('admin/', admin.site.urls),#admin url
    path('api-auth/',include('rest_framework.urls')),#api-auth url
    #토큰 관련 검증 url
@@ -30,9 +30,9 @@ urlpatterns = [
 	path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
    #기능 url
-   path('', include('service.urls')),#서비스 로직 관련 urls.py를 포함시킨다.
-   path('', include('user.urls')),#유저관련 urls.py를 포함시킨다.
-   path('', include('post.urls')),#post관련 urls.py를 포함시킨다.
+   path('service/', include('service.urls')),#서비스 로직 관련 urls.py를 포함시킨다.
+   path('user/', include('user.urls')),#유저관련 urls.py를 포함시킨다.
+   path('post/', include('post.urls')),#post관련 urls.py를 포함시킨다.
 
    #swagger view
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

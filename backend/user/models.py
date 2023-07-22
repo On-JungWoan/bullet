@@ -5,29 +5,30 @@ from post.models import Post
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 #models의 baseUserManager를 상속받아 커스텀 userManager를 만듬. 이를 통해 user를 생성할 수 있다.
-class UserManager(BaseUserManager):    
-   
-    use_in_migrations = True    
-
-    def create_user(self, email, password):        
-        if not email:            
+class UserManager(BaseUserManager):
+    # 일반 user 생성
+    def create_user(self, email, name, password=None):
+        if not email:
             raise ValueError('must have user email')
-        if not password:            
-            raise ValueError('must have user password')
-        user = self.model(            
-            email=self.normalize_email(email),             
-        )        
-        user.set_password(password)        
-        user.save(using=self._db)        
+
+        if not name:
+            raise ValueError('must have user name')
+        user = self.model(
+            email = self.normalize_email(email),
+            name = name
+        )
+        user.set_password(password)
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):        
-        user = self.create_user(            
-            email = self.normalize_email(email),                      
-            password=password,       
+    # 관리자 user 생성
+    def create_superuser(self, email, name, password=None):
+        user = self.create_user(
+            email,
+            password = password,
+            name = name
         )
         user.is_admin = True
-        user.is_superuser = True
         user.save(using=self._db)
         return user
     
@@ -42,9 +43,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     keywordCount = models.IntegerField(default=0)
-    is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # User 모델의 필수 field
+    is_active = models.BooleanField(default=True)    
+    is_admin = models.BooleanField(default=False)
 
     #다대다 관계는 테이블이 추가되는데 자동으로 생성된다. 하지만 중간 테이블을 직접 만들면 추가적인 정보를 저장할 수 있다.
     keywords = models.ManyToManyField(Keyword, through='UserKeyword')
@@ -52,15 +55,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     posts = models.ManyToManyField(Post, through='UserPost')
     
     USERNAME_FIELD = 'email'
+    # 필수로 작성해야하는 field
+    REQUIRED_FIELDS = ['name']
 
     def __str__(self):
             """String for representing the Model object."""
             return self.name
-    
-    #권한 확인 부분. admin이나 superuser인지 확인하는 부분. 구현x
+
     @property
     def is_staff(self):
         return self.is_superuser
+
+    
+
     
 #user가 등록한 site를 저장하는 테이블
 class UserSite(models.Model):
