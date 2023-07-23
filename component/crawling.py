@@ -15,7 +15,7 @@ def crawling(args, obj,
         driver:webdriver, tree:html, page_num:int, res:dict
     ) -> Tuple[int, bool, dict]:
 
-    DATE_PAT, TITLE_PAT, HREF_PAT = [v for v in obj.pat.values()]
+    PAT_LIST = [v for v in obj.pat.values()]
 
     idx = 1
     while True:
@@ -28,10 +28,8 @@ def crawling(args, obj,
                 continue
 
             # get details of announcement
-            date = tree.xpath(pat_post_process(DATE_PAT, f'{idx:02}'))[0]
+            date, title, title_href = [pat_post_process(tree, idx, element) for element in PAT_LIST]
             date = datetime.strptime(str(date), obj.date_format)
-            title = tree.xpath(pat_post_process(TITLE_PAT, f'{idx:02}'))[0]
-            title_href = tree.xpath(pat_post_process(HREF_PAT, f'{idx:02}'))[0]
             title_href = obj.parent_path + title_href
                 
             margin_date = datetime.now() - timedelta(days=args.period)
