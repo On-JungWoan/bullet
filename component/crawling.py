@@ -11,7 +11,7 @@ from arguments import get_args_parser
 from utils import pat_post_process, load_chrome_driver, prepare
 
 
-def test_eight_components(obj,
+def crawling(obj,
         driver:webdriver, tree:html, page_num:int,
         target_day:int, res:dict
     ) -> Tuple[int, bool, dict]:
@@ -72,7 +72,7 @@ def main(args):
         page = driver.page_source
         tree = html.fromstring(page)
 
-        page_num, is_done, result = test_eight_components(obj, driver, tree, page_num, args.period, result)
+        page_num, is_done, result = crawling(obj, driver, tree, page_num, args.period, result)
 
     if len(result) > 0:
         save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}_{datetime.now().strftime("%m%d_%H%M")}.json')
@@ -92,4 +92,3 @@ if __name__ == '__main__':
         os.mkdir(args.output_dir)
 
     main(args)
-    pass
