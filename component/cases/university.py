@@ -67,5 +67,5 @@ class jbnu(university):
             title_pat=f'//*[@id="print_area"]/div[2]/table/tbody/tr[****PAT****]/td[2]/span/a',
             parent_path='https://www.jbnu.ac.kr/kor/',
             notice_path='https://www.jbnu.ac.kr/kor/?menuID=139',
-            next_btn='//*[@id="print_area"]/div[3]/a[11]',
+            next_btn='//*[@id="print_area"]/div[3]/a[****PAT****]',
             date_format='%Y.%m.%d')

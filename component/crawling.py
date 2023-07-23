@@ -11,9 +11,8 @@ from arguments import get_args_parser
 from utils import pat_post_process, load_chrome_driver, prepare
 
 
-def crawling(obj,
-        driver:webdriver, tree:html, page_num:int,
-        target_day:int, res:dict
+def crawling(args, obj,
+        driver:webdriver, tree:html, page_num:int, res:dict
     ) -> Tuple[int, bool, dict]:
 
     DATE_PAT, TITLE_PAT, HREF_PAT = [v for v in obj.pat.values()]
@@ -35,21 +34,29 @@ def crawling(obj,
             title_href = tree.xpath(pat_post_process(HREF_PAT, f'{idx:02}'))[0]
             title_href = obj.parent_path + title_href
                 
-            margin_date = datetime.now() - timedelta(days=target_day)
+            margin_date = datetime.now() - timedelta(days=args.period)
             if date < margin_date:
                 return page_num, True, res
 
-            if args.debug:
-                print(f'[제목]{title}\n[링크] {title_href}\n[작성일자] {date}\n')
+            filter_res = sum([key in title for key in args.keyword])
+            if filter_res > 0:
+                print(title)
 
-            res[title] = {
-                'date':date.strftime(obj.date_format),
-                'href':title_href,
-            }
+                if args.debug:
+                    print(f'[제목]{title}\n[링크] {title_href}\n[작성일자] {date}\n')
+
+                res[title] = {
+                    'date':date.strftime(obj.date_format),
+                    'href':title_href,
+                }
 
             idx += 1
         except:
-            next_btn = driver.find_element(by=By.XPATH, value=obj.next_btn)
+            next_XPath = obj.next_btn.replace('****PAT****', str(page_num+1)) \
+                if '****PAT****' in obj.next_btn \
+                else obj.next_btn
+
+            next_btn = driver.find_element(by=By.XPATH, value=next_XPath)
             next_btn.click()
 
             return page_num + 1, False, res
@@ -72,7 +79,7 @@ def main(args):
         page = driver.page_source
         tree = html.fromstring(page)
 
-        page_num, is_done, result = crawling(obj, driver, tree, page_num, args.period, result)
+        page_num, is_done, result = crawling(args, obj, driver, tree, page_num, result)
 
     if len(result) > 0:
         save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}_{datetime.now().strftime("%m%d_%H%M")}.json')
