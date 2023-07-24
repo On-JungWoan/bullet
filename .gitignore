@@ -8,3 +8,8 @@ launch.json
 *.pyc
 *.sqlite3
 secrets.json
+
+# summarize model
+*.bin
+*.safetensors
+.cache/
