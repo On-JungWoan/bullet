@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 #유저 모델 호출
-from .models import User, UserSite, UserKeyword
+from .models import User, UserSite, UserKeyword, UserPost
 #데이터 전송 객체 호출
 from . import serializers
 #문서 관련
@@ -79,23 +79,56 @@ class UserViewSet(viewsets.ViewSet):
     @swagger_auto_schema(parameters = serializers.UserModelSerializer())
     def findById(self, id):
         user = User.objects.get(id=id)
-        serializer = serializer(user)
+        serializer = self.serializer(user)
         return Response(serializer)
-    
-class UserSiteViewSet(viewsets.ViewSet):
-    queryset = UserSite.objects.all()
 
-    @swagger_auto_schema(request_body=serializers.UserSiteSerializer())
+
+#-----------유저별 키워드, 사이트, 포스트 관련-------
+class UserSiteViewSet(viewsets.ViewSet):
+    queryset = User.objects.all()
+    serializer = serializers.UserSiteSerializer
+
+    @swagger_auto_schema(request_body=serializer)
     def createUserSite(self, request):
-        serializer = serializers.UserSiteSerializer(data = request.data)
-        serializer.save()
+        serializer = self.serializer(data = request.data)
+        if serializer.is_valid():
+            user = request.user
+            serializer.save(validated_data=request.data, user=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class UserKeywordViewSet(viewsets.ViewSet):
-    queryset = UserKeyword.objects.all()
+    def findAll(self, request):
+            serializer = self.serializer(self.queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(request_body=serializers.UserKeywordSerializer())
+class UserKeywordViewSet(viewsets.ViewSet):
+    queryset = User.objects.all()
+    serializer = serializers.UserKeywordSerializer
+
+    @swagger_auto_schema(request_body=serializer)
     def createUserKeyword(self, request):
-        serializer = serializers.UserKeywordSerializer(data = request.data)
-        serializer.save()
+        serializer = self.serializer(data = request.data)
+        if serializer.is_valid():
+            user = request.user
+            serializer.create(validated_data=request.data, user=user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def findAll(self, request):
+            serializer = self.serializer(self.queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class UserPostViewSet(viewsets.ViewSet):
+    queryset = User.objects.all()
+    serializer = serializers.UserPostSerializer
+    
+    @swagger_auto_schema(request_body=serializer)
+    def createUserPost(self, request):
+        serializer = self.serializer(data = request.data)
+        if serializer.is_valid():
+            user = request.user
+            serializer.create(validated_data=request.data, user=user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @swagger_auto_schema()
+    def findAll(self, request):
+        serializer = self.serializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

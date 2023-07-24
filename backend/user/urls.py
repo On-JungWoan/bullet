@@ -12,7 +12,11 @@ urlpatterns = [
     path('check/', views.UserViewSet.as_view({'post' : 'checkEmail'})),
     #읽기용
     path('<int:id>/', views.UserViewSet.as_view({'get' : 'findById'})),
-    #user의 키워드 및 사이트 등록 url
-    path('keyword/create', views.UserKeywordViewSet.as_view({'post' : 'createKeyword'})),
-    path('site/create', views.UserSiteViewSet.as_view({'post' : 'createSite'})),
+    #user의 키워드, 사이트, 포스트 등록 url
+    path('keyword/create/', views.UserKeywordViewSet.as_view({'post' : 'createUserKeyword'})),
+    path('site/create/', views.UserSiteViewSet.as_view({'post' : 'createUserSite'})),
+    #user의 키워드, 사이트, 포스트 검색 url
+    path('keyword/', views.UserKeywordViewSet.as_view({'get' : 'findAll'})),
+    path('site/', views.UserSiteViewSet.as_view({'get' : 'findAll'})),
+    path('post/', views.UserPostViewSet.as_view({'get' : 'findAll'})),
 ]
