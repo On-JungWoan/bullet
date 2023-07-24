@@ -1,6 +1,5 @@
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework import viewsets
 
-@api_view(["GET","POST"])
-def index(request):
-    return Response("연결되었습니다.")
+
