@@ -1,77 +1,75 @@
+// state
+const initState = {
+  login: false,
+  user: {
+    "name": "",
+    "dark": "dark",
+  },
+}
+
+export const LOGIN = "LOGIN"
+export const DARK = "DARK"
+
+// action
+const reducer = (state, action) => {
+  switch (action.type) {
+    case LOGIN:
+      return {
+        ...state,
+        login: action.login,
+      }
+
+    default:
+      return state;
+  }
+
+}
+
+/////////////////////////////////////////////////
+
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {
+  useEffect, useMemo, useCallback, createContext, useReducer
+} from 'react';
 
-// Font
-import { Fontisto } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer, createNativeStackNavigator } from "@react-navigation/native";
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { registerRootComponent } from 'expo';
+registerRootComponent(App);
 
-import Main from './Component/pages/main';
+export const dataContext = createContext({
+  login: false,
+  dispatch: () => { },
+});
 
-const LOGIN = 'login';
+import MainPage from './Component/pages/Main';
+import LoginPage from './Component/pages/Login';
+import SignUp from './Component/pages/SignUp'
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [login, setLogin] = useState(false);
-  const [dark, setDark] = useState('dark');
 
-  useEffect(() => {
-    loadLogin();
-  }, []);
+  const [state, dispatch] = useReducer(reducer, initState)
+  const { login } = state;
 
-  const isLogin = useCallback(async () => {
-    if (!login) {
-      setLogin(true);
-    }
-    await AsyncStorage.setItem(LOGIN, login);
-  }, [login]);
-
-  const loadLogin = async () => {
-    const loginInfo = await AsyncStorage.getItem(LOGIN);
-    loginInfo !== null ? setToDos(JSON.parse(loginInfo)) : null;
-  };
+  const value = useMemo(() => ({ login, dispatch }), [login])
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-
-      {login == false ? (
-        <View style={{ ...styles.login }}>
-          <Text style={{ ...styles.loginText }}>
-            총 알
-          </Text>
-
-          <View style={{alignItems: 'center'}}>
-            <TextInput
-              style={{ ...styles.loginInput }}
-              placeholder="아이디"></TextInput>
-            <TextInput
-              style={{ ...styles.loginInput, marginBottom: 20, }}
-              placeholder="비밀번호"></TextInput>
-          </View>
-
-          <View style={{justifyContent:"center", alignItems:"center", marginBottom: 10,}}>
-            <TouchableOpacity style={styles.loginBtn}
-              onPress={() => {
-                isLogin();
-              }}>
-              <Text style={{textAlign:"center", color : "white"}}>총알</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-      ) : (
-
-        <Main/>
-
-      )}
-    </View>
+    <dataContext.Provider value={value}>
+      <View style={{...styles.container}}>
+        <StatusBar style="auto" />
+        { !login ? <LoginPage /> :
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Main">
+              <Stack.Screen name="Main" component={MainPage} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        }
+      </View>
+    </dataContext.Provider >
   );
 }
 
@@ -81,48 +79,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  login: {
-    borderWidth: 2,
-    borderRadius: 5,
-    borderStyle: 'solid',
-    backgroundColor: '#0081f1',
-
-    width: '70%',
-  },
-  loginText: {
-    color : "white",
-
-    marginTop: 20,
-
-    textAlign: 'center',
-    fontSize: 30,
-    fontWeight: 700,
-  },
-  loginInput: {
-    color : "white",
-
-    width: '90%',
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-
-    borderWidth: 2,
-    borderRadius: 5,
-    borderStyle: 'solid',
-
-    marginTop: 20,
-    fontSize: 18,
-  },
-  loginBtn: {
-    paddingHorizontal : 8,
-    paddingVertical : 5,
-
-    color : "white",
-    width : "30%",
-
-    borderWidth: 2,
-    borderRadius: 5,
-    borderStyle: 'solid',
-
   },
 });
