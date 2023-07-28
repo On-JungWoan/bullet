@@ -164,7 +164,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     #로그인 여부를 확인하는 인증 클래스
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
     #로그인 시 토큰을 발급하는 클래스
     'DEFAULT_AUTHENTICATION_CLASSES': (

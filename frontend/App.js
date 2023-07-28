@@ -1,6 +1,6 @@
 // state
 const initState = {
-  login: false,
+  login: false, // false로 변경
   user: {
     "name": "",
     "dark": "dark",
@@ -8,7 +8,6 @@ const initState = {
 }
 
 export const LOGIN = "LOGIN"
-export const DARK = "DARK"
 
 // action
 const reducer = (state, action) => {
@@ -33,10 +32,7 @@ import React, {
 } from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import { NavigationContainer, createNativeStackNavigator } from "@react-navigation/native";
 
-import { registerRootComponent } from 'expo';
-registerRootComponent(App);
 
 export const dataContext = createContext({
   login: false,
@@ -45,9 +41,6 @@ export const dataContext = createContext({
 
 import MainPage from './Component/pages/Main';
 import LoginPage from './Component/pages/Login';
-import SignUp from './Component/pages/SignUp'
-
-const Stack = createNativeStackNavigator();
 
 export default function App() {
 
@@ -60,13 +53,8 @@ export default function App() {
     <dataContext.Provider value={value}>
       <View style={{...styles.container}}>
         <StatusBar style="auto" />
-        { !login ? <LoginPage /> :
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName="Main">
-              <Stack.Screen name="Main" component={MainPage} />
-              <Stack.Screen name="SignUp" component={SignUp} />
-            </Stack.Navigator>
-          </NavigationContainer>
+        { !login ? <LoginPage /> 
+        : <MainPage/>
         }
       </View>
     </dataContext.Provider >
