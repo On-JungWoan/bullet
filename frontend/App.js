@@ -1,6 +1,6 @@
 // state
 const initState = {
-  login: false,
+  login: false, // false로 변경
   user: {
     "name": "",
     "dark": "dark",

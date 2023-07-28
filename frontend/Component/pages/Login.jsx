@@ -6,6 +6,7 @@ import {
     TextInput, Pressable, Button,
 } from 'react-native';
 import axios from 'axios';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
@@ -16,20 +17,20 @@ export default function LoginPage({ navigation }) {
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
+    const [showpass, setshowpass] = useState(true);
 
     const { dispatch } = useContext(dataContext);
 
-    const goSignUp = useCallback(() => {
+    const swap = useCallback(() => {
         setId('');
         setPassword('');
-        setSignUp(true);
-    }, [signUp])
-
-    const backLogin = useCallback(() => {
-        setId('');
-        setPassword('');
-        setSignUp(false);
-    }, [signUp])
+        setName('');
+        if (signUp === false) {
+            setSignUp(true);
+        } else if (signUp === true) {
+            setSignUp(false);
+        }
+    }, [signUp]);
 
     useEffect(() => {
         dispatch({
@@ -38,9 +39,9 @@ export default function LoginPage({ navigation }) {
         });
     }, [dispatch, login]);
 
+
     // 회원가입
     const checkSignUp = async () => {
-
         if (id === "" || password === "") {
             alert('아이디와 비밀번호를 입력해 주세요');
         } else {
@@ -50,13 +51,13 @@ export default function LoginPage({ navigation }) {
                 username: name
             }
             try {
-                const response = await axios
-                    .post('http://127.0.0.1:8000/user/signup', data)
+                await axios
+                    .post('/user/signup', data)
                     .then(function async(response) {
                         console.log(response);
-                        // if(response.data["success"]===true){
-                        //   setLogin(false);
-                        // }
+                        if (response.data["success"] === true) {
+                            setLogin(false);
+                        }
                     })
                     .catch(function (error) {
                         alert("에러발생")
@@ -72,7 +73,7 @@ export default function LoginPage({ navigation }) {
 
     // 로그인
     const checkLogin = () => {
-        axios.post('http://127.0.0.1:8000/user/login', {
+        axios.post('http://192.168.0.9:8000/user/login', {
             email: id,
             password: password
         })
@@ -90,17 +91,20 @@ export default function LoginPage({ navigation }) {
 
             <View style={{ alignItems: 'center' }}>
                 <TextInput
-                    style={{ ...styles.loginInput }}
-                    placeholder="아이디" autoCapitalize="none"
-                    value={id} onChangeText={(text) => setId(text)}
-                    autoCorrect={false}></TextInput>
+                    style={{ ...styles.loginInput }} placeholder="아이디" autoCapitalize="none"
+                    value={id} onChangeText={(text) => setId(text)} autoCorrect={false}/>
                 <TextInput
-                    style={{ ...styles.loginInput }}
-                    autoCapitalize="none" autoCorrect={false}
-                    secureTextEntry={true} value={password}
+                    style={{ ...styles.loginInput }} placeholder="비밀번호" autoCapitalize="none"
+                    autoCorrect={false} secureTextEntry={true} value={password}
                     onChangeText={(text) => setPassword(text)}
-                    textContentType="password"
-                    placeholder="비밀번호"></TextInput>
+                    textContentType="password"/>
+
+                <BouncyCheckbox
+                    size={20} fillColor="black" unfillColor="#FFFFFF"
+                    text="비밀번호 보기" iconStyle={{ borderColor: 'red', marginTop: 5, color: 'black' }}
+                    textStyle={{ fontFamily: 'JosefinSans-Regular' }}
+                    onPress={() => setshowpass(!showpass)}
+                />
 
                 {signUp ? (
                     <TextInput
@@ -122,7 +126,7 @@ export default function LoginPage({ navigation }) {
                     </View>
                     <View style={{ marginTop: 10 }}>
                         <Button title="회원가입" touchSoundDisabled
-                            onPress={goSignUp}
+                            onPress={swap}
                         />
                     </View>
                 </View>
@@ -136,7 +140,7 @@ export default function LoginPage({ navigation }) {
                     <View style={{ marginTop: 10 }}>
                         <Button
                             title="뒤로가기" touchSoundDisabled
-                            onPress={backLogin}
+                            onPress={swap}
                         />
                     </View>
                 </View>}
