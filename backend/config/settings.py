@@ -47,7 +47,7 @@ SECRET_KEY = 'django-insecure-+9%)il(6q8v0*=8v##43+-4z1d3oks38&0jn$tppyzdc6v-^st
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 
 # Application definition
@@ -164,7 +164,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     #로그인 여부를 확인하는 인증 클래스
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
     #로그인 시 토큰을 발급하는 클래스
     'DEFAULT_AUTHENTICATION_CLASSES': (
