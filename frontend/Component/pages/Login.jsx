@@ -5,59 +5,147 @@ import {
     StyleSheet, Text, View,
     TextInput, Pressable, Button,
 } from 'react-native';
+import axios from 'axios';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
 
-export default function LoginPage({navigation}) {
+export default function LoginPage({ navigation }) {
     const [login, setLogin] = useState(false);
+    const [signUp, setSignUp] = useState(false);
+    const [id, setId] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [showpass, setshowpass] = useState(true);
 
     const { dispatch } = useContext(dataContext);
 
-    const doLogin = () => {
-        if (!login) {
-            setLogin(true);
-        } else {
-            setLogin(false);
+    const swap = useCallback(() => {
+        setId('');
+        setPassword('');
+        setName('');
+        if (signUp === false) {
+            setSignUp(true);
+        } else if (signUp === true) {
+            setSignUp(false);
         }
-    };
+    }, [signUp]);
 
     useEffect(() => {
-        console.log('Login.js', login);
         dispatch({
             type: LOGIN,
             login: login,
-        })
+        });
     }, [dispatch, login]);
+
+
+    // 회원가입
+    const checkSignUp = async () => {
+        if (id === "" || password === "") {
+            alert('아이디와 비밀번호를 입력해 주세요');
+        } else {
+            const data = {
+                email: id,
+                password: password,
+                username: name
+            }
+            try {
+                await axios
+                    .post('/user/signup', data)
+                    .then(function async(response) {
+                        console.log(response);
+                        if (response.data["success"] === true) {
+                            setLogin(false);
+                        }
+                    })
+                    .catch(function (error) {
+                        alert("에러발생")
+                        console.log(error);
+                        throw error;
+                    });
+            } catch (error) {
+                console.log(error);
+                throw error;
+            }
+        }
+    }
+
+    // 로그인
+    const checkLogin = () => {
+        axios.post('http://192.168.0.9:8000/user/login', {
+            email: id,
+            password: password
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     return (
         <View style={{ ...styles.login }}>
-            <Text style={{ ...styles.loginText }}>
-                총 알
-            </Text>
+            <Text style={{ ...styles.loginText }}>총 알</Text>
 
             <View style={{ alignItems: 'center' }}>
                 <TextInput
-                    style={{ ...styles.loginInput }}
-                    placeholder="아이디"></TextInput>
+                    style={{ ...styles.loginInput }} placeholder="아이디" autoCapitalize="none"
+                    value={id} onChangeText={(text) => setId(text)} autoCorrect={false}/>
                 <TextInput
-                    style={{ ...styles.loginInput, marginBottom: 20, }}
-                    placeholder="비밀번호"></TextInput>
+                    style={{ ...styles.loginInput }} placeholder="비밀번호" autoCapitalize="none"
+                    autoCorrect={false} secureTextEntry={true} value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    textContentType="password"/>
+
+                <BouncyCheckbox
+                    size={20} fillColor="black" unfillColor="#FFFFFF"
+                    text="비밀번호 보기" iconStyle={{ borderColor: 'red', marginTop: 5, color: 'black' }}
+                    textStyle={{ fontFamily: 'JosefinSans-Regular' }}
+                    onPress={() => setshowpass(!showpass)}
+                />
+
+                {signUp ? (
+                    <TextInput
+                        style={{ ...styles.loginInput, marginBottom: 20 }}
+                        autoCapitalize="none" autoCorrect={false}
+                        value={name} onChangeText={(text) => setName(text)}
+                        placeholder="이름">
+                    </TextInput>
+                ) : null}
+
             </View>
 
-
-            <View style={{ justifyContent: "center", alignItems: "center", marginBottom: 10, }}>
-                <Pressable style={styles.loginBtn} onPress={doLogin}>
-                    <Text style={{ textAlign: "center", color: "white" }}>로그인</Text>
-                </Pressable>
-            </View>
-            <View>
-                <Button title="SignUp"
-                    onPress={() => navigation.navigate('SignUp')}
-                >회원가입</Button>
-            </View>
+            {!signUp ? (
+                <View>
+                    <View style={{ marginTop: 10 }}>
+                        <Button title="로그인" touchSoundDisabled
+                            onPress={checkLogin}
+                        />
+                    </View>
+                    <View style={{ marginTop: 10 }}>
+                        <Button title="회원가입" touchSoundDisabled
+                            onPress={swap}
+                        />
+                    </View>
+                </View>
+            ) :
+                <View>
+                    <View>
+                        <Button title="제출하기" touchSoundDisabled
+                            onPress={checkSignUp}
+                        />
+                    </View>
+                    <View style={{ marginTop: 10 }}>
+                        <Button
+                            title="뒤로가기" touchSoundDisabled
+                            onPress={swap}
+                        />
+                    </View>
+                </View>}
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -91,17 +179,5 @@ const styles = StyleSheet.create({
 
         marginTop: 20,
         fontSize: 18,
-    },
-    loginBtn: {
-        paddingHorizontal: 8,
-        paddingVertical: 5,
-
-        color: "white",
-        width: "30%",
-
-        borderWidth: 2,
-        borderRadius: 5,
-        borderStyle: 'solid',
-
     },
 });
