@@ -1,0 +1,30 @@
+[
+{
+    "model": "service.keyword",
+    "pk": 1,
+    "fields": {
+        "name": "장학금"
+    }
+},
+{
+    "model": "service.keyword",
+    "pk": 2,
+    "fields": {
+        "name": "은행"
+    }
+},
+{
+    "model": "service.keyword",
+    "pk": 3,
+    "fields": {
+        "name": "삼성전자"
+    }
+},
+{
+    "model": "service.keyword",
+    "pk": 4,
+    "fields": {
+        "name": "윤석열"
+    }
+}
+]

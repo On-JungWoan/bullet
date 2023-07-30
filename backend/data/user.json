@@ -1,0 +1,59 @@
+[
+{
+    "model": "user.user",
+    "pk": 1,
+    "fields": {
+        "last_login": "2023-07-22T15:45:37.954Z",
+        "is_superuser": true,
+        "email": "admin@gmail.com",
+        "username": "jinwooseok",
+        "password": "pbkdf2_sha256$600000$wAnvpbqpH7TipQ2k5huBJb$CcodQQ9NH7goSDcJWOCokkLwL0EJMBSIC4pNFSB0ldk=",
+        "keywordCount": 0,
+        "created_at": "2023-07-22T15:45:15.473Z",
+        "updated_at": "2023-07-22T15:45:15.476Z",
+        "is_active": true,
+        "is_admin": true,
+        "is_staff": true,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 2,
+    "fields": {
+        "last_login": null,
+        "is_superuser": false,
+        "email": "test1@gmail.com",
+        "username": "test1",
+        "password": "1234",
+        "keywordCount": 0,
+        "created_at": "2023-07-30T12:15:28.661Z",
+        "updated_at": "2023-07-30T12:15:28.661Z",
+        "is_active": true,
+        "is_admin": false,
+        "is_staff": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 3,
+    "fields": {
+        "last_login": null,
+        "is_superuser": false,
+        "email": "test2@gmail.com",
+        "username": "test2",
+        "password": "1234",
+        "keywordCount": 0,
+        "created_at": "2023-07-30T12:15:58.181Z",
+        "updated_at": "2023-07-30T12:15:58.181Z",
+        "is_active": true,
+        "is_admin": false,
+        "is_staff": false,
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

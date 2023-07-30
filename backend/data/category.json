@@ -1,0 +1,23 @@
+[
+{
+    "model": "service.category",
+    "pk": 1,
+    "fields": {
+        "name": "공지사항"
+    }
+},
+{
+    "model": "service.category",
+    "pk": 2,
+    "fields": {
+        "name": "뉴스"
+    }
+},
+{
+    "model": "service.category",
+    "pk": 3,
+    "fields": {
+        "name": "취업"
+    }
+}
+]
