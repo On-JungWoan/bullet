@@ -24,7 +24,6 @@ class PostViewSet(viewsets.ViewSet):
         return Response(post)
 
     #프론트엔드에서 user의 id를 통해 그 유저가 등록한 뉴스를 검색할 수 있음
-    @authentication_classes((JWTAuthentication,))
     def findByUserId(request):
         user_id=request.GET.get('user_id')
         # 유저 객체 가져오기

@@ -17,4 +17,6 @@ urlpatterns = [
     # path('category/create', views.createCategory, name='createCategory'),
     # path('category/user/<int:user_id>', views.categoryFindByUserId, name='findByUserId'),
     # path('category/<int:id>', views.categoryFindById, name='findById'),
+    path('category/', views.CategoryViewSet.as_view({'get' : 'findAll'}), name='category'),
+    path('category/<int:categoryId>/site', views.SiteViewSet.as_view({'get' : 'findByCategory'}), name='site'),
 ]

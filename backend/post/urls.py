@@ -7,5 +7,5 @@ app_name='post'
 
 urlpatterns = [ 
     path('<int:id>/', views.PostViewSet.as_view({'get' : 'findById'})),
-    path('user/<int:id>', views.PostViewSet.as_view({'get' : 'findByUserId'})),
+    path('user/<int:id>/', views.PostViewSet.as_view({'get' : 'findByUserId'})),
 ]

@@ -42,12 +42,10 @@ def get_secret(setting):
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_secret('SECRET_KEY')
 
-SECRET_KEY = 'django-insecure-+9%)il(6q8v0*=8v##43+-4z1d3oks38&0jn$tppyzdc6v-^st'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

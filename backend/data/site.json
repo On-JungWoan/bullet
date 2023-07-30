@@ -1,0 +1,218 @@
+[
+{
+    "model": "service.site",
+    "pk": 1,
+    "fields": {
+        "name": "전남대학교",
+        "url": "https://www.jnu.ac.kr",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 2,
+    "fields": {
+        "name": "서울대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 3,
+    "fields": {
+        "name": "충북대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 4,
+    "fields": {
+        "name": "충남대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 5,
+    "fields": {
+        "name": "경북대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 6,
+    "fields": {
+        "name": "전북대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 7,
+    "fields": {
+        "name": "경상대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 8,
+    "fields": {
+        "name": "부산대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 9,
+    "fields": {
+        "name": "제주대학교",
+        "url": "default",
+        "category": 1
+    }
+},
+{
+    "model": "service.site",
+    "pk": 10,
+    "fields": {
+        "name": "조선일보",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 11,
+    "fields": {
+        "name": "매일경제",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 12,
+    "fields": {
+        "name": "연합뉴스",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 13,
+    "fields": {
+        "name": "동아일보",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 14,
+    "fields": {
+        "name": "한국경제",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 15,
+    "fields": {
+        "name": "경향신문",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 16,
+    "fields": {
+        "name": "kbs",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 17,
+    "fields": {
+        "name": "sbs",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 18,
+    "fields": {
+        "name": "mbc",
+        "url": "default",
+        "category": 2
+    }
+},
+{
+    "model": "service.site",
+    "pk": 19,
+    "fields": {
+        "name": "링커리어",
+        "url": "default",
+        "category": 3
+    }
+},
+{
+    "model": "service.site",
+    "pk": 20,
+    "fields": {
+        "name": "잡코리아",
+        "url": "default",
+        "category": 3
+    }
+},
+{
+    "model": "service.site",
+    "pk": 21,
+    "fields": {
+        "name": "인텔리픽",
+        "url": "default",
+        "category": 3
+    }
+},
+{
+    "model": "service.site",
+    "pk": 22,
+    "fields": {
+        "name": "알리오",
+        "url": "default",
+        "category": 3
+    }
+},
+{
+    "model": "service.site",
+    "pk": 23,
+    "fields": {
+        "name": "사람인",
+        "url": "default",
+        "category": 3
+    }
+},
+{
+    "model": "service.site",
+    "pk": 24,
+    "fields": {
+        "name": "인크루트",
+        "url": "default",
+        "category": 3
+    }
+}
+]
