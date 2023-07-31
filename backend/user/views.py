@@ -48,24 +48,14 @@ class UserViewSet(viewsets.ViewSet):
 
         # user가 맞다면,
         if user is not None:
+            print(list(user.sites.values('name')))
             token = TokenObtainPairSerializer.get_token(user) # refresh 토큰 생성
             refresh_token = str(token) # refresh 토큰 문자열화
             access_token = str(token.access_token) # access 토큰 문자열화
-            response = Response(
-                {
-                    "user": user.id,
-                    "message": "login success",
-                    "jwt_token": {
-                        "access_token": access_token,
-                        "refresh_token": refresh_token
-                    },
-                },
-                status=status.HTTP_200_OK
-            )
-
-            response.set_cookie("access_token", access_token, httponly=True)
-            response.set_cookie("refresh_token", refresh_token, httponly=True)
-            return response
+            serializer = serializers.UserFullDataSerializer(user)
+            headers = {"Authorization": "Bearer " + access_token, 
+                       "Refresh-Token": refresh_token}
+            return Response(serializer.data, headers=headers, status=status.HTTP_200_OK)
         else:
             return Response(
                 {"message": "로그인에 실패하였습니다."}, status=status.HTTP_400_BAD_REQUEST
@@ -82,6 +72,16 @@ class UserViewSet(viewsets.ViewSet):
         serializer = self.serializer(user)
         return Response(serializer)
 
+    @swagger_auto_schema(request_body=serializers.UserModelSerializer())
+    def updatePassword(self, request):
+        user = User.objects.get(id = request.user)
+        #비밀번호가 동일하다면?
+        if check_password(user.password, request.data.get('password')):
+            user.password = request.data.get('password')
+            user.save()
+            return Response({"message": "성공적으로 비밀번호를 변경하였습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "비밀번호가 일치하지 않습니다."},status=status.HTTP_400_BAD_REQUEST)
 
 #-----------유저별 키워드, 사이트, 포스트 관련-------
 class UserSiteViewSet(viewsets.ViewSet):
@@ -98,7 +98,13 @@ class UserSiteViewSet(viewsets.ViewSet):
 
     def findAll(self, request):
             serializer = self.serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def findByUserId(self, request):
+        user = request.user
+        userSite = UserSite.objects.filter(user=user)
+        serializer = self.serializer(userSite, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserKeywordViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
@@ -115,6 +121,12 @@ class UserKeywordViewSet(viewsets.ViewSet):
     def findAll(self, request):
             serializer = self.serializer(self.queryset, many=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def findByUserId(self, request):
+        user = request.user
+        userKeyword = UserKeyword.objects.filter(user=user)
+        serializer = self.serializer(userKeyword, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserPostViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
@@ -131,4 +143,10 @@ class UserPostViewSet(viewsets.ViewSet):
     @swagger_auto_schema()
     def findAll(self, request):
         serializer = self.serializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def findByUserId(self, request):
+        user = request.user
+        userPost = UserPost.objects.filter(user=user)
+        serializer = self.serializer(userPost, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

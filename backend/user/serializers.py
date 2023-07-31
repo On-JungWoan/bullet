@@ -17,6 +17,18 @@ class UserModelSerializer(serializers.ModelSerializer):
         )
         return user
 
+#유저의 모든 정보를 저장하는 클래스
+class UserFullDataSerializer(serializers.ModelSerializer):
+    keywords = serializers.SerializerMethodField()
+    sites = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ('id','email','username','keywordCount','keywords','sites')
+
+    def get_keywords(self, obj):
+        return list(obj.keywords.values('name'))
+    def get_sites(self, obj):
+        return list(obj.sites.values('name'))
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
