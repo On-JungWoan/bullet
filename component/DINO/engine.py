@@ -13,7 +13,7 @@ from util.utils import slprint, to_device
 import torch
 
 import util.misc as utils
-from datasets.coco_eval import CocoEvaluator
+# from datasets.coco_eval import CocoEvaluator
 from datasets.panoptic_eval import PanopticEvaluator
 
 
@@ -142,7 +142,8 @@ def evaluate(model, criterion, postprocessors, data_loader, base_ds, device, out
         useCats = True
     if not useCats:
         print("useCats: {} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".format(useCats))
-    coco_evaluator = CocoEvaluator(base_ds, iou_types, useCats=useCats)
+    # coco_evaluator = CocoEvaluator(base_ds, iou_types, useCats=useCats)
+    coco_evaluator = None
     # coco_evaluator.coco_eval[iou_types[0]].params.iouThrs = [0, 0.1, 0.5, 0.75]
 
     panoptic_evaluator = None

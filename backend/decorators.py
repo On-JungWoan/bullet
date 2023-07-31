@@ -1,6 +1,5 @@
 import mysql.connector
 
-
 def dataIO(func):
     def wrapper():
         print('Output 작업시작----------------------')
