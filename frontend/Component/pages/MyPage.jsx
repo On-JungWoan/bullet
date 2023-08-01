@@ -1,14 +1,30 @@
-import React, { useEffect, useState, memo } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import React, { useEffect, useState, memo, useContext } from "react";
 import {
-    Text,
+    Text, Button,
     View,
-    Pressable
 } from 'react-native';
 
+import { dataContext } from '../../App';
+import { LOGOUT } from "../../App";
+
 const MyPage = memo(()=>{
+
+    const { dispatch } = useContext(dataContext);
+
+
     return(
         <View>
-            <Text>마이</Text>
+            <Button title="로그아웃" 
+            onPress={()=>{
+                dispatch({
+                    type : LOGOUT,
+                    login : false,
+                });
+                AsyncStorage.clear();
+            }} />
+
         </View>
     )
 })

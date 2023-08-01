@@ -1,3 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+export const TOKEN = 'TOKEN'
+
 // state
 const initState = {
   login: false, // false로 변경
@@ -8,6 +12,7 @@ const initState = {
 }
 
 export const LOGIN = "LOGIN"
+export const LOGOUT = "LOGOUT"
 
 // action
 const reducer = (state, action) => {
@@ -17,7 +22,11 @@ const reducer = (state, action) => {
         ...state,
         login: action.login,
       }
-
+    case LOGOUT:
+      return {
+        ...state,
+        login: action.login,
+      }
     default:
       return state;
   }
@@ -51,10 +60,10 @@ export default function App() {
 
   return (
     <dataContext.Provider value={value}>
-      <View style={{...styles.container}}>
+      <View style={{ ...styles.container }}>
         <StatusBar style="auto" />
-        { !login ? <LoginPage /> 
-        : <MainPage/>
+        {!login ? <LoginPage />
+          : <MainPage />
         }
       </View>
     </dataContext.Provider >
