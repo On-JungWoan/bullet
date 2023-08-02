@@ -4,10 +4,12 @@ export const TOKEN = 'TOKEN'
 
 // state
 const initState = {
-  login: false, // false로 변경
+  login: false, // true면 로그인
+  dark : false, // true먄 다크모드
   user: {
-    "name": "",
-    "dark": "dark",
+    "name": "", // 이름
+    "keyword" : [], // 키워드
+    "site" : [], // 사이트
   },
 }
 
