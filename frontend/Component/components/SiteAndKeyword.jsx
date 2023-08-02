@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import { Text, View, StyleSheet,Image } from 'react-native';
 
 
-export default function ShowSite({img, site}){
+export default function SiteAndKeyword({img, site}){
     return(
         <View style={styles.imageBox}>
             <Image source={require(img)}/>
@@ -16,5 +16,3 @@ const styles = StyleSheet.create({
         flex:1,
     }
 })
-
-ShowSite;

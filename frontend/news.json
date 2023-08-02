@@ -1,47 +1,47 @@
 [
     {
-        "id": 1,
+        "id": "조선일보",
         "img": "../../assets/icon.png",
-        "site": "1"
+        "site": "조선일보"
     },
     {
-        "id": 2,
+        "id": "매일경제",
         "img": "../../assets/icon.png",
-        "site": "2"
+        "site": "매일경제"
     },
     {
-        "id": 3,
+        "id": "연합뉴스",
         "img": "../../assets/icon.png",
-        "site": "3"
+        "site": "연합뉴스"
     },
     {
-        "id": 4,
+        "id": "동아일보",
         "img": "../../assets/icon.png",
-        "site": "4"
+        "site": "동아일보"
     },
     {
-        "id": 5,
+        "id": "한겨례",
         "img": "../../assets/icon.png",
-        "site": "5"
+        "site": "한겨례"
     },
     {
-        "id": 6,
+        "id": "KBS",
         "img": "../../assets/icon.png",
-        "site": "6"
+        "site": "KBS"
     },
     {
-        "id": 7,
+        "id": "경향신문",
         "img": "../../assets/icon.png",
-        "site": "7"
+        "site": "경향신문"
     },
     {
-        "id": 8,
+        "id": "MBC",
         "img": "../../assets/icon.png",
-        "site": "8"
+        "site": "MBC"
     },
     {
-        "id": 9,
+        "id": "SBS",
         "img": "../../assets/icon.png",
-        "site": "4"
+        "site": "SBS"
     }
 ]
