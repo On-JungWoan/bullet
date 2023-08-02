@@ -4,6 +4,7 @@ from post.models import Post
 from post.serializers import PostSerializer
 from service.models import Keyword, Site
 from service.serializers import KeywordSerializer, SiteSerializer, CategorySerializer
+import json
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -26,9 +27,9 @@ class UserFullDataSerializer(serializers.ModelSerializer):
         fields = ('id','email','username','keywordCount','keywords','sites')
 
     def get_keywords(self, user):
-        return str(list(user.keywords.values_list('name',flat=True)))
+        return list(user.keywords.values_list('name',flat=True))
     def get_sites(self, user):
-        return str(list(user.sites.values_list('name',flat=True)))
+        return list(user.sites.values_list('name',flat=True))
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,51 +46,68 @@ class CheckEmailSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email']
 
+
 #-----------------유저와 관계가 있는 모델 시리얼라이저---------
 #유저와 포스트 사이에서 유저에게 전송될 뉴스를 저장하는 클래스
-class UserPostSerializer(serializers.ModelSerializer):
+class GetUserPostSerializer(serializers.ModelSerializer):
     posts = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields =  ['id','posts']
+        fields =  ['posts']
 
-    def create(self, validated_data, user):
-        post_name = validated_data['keywords'][0]['name']
-        post = Post.objects.get(name=post_name)
-        user_keyword = UserKeyword.objects.get_or_create(user=user, post=post)
-        return user_keyword
-    
     def get_posts(self, user):
         return str(user.posts.values_list('name',flat=True))
 
 #뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
-class UserKeywordSerializer(serializers.ModelSerializer):
-    keywords =serializers.SerializerMethodField()
+class GetUserKeywordSerializer(serializers.ModelSerializer):
+    keywords = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id','keywords']
+        fields = ('keywords',)
 
-    def create(self, validated_data, user):
-        keyword_name = validated_data['keywords'][0]['name']
-        keyword,created = Keyword.objects.get_or_create(name=keyword_name)
-        user_keyword = UserKeyword.objects.get_or_create(user=user, keyword=keyword)
-        return user_keyword
-    
     def get_keywords(self, user):
-        return str(list(user.keywords.values_list('name',flat=True)))
+        return list(user.keywords.values_list('name',flat=True))
 
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
-class UserSiteSerializer(serializers.ModelSerializer):
+class GetUserSiteSerializer(serializers.ModelSerializer):
     sites = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['id','sites']
-
-    def create(self, validated_data, user):
-        site_name = validated_data['sites']
-        site = Site.objects.get(name=site_name)
-        user_site = UserSite.objects.get_or_create(user=user, site=site)
-        return user_site
+        fields = ('sites',)
     
     def get_sites(self, user):
-        return str(list(user.sites.values_list('name',flat=True)))
+        return list(user.sites.values_list('name',flat=True))
+    
+class SaveUserPostSerializer(serializers.Serializer):
+    posts = serializers.ListField(child=serializers.CharField())
+
+    def save(self, validated_data, user):
+        posts = validated_data['posts']
+        posts_create = [Post.objects.get_or_create(name=post)[0] for post in posts]
+        user_post = [UserPost.objects.get_or_create(user=user, post=post) for post in posts_create]
+        # YourModel 객체들을 일괄 저장
+        return user_post
+
+#뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
+class SaveUserKeywordSerializer(serializers.Serializer):
+    keywords = serializers.ListField(child=serializers.CharField())
+
+    def save(self, validated_data, user):
+        print(validated_data)
+        keywords = validated_data['keywords']
+        keywords_create = [Keyword.objects.get_or_create(name=keyword)[0] for keyword in keywords]
+        print(keywords_create)
+        user_keyword = [UserKeyword.objects.get_or_create(user=user, keyword=keyword) for keyword in keywords_create]
+        # YourModel 객체들을 일괄 저장
+        return user_keyword
+
+#유저가 어떤 사이트를 구독했는지 저장하는 클래스
+class SaveUserSiteSerializer(serializers.Serializer):
+    sites = serializers.ListField(child=serializers.CharField())
+
+    def create(self, validated_data, user):
+        sites = validated_data['sites']
+        sites_create = [Site.objects.get_or_create(name=site)[0] for site in sites]
+        user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
+        return user_site

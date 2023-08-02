@@ -173,8 +173,6 @@ REST_FRAMEWORK = {
     #로그인 시 토큰을 발급하는 클래스
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ),
 }
 
@@ -215,3 +213,18 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'user.User'
 
 APPEND_SLASH=False
+
+#swagger login
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS' :{
+        'Bearer':{
+            'type':'apiKey',
+            'name':'Authorization',
+            'in':'header'
+        }
+    },
+    'USE_SESSION_AUTH': False
+}
