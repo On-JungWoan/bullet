@@ -86,7 +86,7 @@ class UserSiteSerializer(serializers.ModelSerializer):
         fields = ['id','sites']
 
     def create(self, validated_data, user):
-        site_name = validated_data['sites'][0]['name']
+        site_name = validated_data['sites']
         site = Site.objects.get(name=site_name)
         user_site = UserSite.objects.get_or_create(user=user, site=site)
         return user_site

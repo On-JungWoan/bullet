@@ -48,7 +48,6 @@ class UserViewSet(viewsets.ViewSet):
 
         # user가 맞다면,
         if user is not None:
-            print(list(user.sites.values('name')))
             token = TokenObtainPairSerializer.get_token(user) # refresh 토큰 생성
             refresh_token = str(token) # refresh 토큰 문자열화
             access_token = str(token.access_token) # access 토큰 문자열화
