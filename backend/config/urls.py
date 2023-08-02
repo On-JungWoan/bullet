@@ -24,7 +24,7 @@ schema_view = get_schema_view(
 urlpatterns = [
    #admin url
    path('admin/', admin.site.urls),#admin url
-   path('api-auth/',include('rest_framework.urls')),#api-auth url
+   path('api-auth/',include('rest_framework.urls'), name='rest_framework'),#api-auth url
    #토큰 관련 검증 url
    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 	path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),

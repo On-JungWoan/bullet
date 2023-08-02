@@ -16,11 +16,11 @@ urlpatterns = [
     path('keyword/create/', views.UserKeywordViewSet.as_view({'post' : 'createUserKeyword'})),
     path('site/create/', views.UserSiteViewSet.as_view({'post' : 'createUserSite'})),
     #모든 유저가 등록한 키워드, 사이트, 포스트 검색 url
-    path('keyword/', views.UserKeywordViewSet.as_view({'get' : 'findAll'})),
-    path('site/', views.UserSiteViewSet.as_view({'get' : 'findAll'})),
-    path('post/', views.UserPostViewSet.as_view({'get' : 'findAll'})),
+    # path('keyword/', views.UserKeywordViewSet.as_view({'get' : 'findAll'})),
+    # path('site/', views.UserSiteViewSet.as_view({'get' : 'findAll'})),
+    # path('post/', views.UserPostViewSet.as_view({'get' : 'findAll'})),
     #user의 키워드, 사이트, 포스트 검색 url
-    path('keyword/user/', views.UserKeywordViewSet.as_view({'get' : 'findByUserId'})),
-    path('site/user/', views.UserSiteViewSet.as_view({'get' : 'findByUserId'})),
-    path('post/user/', views.UserPostViewSet.as_view({'get' : 'findByUserId'})),
+    path('keyword/', views.UserKeywordViewSet.as_view({'get' : 'findByUserId'})),
+    path('site/', views.UserSiteViewSet.as_view({'get' : 'findByUserId'})),
+    path('post/', views.UserPostViewSet.as_view({'get' : 'findByUserId'})),
 ]
