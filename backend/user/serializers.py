@@ -25,10 +25,10 @@ class UserFullDataSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id','email','username','keywordCount','keywords','sites')
 
-    def get_keywords(self, obj):
-        return list(obj.keywords.values('name'))
-    def get_sites(self, obj):
-        return list(obj.sites.values('name'))
+    def get_keywords(self, user):
+        return str(list(user.keywords.values_list('name',flat=True)))
+    def get_sites(self, user):
+        return str(list(user.sites.values_list('name',flat=True)))
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,7 +48,7 @@ class CheckEmailSerializer(serializers.ModelSerializer):
 #-----------------유저와 관계가 있는 모델 시리얼라이저---------
 #유저와 포스트 사이에서 유저에게 전송될 뉴스를 저장하는 클래스
 class UserPostSerializer(serializers.ModelSerializer):
-    posts = PostSerializer(many=True, allow_null=True)
+    posts = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields =  ['id','posts']
@@ -58,10 +58,13 @@ class UserPostSerializer(serializers.ModelSerializer):
         post = Post.objects.get(name=post_name)
         user_keyword = UserKeyword.objects.get_or_create(user=user, post=post)
         return user_keyword
+    
+    def get_posts(self, user):
+        return str(user.posts.values_list('name',flat=True))
 
 #뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
 class UserKeywordSerializer(serializers.ModelSerializer):
-    keywords = KeywordSerializer(many=True, allow_null=True)
+    keywords =serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ['id','keywords']
@@ -71,10 +74,13 @@ class UserKeywordSerializer(serializers.ModelSerializer):
         keyword,created = Keyword.objects.get_or_create(name=keyword_name)
         user_keyword = UserKeyword.objects.get_or_create(user=user, keyword=keyword)
         return user_keyword
+    
+    def get_keywords(self, user):
+        return str(list(user.keywords.values_list('name',flat=True)))
 
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class UserSiteSerializer(serializers.ModelSerializer):
-    sites = SiteSerializer(many=True, allow_null=True)
+    sites = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ['id','sites']
@@ -84,3 +90,6 @@ class UserSiteSerializer(serializers.ModelSerializer):
         site = Site.objects.get(name=site_name)
         user_site = UserSite.objects.get_or_create(user=user, site=site)
         return user_site
+    
+    def get_sites(self, user):
+        return str(list(user.sites.values_list('name',flat=True)))
