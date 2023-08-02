@@ -28,7 +28,3 @@ export default function MainPage() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-
-})

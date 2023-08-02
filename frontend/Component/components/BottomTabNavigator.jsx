@@ -17,7 +17,7 @@ const BottomTabNavigator = () => {
                 height: 55,
             },
         }} >
-            <BottomTab.Screen name="Alarm" component={Home} options={{
+            <BottomTab.Screen name="Alarm" component={Alarm} options={{
                 headerShown: false, tabBarIcon: () => (
                     <FontAwesome name="comments-o" size={28} color="black" />
                 ),
