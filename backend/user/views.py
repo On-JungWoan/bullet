@@ -112,6 +112,10 @@ class UserSiteViewSet(viewsets.ViewSet):
             if serializer.is_valid():
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def findAll(self, request):
             serializer = self.serializer(self.queryset, many=True)
@@ -187,7 +191,8 @@ class UserPostViewSet(viewsets.ViewSet):
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
     def findByUserId(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
-        user, _ = user_and_token
-        userPost = UserPost.objects.filter(user=user)
-        serializer = serializers.GetUserPostSerializer(userPost, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if user_and_token is not None:
+            user, _ = user_and_token
+            serializer = serializers.GetUserPostSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)

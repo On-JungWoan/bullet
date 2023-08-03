@@ -106,7 +106,7 @@ class SaveUserKeywordSerializer(serializers.Serializer):
 class SaveUserSiteSerializer(serializers.Serializer):
     sites = serializers.ListField(child=serializers.CharField())
 
-    def create(self, validated_data, user):
+    def save(self, validated_data, user):
         sites = validated_data['sites']
         sites_create = [Site.objects.get_or_create(name=site)[0] for site in sites]
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
