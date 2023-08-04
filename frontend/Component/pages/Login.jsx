@@ -43,6 +43,7 @@ export default function LoginPage({ navigation }) {
 
     // 초기 로그인 확인
     useEffect(() => {
+        console.log(AsyncStorage.getItem(TOKEN));
         AsyncStorage.getItem(TOKEN)
         .then(value => {
             value ? setLogin(true) : setLoading(false);
@@ -61,7 +62,7 @@ export default function LoginPage({ navigation }) {
             }
             try {
                 await axios
-                    .post('http://192.168.0.9:8000/user/signup/', data)
+                    .post('http://192.168.43.65:8000/user/signup/', data)
                     .then(function async(response) {
                         console.log(response.data);
                         alert("회원가입을 축하드립니다.")
@@ -81,7 +82,7 @@ export default function LoginPage({ navigation }) {
 
     // 로그인
     const checkLogin = async () => {
-        await axios.post('http://192.168.0.9:8000/user/login/', {
+        await axios.post('http://192.168.43.65:8000/user/login/', {
             email: id,
             password: password
         })

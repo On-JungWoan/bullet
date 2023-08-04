@@ -22,14 +22,14 @@ class UserViewSet(viewsets.ViewSet):
         #프론트에서 받아온 데이터
         serializer = serializers.SignupSerializer(data=request.data)
         #유저 모델에 저장
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(request_body=serializers.LoginSerializer(),
                          manual_parameters=[
-          openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
         )])
     def login(self, request):
@@ -64,7 +64,15 @@ class UserViewSet(viewsets.ViewSet):
                 serializer = serializers.UserFullDataSerializer(user)
                 headers = {"Authorization": "Bearer " + access_token, 
                         "Refresh-Token": refresh_token}
-                return Response(serializer.data, headers=headers, status=status.HTTP_200_OK)
+                bodys = {
+                        "user": serializer.data,
+                        "message": "login success",
+                        "jwt_token": {
+                            "access_token": access_token,
+                            "refresh_token": refresh_token
+                        }
+                    }
+                return Response(bodys, headers=headers, status=status.HTTP_200_OK)
             else:
                 return Response(
                     {"message": "로그인에 실패하였습니다."}, status=status.HTTP_400_BAD_REQUEST
@@ -101,7 +109,7 @@ class UserSiteViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()  
     @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=[
-          openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
         )])
     def createUserSite(self, request):
@@ -109,7 +117,7 @@ class UserSiteViewSet(viewsets.ViewSet):
         if user_and_token is not None:
             user, _ = user_and_token
             serializer = serializers.SaveUserSiteSerializer(data=request.data)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
@@ -122,7 +130,7 @@ class UserSiteViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(manual_parameters=[
-            openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+            openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
     def findByUserId(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
@@ -130,14 +138,15 @@ class UserSiteViewSet(viewsets.ViewSet):
             user, _ = user_and_token
             serializer = serializers.GetUserSiteSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message":"인증되지 않은 유저입니다."}
+                        ,status=status.HTTP_401_UNAUTHORIZED)
 
 class UserKeywordViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
 
     @swagger_auto_schema(request_body=serializers.SaveUserKeywordSerializer, manual_parameters=[
-          openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
         )])
     def createUserKeyword(self, request):
@@ -145,16 +154,20 @@ class UserKeywordViewSet(viewsets.ViewSet):
         if user_and_token is not None:
             user, _ = user_and_token
             serializer = serializers.SaveUserKeywordSerializer(data=request.data)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message":"인증되지 않은 유저입니다."}
+                        ,status=status.HTTP_401_UNAUTHORIZED)
+
 
     def findAll(self, request):
             serializer = self.serializer(self.queryset, many=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     @swagger_auto_schema(manual_parameters=[
-            openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+            openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
     def findByUserId(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
@@ -162,14 +175,16 @@ class UserKeywordViewSet(viewsets.ViewSet):
             user, _ = user_and_token
             serializer = serializers.GetUserKeywordSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response({"message":"인증되지 않은 유저입니다."}
+                        ,status=status.HTTP_401_UNAUTHORIZED)
 
 class UserPostViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
 
     @swagger_auto_schema(request_body=serializers.SaveUserPostSerializer, manual_parameters=[
-            openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+            openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
             description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
         )])
     def createUserPost(self, request):
@@ -177,7 +192,7 @@ class UserPostViewSet(viewsets.ViewSet):
         if user_and_token is not None:
             user, _ = user_and_token
             serializer = serializers.SaveUserPostSerializer(data=request.data)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
     

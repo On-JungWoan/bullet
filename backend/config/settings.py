@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     #drf
     'rest_framework',
     'drf_yasg',
+    'drf_api_logger',
 
     #apps
     'service',
@@ -79,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -174,6 +177,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'exceptions.exception_handlers.custom_exception_handler'
 }
 
 #발급받은 토큰은 7일 후에 파괴된다. 토큰을 갱신할 경우 28일 내에 새로운 토큰으로 교체 가능
@@ -228,3 +232,7 @@ SWAGGER_SETTINGS = {
     },
     'USE_SESSION_AUTH': False
 }
+
+DRF_API_LOGGER_DATABASE = True  # Default to False
+DRF_LOGGER_QUEUE_MAX_SIZE = 50  # Default to 50 if not specified.
+DRF_API_LOGGER_DEFAULT_DATABASE = 'default'
