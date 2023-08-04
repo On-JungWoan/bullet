@@ -5,6 +5,7 @@
 launch.json
 
 # backend
+*.env
 *.pyc
 *.sqlite3
 secrets.json
