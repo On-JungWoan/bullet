@@ -11,13 +11,18 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { TOKEN } from '../../App';
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
+import { AddSITE } from "../../App";
 
 export default function LoginPage({ navigation }) {
     const [login, setLogin] = useState(false);
     const [signUp, setSignUp] = useState(false);
+
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
+    const [sites, setSites] = useState([]);
+    const [keywords, setKeywords] = useState([]);
+
     const [showpass, setshowpass] = useState(true);
     const [loading, setLoading] = useState(true);
 
@@ -38,15 +43,19 @@ export default function LoginPage({ navigation }) {
         dispatch({
             type: LOGIN,
             login: login,
+            sites: sites,
+            name: name,
+            keywords: keywords,
         });
     }, [dispatch, login]);
 
     // 초기 로그인 확인
     useEffect(() => {
         AsyncStorage.getItem(TOKEN)
-        .then(value => {
-            value ? setLogin(true) : setLoading(false);
-        })
+            .then(value => {
+                value ? setLogin(true) : setLoading(false);
+                console.log(value);
+            })
     }, [])
 
     // 회원가입
@@ -61,8 +70,8 @@ export default function LoginPage({ navigation }) {
             }
             try {
                 await axios
-                    .post('http://192.168.0.9:8000/user/signup/', data)
-                    .then(function async(response) {
+                    .post('http://172.30.1.40:8000/user/signup/', data)
+                    .then(function (response) {
                         console.log(response.data);
                         alert("회원가입을 축하드립니다.")
                         setSignUp(false);
@@ -81,12 +90,19 @@ export default function LoginPage({ navigation }) {
 
     // 로그인
     const checkLogin = async () => {
-        await axios.post('http://192.168.0.9:8000/user/login/', {
+        const data = {
             email: id,
             password: password
-        })
+        }
+        await axios
+            .post('http://172.30.1.40:8000/user/login/', data)
             .then(function (response) {
-                AsyncStorage.setItem(TOKEN, JSON.stringify(response.data.jwt_token.access_token));
+                console.log("data",data)
+                console.log(response)
+                AsyncStorage.setItem(TOKEN, JSON.stringify(response.headers.authorization));
+                setName(response.data.username);
+                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : [])
+                setKeywords(response.data.sites?.keywords !== 0 ? [...response.data.keywords] : [])
                 setLogin(true);
             })
             .catch(function (error) {

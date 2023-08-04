@@ -4,24 +4,19 @@ import {
 } from 'react-native';
 
 import ShowSite from "./ShowSite";
-import news from "../../news.json"
+import { newsData } from "../../news";
 
 import { FontAwesome } from '@expo/vector-icons';
 
 
 const Home = memo(() => {
     const [show, setShow] = useState(false); // 다음 페이지로 이동할 것인가?
-    const [data, setData] = useState([]); // 다음 페이지에 보여줄 데이터 (공지, 직업 등)
-    const [site, setSite] = useState([]); // 선택한 사이트
-
-    getSitesFromChildren = useCallback((site) =>{
-        setSite([site])
-    },[site])
+    const [transData, setData] = useState([]); // 다음 페이지에 보여줄 데이터 (공지, 직업 등)
 
     // 뉴스 선택
     onPressNews = useCallback(() => {
         console.log("뉴스")
-        setData(news);
+        setData(newsData);
         setShow(true);
     }, [])
     // 공지사항 선택
@@ -46,10 +41,7 @@ const Home = memo(() => {
                         </Pressable>
                     </View>
                     <View style={{flex:7}}>
-                        <ShowSite data={data} getSitesFromChildren={getSitesFromChildren} />
-                    </View>
-                    <View style={{flex:1 }}>
-                        {site?.length ? <Text style={{fontSize : 20}}>{`선택 : ${site}`}</Text> : null}
+                        <ShowSite transData={transData} />
                     </View>
                 </View>
                 : <View style={styles.moveCompo}>
@@ -83,6 +75,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor : "white"
     },
     arrow: {
         position : 'absolute',
