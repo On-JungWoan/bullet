@@ -102,7 +102,7 @@ export default function LoginPage({ navigation }) {
                 AsyncStorage.setItem(TOKEN, JSON.stringify(response.headers.authorization));
                 setName(response.data.username);
                 setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : [])
-                setKeywords(response.data.sites?.keywords !== 0 ? [...response.data.keywords] : [])
+                setKeywords(response.data.keywords?.keywords !== 0 ? [...response.data.keywords] : [])
                 setLogin(true);
             })
             .catch(function (error) {
