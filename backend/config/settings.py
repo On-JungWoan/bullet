@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     #drf
     'rest_framework',
     'drf_yasg',
-    'drf_api_logger',
+    # 'drf_api_logger',
 
     #apps
     'service',
@@ -233,6 +233,6 @@ SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False
 }
 
-DRF_API_LOGGER_DATABASE = True  # Default to False
-DRF_LOGGER_QUEUE_MAX_SIZE = 50  # Default to 50 if not specified.
-DRF_API_LOGGER_DEFAULT_DATABASE = 'default'
+# DRF_API_LOGGER_DATABASE = True  # Default to False
+# DRF_LOGGER_QUEUE_MAX_SIZE = 50  # Default to 50 if not specified.
+# DRF_API_LOGGER_DEFAULT_DATABASE = 'default'
