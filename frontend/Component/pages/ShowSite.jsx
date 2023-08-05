@@ -37,7 +37,7 @@ export default function ShowSite({ transData }) {
         }
         try {
             await axios
-                .post('http://192.168.43.65:8000/user/site/create/', data, {
+                .post('http://172.30.1.40:8000/user/site/create/', data, {
                     headers: {
                         Authorization: token,
                     }

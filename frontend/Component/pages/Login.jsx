@@ -51,7 +51,6 @@ export default function LoginPage({ navigation }) {
 
     // 초기 로그인 확인
     useEffect(() => {
-        console.log(AsyncStorage.getItem(TOKEN));
         AsyncStorage.getItem(TOKEN)
             .then(value => {
                 value ? setLogin(true) : setLoading(false);
@@ -71,7 +70,7 @@ export default function LoginPage({ navigation }) {
             }
             try {
                 await axios
-                    .post('http://192.168.43.65:8000/user/signup/', data)
+                    .post('http://172.30.1.40:8000/user/signup/', data)
                     .then(function (response) {
                         console.log(response.data);
                         alert("회원가입을 축하드립니다.")
@@ -96,14 +95,14 @@ export default function LoginPage({ navigation }) {
             password: password
         }
         await axios
-            .post('http://192.168.43.65:8000/user/login/', data)
+            .post('http://172.30.1.40:8000/user/login/', data)
             .then(function (response) {
-                console.log("data",response.data);
-                console.log(response.headers.authorization);
-                AsyncStorage.setItem(TOKEN, response.headers.authorization);
+                console.log("data",data)
+                console.log(response)
+                AsyncStorage.setItem(TOKEN, JSON.stringify(response.headers.authorization));
                 setName(response.data.username);
-                setSites(response.data.sites?.length !== 0 ? [...response.data.user.sites] : [])
-                setKeywords(response.data.keywords?.keywords !== 0 ? [...response.data.user.keywords] : [])
+                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : [])
+                setKeywords(response.data.keywords?.keywords !== 0 ? [...response.data.keywords] : [])
                 setLogin(true);
             })
             .catch(function (error) {

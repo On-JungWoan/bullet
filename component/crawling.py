@@ -81,7 +81,7 @@ def crawling(args, obj,
             return page_num + 1, False, res
 
 
-# @dataIO
+#@dataIO
 def main(args)->str:
     obj = prepare(args)
 
