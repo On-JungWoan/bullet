@@ -64,15 +64,7 @@ class UserViewSet(viewsets.ViewSet):
                 serializer = serializers.UserFullDataSerializer(user)
                 headers = {"Authorization": "Bearer " + access_token, 
                         "Refresh-Token": refresh_token}
-                bodys = {
-                        "user": serializer.data,
-                        "message": "login success",
-                        "jwt_token": {
-                            "access_token": access_token,
-                            "refresh_token": refresh_token
-                        }
-                    }
-                return Response(bodys, headers=headers, status=status.HTTP_200_OK)
+                return Response(serializer.data, headers=headers, status=status.HTTP_200_OK)
             else:
                 return Response(
                     {"message": "로그인에 실패하였습니다."}, status=status.HTTP_400_BAD_REQUEST
