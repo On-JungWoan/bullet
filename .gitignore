@@ -5,6 +5,7 @@
 launch.json
 
 # backend
+*.env
 *.pyc
 *.sqlite3
 secrets.json
@@ -41,3 +42,8 @@ vis/
 model_zoo/
 model_zoo_old/
 scripts/
+
+# OCR
+*.ttf
+*.jpg
+*.pdf

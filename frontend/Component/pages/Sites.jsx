@@ -88,4 +88,28 @@ export default function SitesSelectPage({ transData, setSiteOrKey, token }) {
             </View>
         </View>
     )
+<<<<<<< HEAD:frontend/Component/pages/Sites.jsx
 }
+=======
+}
+
+const styles = StyleSheet.create({
+    showSite: {
+        flex: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    searchText: {
+        color: 'black',
+        fontSize: 30,
+        fontWeight: 700,
+    },
+    searchInput: {
+        textAlign: 'center',
+        fontSize: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        width: '90%',
+    }
+})
+>>>>>>> df4dd5122fd75cdb1e8e9428e497f4835a71b92e:frontend/Component/pages/ShowSite.jsx

@@ -153,11 +153,20 @@ export default function LoginPage({ navigation }) {
         await axios
             .post(`${BaseURL}/user/login/`, data)
             .then(function (response) {
+<<<<<<< HEAD
                 console.log("checkLogin", response.data)
                 AsyncStorage.setItem(TOKEN, response.headers.authorization); // 자동 로그인 token 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에도 저장
                 setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : []) // 저장한 사이트
                 setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
+=======
+                console.log("data",data)
+                console.log(response)
+                AsyncStorage.setItem(TOKEN, JSON.stringify(response.headers.authorization));
+                setName(response.data.username);
+                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : [])
+                setKeywords(response.data.keywords?.keywords !== 0 ? [...response.data.keywords] : [])
+>>>>>>> df4dd5122fd75cdb1e8e9428e497f4835a71b92e
                 setLogin(true);
             })
             .catch(function (error) {
