@@ -1,5 +1,7 @@
 -RN 설치 및 설명
 
+// APP.js의 BaseURL을 자신의 ipconfig 값을 넣어 사용
+
 // node 필수!
 
 // expo-cli를 이용해서 개발할 것
@@ -13,8 +15,14 @@ npm i --save-dev redux-devtools-extension
 
 - localStorage
 npx expo install @react-native-async-storage/async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 - axios
 npm install axios
-import axios from "axios"
+
+- bottom navigation
+npm install @react-navigation/bottom-tabs
+npm install @react-navigation/native
+npm install @react-navigation/native-stack
+
+- bouncy-checkbox 
+npm i react-native-bouncy-checkbox --save

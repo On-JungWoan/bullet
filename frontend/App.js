@@ -1,23 +1,30 @@
 export const TOKEN = 'TOKEN'
+export const NAME = 'NAME'
+
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // state
 const initState = {
   login: false, // true면 로그인
   dark : false, // true먄 다크모드
   user: {
-    "name": "", // 이름
+    "name": "",
     "keywords" : [], // 키워드
     "sites" : [], // 사이트
   },
 }
 
+export const BaseURL = 'http://192.168.0.9:8000'
+
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"
 export const AddKEYWORD = "ADDKEYWORD"
 export const AddSITE = "ADDSITE"
+export const TEST = "TEST";
 
 // action
 const reducer = (state, action) => {
+  console.log("State",state);
   switch (action.type) {
     case LOGIN: // 로그인 시 모든 정보를 받아옴
       return {
@@ -51,7 +58,10 @@ const reducer = (state, action) => {
           "name" : state.user.name,
           "keywords" : action.keywords,
         }
-      } 
+      }
+    case TEST :
+      return state
+    
     default:
       return state;
   }
@@ -62,7 +72,7 @@ const reducer = (state, action) => {
 
 import { StatusBar } from 'expo-status-bar';
 import React, {
-  useEffect, useMemo, useCallback, createContext, useReducer
+  useMemo, createContext, useReducer
 } from 'react';
 
 import { StyleSheet, View } from 'react-native';
@@ -81,7 +91,7 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initState)
   const { login, user } = state;
 
-  const value = useMemo(() => ({ login, dispatch, user }), [login, user])
+  const value = useMemo(() => ({ login, dispatch, user }), [login, user]) //로그인, dispatch, user 정보를 전송
 
   return (
     <dataContext.Provider value={value}>

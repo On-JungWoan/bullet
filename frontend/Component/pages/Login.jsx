@@ -9,9 +9,10 @@ import axios from 'axios';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import { TOKEN } from '../../App';
+import { NAME } from '../../App';
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
-import { AddSITE } from "../../App";
+import { BaseURL } from '../../App';
 
 export default function LoginPage({ navigation }) {
     const [login, setLogin] = useState(false);
@@ -28,6 +29,8 @@ export default function LoginPage({ navigation }) {
 
     const { dispatch } = useContext(dataContext);
 
+    let token;
+
     const swap = useCallback(() => {
         setId('');
         setPassword('');
@@ -39,27 +42,78 @@ export default function LoginPage({ navigation }) {
         }
     }, [signUp]);
 
+    // 자동 로그인시 등록 키워드 가져오기
+    const getKeyword = useCallback(async () => {
+        console.log("getKeyword");
+        try {
+            await axios.get(`${BaseURL}/user/keyword/`, {
+                headers: {
+                    Authorization: token,
+                }
+            })
+                .then((response) => {
+                    console.log("getKeyword", response.data);
+                    setKeywords(response.data)
+                })
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }, [keywords]);
+
+    // 자동 로그인시 등록 사이트 가져오기
+    const getSite = useCallback(async () => {
+        console.log("getSite");
+        try {
+            await axios.get(`${BaseURL}/user/site/`, {
+                headers: {
+                    Authorization: token,
+                }
+            })
+                .then((response) => {
+                    console.log("getSites", response.data);
+                    setSites(response.data);
+                })
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }, [sites]);
+
     useEffect(() => {
+        console.log("user정보 dispatch");
+
         dispatch({
             type: LOGIN,
             login: login,
             sites: sites,
-            name: name,
+            name: AsyncStorage.getItem(NAME),
             keywords: keywords,
         });
-    }, [dispatch, login]);
+    }, [login,sites,keywords]);
 
     // 초기 로그인 확인
     useEffect(() => {
+        console.log(" 초기 로그인 확인")
         AsyncStorage.getItem(TOKEN)
             .then(value => {
-                value ? setLogin(true) : setLoading(false);
-                console.log(value);
+                if (value) { // 자동 로그인
+                    token = value;
+                    console.log("token", token)
+
+                    getSite();
+                    getKeyword();
+
+                    setLogin(true);
+                } else {
+                    setLoading(false);
+                }
             })
     }, [])
 
     // 회원가입
     const checkSignUp = async () => {
+        console.log("회원가입")
         if (id === "" || password === "") {
             alert('아이디와 비밀번호를 입력해 주세요');
         } else {
@@ -70,9 +124,10 @@ export default function LoginPage({ navigation }) {
             }
             try {
                 await axios
-                    .post('http://172.30.1.40:8000/user/signup/', data)
+                    .post(`${BaseURL}/user/signup/`, data)
                     .then(function (response) {
-                        console.log(response.data);
+                        console.log("checkSignUp", response.data);
+                        setPassword("");
                         alert("회원가입을 축하드립니다.")
                         setSignUp(false);
                     })
@@ -90,19 +145,19 @@ export default function LoginPage({ navigation }) {
 
     // 로그인
     const checkLogin = async () => {
+        console.log("로그인")
         const data = {
             email: id,
             password: password
         }
         await axios
-            .post('http://172.30.1.40:8000/user/login/', data)
+            .post(`${BaseURL}/user/login/`, data)
             .then(function (response) {
-                console.log("data",data)
-                console.log(response)
-                AsyncStorage.setItem(TOKEN, JSON.stringify(response.headers.authorization));
-                setName(response.data.username);
-                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : [])
-                setKeywords(response.data.sites?.keywords !== 0 ? [...response.data.keywords] : [])
+                console.log("checkLogin", response.data)
+                AsyncStorage.setItem(TOKEN, response.headers.authorization); // 자동 로그인 token 저장
+                AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에도 저장
+                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : []) // 저장한 사이트
+                setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
                 setLogin(true);
             })
             .catch(function (error) {
@@ -111,12 +166,12 @@ export default function LoginPage({ navigation }) {
     }
 
     return (
-        <View style={{ ...styles.login }}>
+        <View>
             {loading === true ?
                 <View style={{ ...styles.day, alignItems: 'center' }}>
                     <ActivityIndicator color="black" size="large" style={{ marginTop: 10 }} />
                 </View> :
-                <View>
+                <View style={{ ...styles.login }}>
                     <Text style={{ ...styles.loginText }}>총 알</Text>
 
                     <View style={{ alignItems: 'center' }}>
@@ -177,6 +232,7 @@ export default function LoginPage({ navigation }) {
                 </View>
             }
         </View>
+
     );
 }
 

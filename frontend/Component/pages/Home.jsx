@@ -3,10 +3,8 @@ import {
     Text, Image, View, Pressable, StyleSheet
 } from 'react-native';
 
-import ShowSite from "./ShowSite";
+import Show from "./Show";
 import { newsData } from "../../news";
-
-import { FontAwesome } from '@expo/vector-icons';
 
 
 const Home = memo(() => {
@@ -35,14 +33,7 @@ const Home = memo(() => {
         <View style={{ ...styles.container }}>
             {show ? // show가 true면 검색창을 보여줌
                 <View style={{ flex: 1, width:'90%' }}>
-                    <View style={{ flex: 1 }}>
-                        <Pressable style={styles.arrow} onPress={() => { setShow(false) }}>
-                            <FontAwesome name="arrow-circle-left" size={40} color="black" />
-                        </Pressable>
-                    </View>
-                    <View style={{flex:7}}>
-                        <ShowSite transData={transData} />
-                    </View>
+                    <Show transData={transData} setShow={setShow} />
                 </View>
                 : <View style={styles.moveCompo}>
                     <Pressable style={{ ...styles.press, marginRight: 5 }} onPress={onPressNews}>
@@ -76,11 +67,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor : "white"
-    },
-    arrow: {
-        position : 'absolute',
-        top :25,
-        left : 25,
     },
     moveCompo: {
         alignItems: 'center',
