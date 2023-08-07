@@ -47,7 +47,7 @@ def dataIO(func):
 
         print('Input 작업시작----------------------')
         # INSERT 쿼리 작성
-        insert_query = "INSERT INTO post (title, content, url, site, keyword, date) VALUES (%s, %s, %s, %s, %s, %s)"
+        insert_query = "INSERT INTO post_post (title, content, url, site, keyword, date) VALUES (%s, %s, %s, %s, %s, %s)"
         # 여러 개의 데이터 INSERT
         cursor.executemany(insert_query, data_to_insert)
  

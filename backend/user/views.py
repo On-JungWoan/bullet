@@ -51,7 +51,7 @@ class UserViewSet(viewsets.ViewSet):
 
             # 비밀번호가 틀린 경우,
             #not check_password(password, user.password) -> 비밀번호가 틀린 경우
-            if password != user.password:
+            if check_password(user.password, request.data.get('password')):
                 return Response(
                     {"message": "비밀번호가 틀렸습니다."}, status=status.HTTP_400_BAD_REQUEST
                 )
@@ -76,8 +76,11 @@ class UserViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(request_body=serializers.CheckEmailSerializer())
     def checkEmail(self, request):
-        email = request.data.get('email')
-        return Response('check')
+        result = serializers.CheckEmailSerializer(request)
+        if result:
+            return Response({"message": "이메일이 중복되지 않습니다."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "이메일이 중복됩니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(parameters = serializers.UserModelSerializer())
     def findById(self, id):
@@ -91,10 +94,10 @@ class UserViewSet(viewsets.ViewSet):
         #비밀번호가 동일하다면?
         if check_password(user.password, request.data.get('password')):
             user.password = request.data.get('password')
-            user.save()
+            user.save(update_fields=['password'])
             return Response({"message": "성공적으로 비밀번호를 변경하였습니다."}, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "비밀번호가 일치하지 않습니다."},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "현재 비밀번호가 일치하지 않습니다."},status=status.HTTP_400_BAD_REQUEST)
 
 #-----------유저별 키워드, 사이트, 포스트 관련-------
 class UserSiteViewSet(viewsets.ViewSet):

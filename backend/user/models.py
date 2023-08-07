@@ -43,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     keywordCount = models.IntegerField(default=0)
+    siteCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # User 모델의 필수 field
