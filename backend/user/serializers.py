@@ -35,6 +35,13 @@ class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'username', 'password']
+    def create(self,validated_data):
+        password = validated_data.pop('password',None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None :
+            instance.set_password(password)
+            instance.save()
+        return instance
 
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,9 +49,17 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = ['email', 'password']
 
 class CheckEmailSerializer(serializers.ModelSerializer):
+    email = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ['email']
+    def get_email(self, email):
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            return True
+        else:
+            return False
+    
 
 
 #-----------------유저와 관계가 있는 모델 시리얼라이저---------

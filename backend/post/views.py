@@ -12,8 +12,12 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 #from rest_framework_simplejwt.authentication import JSONWebTokenAuthentication
-#프론트에서 id를 통해 post를 검색
+from user.models import UserSite, UserKeyword
+from django.db.models import Q
+from itertools import product
+#쿼리용 import
 
+#프론트에서 id를 통해 post를 검색
 class PostViewSet(viewsets.ViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -29,7 +33,16 @@ class PostViewSet(viewsets.ViewSet):
         # 유저 객체 가져오기
         user = User.objects.get(id=user_id)
         # 해당 유저와 관련된 뉴스 인스턴스들을 가져오되, 키워드 정보도 함께 로드하기
-        posts = UserPost.objects.filter(user=user).prefetch_related('post')
+        keywords = list(UserKeyword.objects.filter(user=user).values_list('name',flat=True))
+        sites = list(UserSite.objects.filter(user=user).values_list('name', flat=True))
+
+        q_objects = Q()
+
+        # 모든 조합을 생성하여 Q 객체에 추가. 형식 : Q(keyword=keyword1, site=site1) 또는 Q(keyword=keyword1, site=site2) 또는 ...
+        for keyword, site in product(keywords, sites):
+            q_objects |= Q(keyword=keyword, site=site)
+        # post들을 Q object로 생성하고 한번에 필터링
+        posts = Post.objects.filter(q_objects)
         return Response(posts)
 
 # @api_view(['POST'])
