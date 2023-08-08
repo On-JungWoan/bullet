@@ -10,7 +10,7 @@ import { TOKEN, NAME } from '../../App';
 import { dataContext } from '../../App';
 import { LOGOUT } from "../../App";
 
-const MyPage = memo(()=>{
+const MyPage = ()=>{
 
     const { dispatch,user } = useContext(dataContext);
     const [name,setName]=useState('');
@@ -33,6 +33,6 @@ const MyPage = memo(()=>{
 
         </View>
     )
-})
+}
 
 export default MyPage;
