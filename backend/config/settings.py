@@ -236,3 +236,6 @@ SWAGGER_SETTINGS = {
 # DRF_API_LOGGER_DATABASE = True  # Default to False
 # DRF_LOGGER_QUEUE_MAX_SIZE = 50  # Default to 50 if not specified.
 # DRF_API_LOGGER_DEFAULT_DATABASE = 'default'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

@@ -22,14 +22,23 @@ class UserModelSerializer(serializers.ModelSerializer):
 class UserFullDataSerializer(serializers.ModelSerializer):
     keywords = serializers.SerializerMethodField()
     sites = serializers.SerializerMethodField()
+    image = serializers.ImageField(use_url=True)
     class Meta:
         model = User
-        fields = ('id','email','username','keywordCount','keywords','sites')
+        fields = ('id','email','username','keywordCount','keywords','sites', 'image')
 
     def get_keywords(self, user):
         return list(user.keywords.values_list('name',flat=True))
     def get_sites(self, user):
         return list(user.sites.values_list('name',flat=True))
+    
+    def update(self, validated_data):
+        user = User.objects.get(id=validated_data['id'])
+        user.username = validated_data['username']
+        user.email = validated_data['email']
+        user.image = validated_data['image']
+        user.save()
+        return user
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
