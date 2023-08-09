@@ -88,9 +88,7 @@ export default function SitesSelectPage({ transData, setSiteOrKey, token }) {
             </View>
         </View>
     )
-<<<<<<< HEAD:frontend/Component/pages/Sites.jsx
-}
-=======
+
 }
 
 const styles = StyleSheet.create({
@@ -112,4 +110,3 @@ const styles = StyleSheet.create({
         width: '90%',
     }
 })
->>>>>>> df4dd5122fd75cdb1e8e9428e497f4835a71b92e:frontend/Component/pages/ShowSite.jsx
