@@ -12,18 +12,17 @@ const MainHeader = () => {
     const navigation = useNavigation();
 
     const { login } = useContext(dataContext);
-
+    console.log("login",login)
     return (
         <View style={{ flex: 1, width: '100%' }}>
             <View style={{ ...styles.container }}>
 
                 {login ?
-                    <Pressable onPress={() => { navigation.navigate("Login"); }}>
-                        <Image source={require("../../assets/LOGO.png")} />
+                    <Pressable style={{...styles.image}} onPress={() => { navigation.navigate("Login"); }}>
+                        <Image style={{width:'100%', height: '100%'}} source={require("../../assets/LOGO.png")} />
                     </Pressable>
                     : <Image style={{...styles.image}} source={require("../../assets/LOGO.png")} />
                 }
-
                 {login === true ?
                     <Pressable style={{ ...styles.myPageImage }}
                         onPress={() => { navigation.navigate("MyPage"); }}>
@@ -46,12 +45,12 @@ const styles = StyleSheet.create({
     },
     image: {
         width:'20%',
-        height: '50%',
-        resizeMode: "stretch",
+        height: '60%',
+        marginLeft : '5%',
     },
     myPageImage:{
         position: 'absolute',
-        right: 20,
+        right: '10%',
         marginTop: 5 
     }
 });

@@ -1,4 +1,7 @@
-export const TOKEN = 'TOKEN'
+import { StatusBar } from "expo-status-bar";
+
+export const AccessTOKEN = 'AccessTOKEN'
+export const RefreshTOKEN = 'RefreshTOKEN'
 export const NAME = 'NAME'
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +27,7 @@ export const TEST = "TEST";
 
 // action
 const reducer = (state, action) => {
-  console.log("State", state);
+  // console.log("State", state);
   switch (action.type) {
     case LOGIN: // 로그인 시 모든 정보를 받아옴
       return {
@@ -82,6 +85,7 @@ import { StyleSheet, View } from 'react-native';
 import Login from "./Component/pages/Login.jsx"
 import MyPage from "./Component/pages/MyPage.jsx"
 import SignUp from './Component/pages/SignUp.jsx'
+import Home from "./Component/pages/Home.jsx";
 
 // component
 import MainHeader from "./Component/components/MainHeader.jsx"
@@ -101,16 +105,20 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <dataContext.Provider value={value} style={{flex: 1}}>
+      <dataContext.Provider value={value} style={{ flex: 1 }}>
+        <StatusBar style="auto" />
         <View style={{ flex: 1 }}>
           <MainHeader />
         </View>
-        <View style={{ flex: 9}}>
-          <Stack.Navigator initialRouteName="Login">
+        <View style={{ flex: 9 }}>
+
+          <Stack.Navigator initialRouteName="Login" screenOptions={{ animation: 'none' }}>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }} />
             <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+            <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
           </Stack.Navigator>
+
         </View>
       </dataContext.Provider >
     </NavigationContainer>
