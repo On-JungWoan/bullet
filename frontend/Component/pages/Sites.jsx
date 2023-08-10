@@ -1,16 +1,19 @@
+// basic
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
-    Text, View, StyleSheet, Image
-    , ScrollView, Pressable, Button
+    Text, View, StyleSheet, Image, ScrollView, Pressable, Button
 } from 'react-native';
 
+// install
+import axios from "axios";
+
+// from App.js
 import { AddSITE } from "../../App";
 import { dataContext } from '../../App';
-import axios from "axios";
 import { BaseURL } from '../../App';
 
 
-export default function SitesSelectPage({ transData, setSiteOrKey, token }) {
+export default function SitesSelectPage({ transData, token }) {
     const { dispatch, user } = useContext(dataContext);
     const [selectSite, setSelectSite] = useState(user.sites?.length ? [...user.sites] : []); // 처음 등록이면 []
 
@@ -38,7 +41,6 @@ export default function SitesSelectPage({ transData, setSiteOrKey, token }) {
                 )
                 .then(function (response) {
                     console.log("SitesSelectPage",response.data);
-                    setSiteOrKey("keyword"); // 키워드 선택으로
                 })
                 .catch(function (error) {
                     alert("에러발생")
@@ -62,7 +64,7 @@ export default function SitesSelectPage({ transData, setSiteOrKey, token }) {
                     {transData.map((post, index) => {
                         // console.log(post.src)
                         return (
-                            <Pressable key={post.id} onPress={
+                            <Pressable style={{marginBottom :5}} key={post.id} onPress={
                                 () => {
                                     if (!selectSite.includes(post.site)) {
                                         setSelectSite([...selectSite, post.site]);
@@ -73,7 +75,7 @@ export default function SitesSelectPage({ transData, setSiteOrKey, token }) {
                                     }
                                 }
                             }>
-                                <Image style={{ width: 100, height: 80 }} source={post.src} />
+                                <Image style={{ width: 100, height: 80, resizeMode:"stretch", marginBottom:3 }} source={post.src} />
                                 <Text style={{ fontSize: 18, textAlign: 'center' }}>{post.site}</Text>
                             </Pressable>
                         );

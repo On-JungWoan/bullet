@@ -19,10 +19,14 @@ npx expo install @react-native-async-storage/async-storage
 - axios
 npm install axios
 
-- bottom navigation
+-navigation
 npm install @react-navigation/bottom-tabs
 npm install @react-navigation/native
 npm install @react-navigation/native-stack
 
 - bouncy-checkbox 
 npm i react-native-bouncy-checkbox --save
+
+- navigate 의존성 설치?
+npm install react-native-safe-area-context
+npm install react-native-screens

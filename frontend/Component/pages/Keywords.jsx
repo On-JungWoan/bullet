@@ -1,14 +1,15 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+// basic
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
     Text, View, TextInput, Button
 } from 'react-native';
 
-import { AddKEYWORD} from "../../App";
-import { dataContext } from '../../App';
+// install
 import axios from "axios";
-import { BaseURL } from '../../App';
+
+// from App.js
+import { AddKEYWORD} from "../../App";
+import { dataContext, BaseURL } from '../../App';
 
 export default function KeywordsSelectPage({ keywords, token }) {
     const { dispatch, user } = useContext(dataContext);

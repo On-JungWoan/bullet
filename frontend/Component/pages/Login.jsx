@@ -1,31 +1,32 @@
+// basic
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {
     StyleSheet, Text, View, ActivityIndicator,
     TextInput, Pressable, ScrollView, Image
 } from 'react-native';
-import axios from 'axios';
+
+// install
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-import { AccessTOKEN } from '../../App';
-import { RefreshTOKEN } from '../../App';
-import { NAME } from '../../App';
+// from App.js
+import { AccessTOKEN , RefreshTOKEN, NAME } from '../../App';
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
 import { BaseURL } from '../../App';
 
+// component
 import BasicButton from '../components/Button';
 
 export default function Login() {
-    const { dispatch, dark } = useContext(dataContext);
+    const { dispatch } = useContext(dataContext);
     const navigation = useNavigation();
 
     const [login, setLogin] = useState(false);
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
     const [showPass, setShowPass] = useState(true);
     const [loading, setLoading] = useState(false); // true로 변경
 
@@ -33,7 +34,7 @@ export default function Login() {
     const [keywords, setKeywords] = useState([]);
 
 
-    // 초기 로그인 확인
+    // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
         console.log(" 초기 로그인 확인")
         AsyncStorage.getItem(AccessTOKEN)
@@ -90,6 +91,7 @@ export default function Login() {
         }
     }, []);
 
+    // login===true면 메인화면으로
     useEffect(() => {
         // console.log("user정보 dispatch");
 
@@ -101,7 +103,7 @@ export default function Login() {
             keywords: keywords,
         });
         if(login === true){
-            navigation.navigate('Home')
+            navigation.navigate('Main')
         }
     }, [login]);
 
@@ -138,13 +140,13 @@ export default function Login() {
                 :
                 <ScrollView style={{ ...styles.loginContainer }}>
                     <View style={{ ...styles.textContainer }}>
-                        <Text style={{ ...styles.mainText, color: dark === true ? "white" : "black" }}>로그인</Text>
+                        <Text style={{ ...styles.mainText, color: "black" }}>로그인</Text>
                     </View>
 
                     <View style={{
                         ...styles.inputTextContainer,
-                        color: dark === true ? "white" : "black",
-                        backgroundColor: dark === true ? "black" : "white",
+                        color:"black",
+                        backgroundColor:"white",
                     }}>
                         <TextInput
                             style={{ ...styles.inputText }} placeholder="이메일" autoCapitalize="none" placeholderTextColor="#888"
@@ -152,7 +154,7 @@ export default function Login() {
                             keyboardType="email-address" />
                         <TextInput
                             style={{ ...styles.inputText }} placeholder="비밀번호" autoCapitalize="none" placeholderTextColor="#888"
-                            keyboardType="number-pad" autoCorrect={false} secureTextEntry={!showPass ? false : true}
+                            autoCorrect={false} secureTextEntry={!showPass ? false : true}
                             value={password} onChangeText={(text) => setPassword(text)}
                             textContentType="password" />
 
@@ -164,10 +166,10 @@ export default function Login() {
                     </View>
 
                     <View style={{ ...styles.buttonContainer }}>
-                        <BasicButton text="로그인" bg={dark === true ? "white" : "black"} marginBottom={20}
-                            textColor={dark === true ? "black" : "white"} onPressEvent={checkLogin} />
-                        <BasicButton text="회원가입" bg={dark === true ? "black" : "white"}
-                            textColor={dark === true ? "white" : "black"} onPressEvent={() => { navigation.navigate('SignUp') }} />
+                        <BasicButton text="로그인" bg="black" marginBottom={20}
+                            textColor="white" onPressEvent={checkLogin} />
+                        <BasicButton text="회원가입" bg="white"
+                            textColor="black" onPressEvent={() => { navigation.navigate('SignUp') }} />
                     </View>
 
                     <View style={{ ...styles.findContainer }}>
