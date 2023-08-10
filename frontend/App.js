@@ -1,5 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-
+// 로컬 저장 상수
 export const AccessTOKEN = 'AccessTOKEN'
 export const RefreshTOKEN = 'RefreshTOKEN'
 export const NAME = 'NAME'
@@ -9,7 +8,6 @@ export const NAME = 'NAME'
 // state
 const initState = {
   login: false, // true면 로그인
-  dark: false, // true먄 다크모드
   user: {
     "name": "",
     "keywords": [], // 키워드
@@ -19,6 +17,7 @@ const initState = {
 
 export const BaseURL = 'http://192.168.0.9:8000'
 
+// dispatch 상수
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"
 export const AddKEYWORD = "ADDKEYWORD"
@@ -69,44 +68,48 @@ const reducer = (state, action) => {
 
 }
 
+// Context API
 export const dataContext = createContext({
   login: false,
   dispatch: () => { },
 });
 /////////////////////////////////////////////////
 
+// basic
+// import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View, StatusBar} from 'react-native';
 import React, {
   useMemo, createContext, useReducer
 } from 'react';
 
-import { StyleSheet, View } from 'react-native';
+// navigator
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // pages
 import Login from "./Component/pages/Login.jsx"
 import MyPage from "./Component/pages/MyPage.jsx"
 import SignUp from './Component/pages/SignUp.jsx'
-import Home from "./Component/pages/Home.jsx";
+import Register from "./Component/pages/Register.jsx";
+import Main from "./Component/pages/Main.jsx";
+import Alarm from "./Component/pages/Alarm.jsx";
 
 // component
 import MainHeader from "./Component/components/MainHeader.jsx"
-
-// navigator
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
   const [state, dispatch] = useReducer(reducer, initState)
-  const { login, user, dark } = state;
+  const { login, user } = state;
 
-  const value = useMemo(() => ({ login, dispatch, user, dark }), [login, user]) //로그인, dispatch, user 정보를 전송
+  const value = useMemo(() => ({ login, dispatch, user }), [login, user]) //로그인, dispatch, user 정보를 전송
 
   return (
     <NavigationContainer>
       <dataContext.Provider value={value} style={{ flex: 1 }}>
-        <StatusBar style="auto" />
+        <StatusBar backgroundColor="black" color='white'/>
         <View style={{ flex: 1 }}>
           <MainHeader />
         </View>
@@ -116,7 +119,9 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
             <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+            <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
+            <Stack.Screen name="Alarm" component={Alarm} options={{ headerShown: false }} />
           </Stack.Navigator>
 
         </View>

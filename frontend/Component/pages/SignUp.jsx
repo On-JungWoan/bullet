@@ -1,22 +1,23 @@
+// basic
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-
 import {
     StyleSheet, Text, View, TextInput, Pressable, ScrollView
 } from 'react-native';
+
+// install
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { FontAwesome } from '@expo/vector-icons';
 
+// from App.js
 import { BaseURL } from '../../App';
 import { dataContext } from '../../App';
 
+// component
 import BasicButton from '../components/Button';
 
 export default function SignUp() {
-    const { dark } = useContext(dataContext);
-
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [checkPassword, setCheckPassword] = useState('');
@@ -157,8 +158,8 @@ export default function SignUp() {
                         value={name} onChangeText={(text) => setName(text)} autoCorrect={false} />
                 </View>
                 <View style={{ ...styles.buttonContainer }}>
-                    <BasicButton text="제출하기" bg={dark === true ? "white" : "black"} marginBottom={0}
-                        textColor={dark === true ? "black" : "white"} onPressEvent={checkSignUp} />
+                    <BasicButton text="제출하기" bg="black" marginBottom={0}
+                        textColor="white" onPressEvent={checkSignUp} />
                 </View>
             </ScrollView>
         </View>

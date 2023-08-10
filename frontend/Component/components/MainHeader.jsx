@@ -1,32 +1,34 @@
-import React, { useContext, useState, memo } from "react";
+// basic
+import React, { useContext} from "react";
 import {
     Text, View, Image, Pressable, StyleSheet
 } from 'react-native';
 
-import { FontAwesome } from '@expo/vector-icons';
-import { dataContext } from "../../App";
-
+// install
 import { useNavigation } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
+
+// from App.js
+import { dataContext } from "../../App";
 
 const MainHeader = () => {
     const navigation = useNavigation();
-
     const { login } = useContext(dataContext);
-    console.log("login",login)
+
     return (
         <View style={{ flex: 1, width: '100%' }}>
             <View style={{ ...styles.container }}>
 
                 {login ?
-                    <Pressable style={{...styles.image}} onPress={() => { navigation.navigate("Login"); }}>
-                        <Image style={{width:'100%', height: '100%'}} source={require("../../assets/LOGO.png")} />
+                    <Pressable style={{...styles.image}} onPress={() => { navigation.navigate("Main"); }}>
+                        <Image style={{width:'100%', height: '100%', resizeMode : "stretch"}} source={require("../../assets/LOGO.png")} />
                     </Pressable>
                     : <Image style={{...styles.image}} source={require("../../assets/LOGO.png")} />
                 }
                 {login === true ?
                     <Pressable style={{ ...styles.myPageImage }}
                         onPress={() => { navigation.navigate("MyPage"); }}>
-                        <FontAwesome name="user-o" size={24} color="black" />
+                        <FontAwesome name="user-o" size={24} color="white" />
                     </Pressable>
                     : null
                 }
@@ -40,13 +42,15 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         flexDirection: 'row',
-        marginTop: 20,
         borderBottomWidth: 1,
+
+        backgroundColor : "black"
     },
     image: {
         width:'20%',
-        height: '60%',
+        height: '50%',
         marginLeft : '5%',
+        resizeMode : "stretch"
     },
     myPageImage:{
         position: 'absolute',
