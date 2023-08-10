@@ -118,7 +118,7 @@ class UserSiteViewSet(viewsets.ViewSet):
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "확인되지않은 유저입니다."},status=status.HTTP_401_UNAUTHORIZED)
 
     def findAll(self, request):
             serializer = self.serializer(self.queryset, many=True)
@@ -135,6 +135,20 @@ class UserSiteViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)
+
+    def delete(self, request):
+        user_and_token = self.jwt_auth.authenticate(request)
+        if user_and_token is not None:
+            user, _ = user_and_token
+            serializer = serializers.SaveUserSiteSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.delete()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message": "인증되지않은 유저입니다."},status=status.HTTP_401_UNAUTHORIZED)
+    
 
 class UserKeywordViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
@@ -170,6 +184,20 @@ class UserKeywordViewSet(viewsets.ViewSet):
             user, _ = user_and_token
             serializer = serializers.GetUserKeywordSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message":"인증되지 않은 유저입니다."}
+                        ,status=status.HTTP_401_UNAUTHORIZED)
+        
+    def delete(self, request):
+        user_and_token = self.jwt_auth.authenticate(request)
+        if user_and_token is not None:
+            user, _ = user_and_token
+            serializer = serializers.SaveUserKeywordSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.delete(validated_data=serializer.validated_data,user=user)
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)

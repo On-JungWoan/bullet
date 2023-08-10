@@ -17,3 +17,4 @@ apscheduler
 drf-api-logger
 django-environ
 beautifulsoup4
+Pillow
