@@ -64,8 +64,8 @@ INSTALLED_APPS = [
     # 'drf_api_logger',
 
     #apps
-    'service',
     'user',
+    'service',
     'post',
 
     #토큰
@@ -116,6 +116,9 @@ DATABASES = {
         'PASSWORD': get_secret("DATABASE_PASSWORD"),                  
         'HOST': get_secret("DATABASE_HOST" ),                    
         'PORT': get_secret("DATABASE_PORT"),                          
+        'OPTIONS': {
+        'init_command' : "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 # DATABASES = {
@@ -183,7 +186,7 @@ REST_FRAMEWORK = {
 #발급받은 토큰은 7일 후에 파괴된다. 토큰을 갱신할 경우 28일 내에 새로운 토큰으로 교체 가능
 # 추가적인 JWT_AUTH 설정
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,

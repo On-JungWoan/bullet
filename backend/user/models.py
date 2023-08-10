@@ -35,12 +35,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     #선언해주면 superuser와 admin이 관리할 수 있음
     objects = UserManager()
 
-    #user의 테이블 속성들 정의
+    #user 기본정보
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=200, unique=True)
     username = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     image = models.ImageField(upload_to='image', null=True)
+    #키워드, site개수
     keywordCount = models.IntegerField(default=0)
     siteCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

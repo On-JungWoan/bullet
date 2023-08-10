@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import User, UserKeyword, UserSite, UserPost
 from post.models import Post
 from post.serializers import PostSerializer
-from service.models import Keyword, Site
+from service.models import Keyword, Site, Category
 from service.serializers import KeywordSerializer, SiteSerializer, CategorySerializer
 import json
 class UserModelSerializer(serializers.ModelSerializer):
@@ -25,20 +25,25 @@ class UserFullDataSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
     class Meta:
         model = User
-        fields = ('id','email','username','keywordCount','keywords','sites', 'image')
+        fields = ('id','email','username','image','keywordCount','keywords','sites','siteCount')
 
     def get_keywords(self, user):
         return list(user.keywords.values_list('name',flat=True))
     def get_sites(self, user):
-        return list(user.sites.values_list('name',flat=True))
-    
-    def update(self, validated_data):
-        user = User.objects.get(id=validated_data['id'])
-        user.username = validated_data['username']
-        user.email = validated_data['email']
-        user.image = validated_data['image']
-        user.save()
-        return user
+        sites_by_category = []
+        categories = Category.objects.all()
+        print(categories)
+        for category in categories:
+            sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+            sites_by_category.append({category.name: list(sites_in_category)})
+        return sites_by_category
+    # def update(self, validated_data):
+    #     user = User.objects.get(id=validated_data['id'])
+    #     user.username = validated_data['username']
+    #     user.email = validated_data['email']
+    #     user.image = validated_data['image']
+    #     user.save()
+    #     return user
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -112,6 +117,8 @@ class SaveUserPostSerializer(serializers.Serializer):
         user_post = [UserPost.objects.get_or_create(user=user, post=post) for post in posts_create]
         # YourModel 객체들을 일괄 저장
         return user_post
+        
+
 
 #뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
 class SaveUserKeywordSerializer(serializers.Serializer):
@@ -125,7 +132,11 @@ class SaveUserKeywordSerializer(serializers.Serializer):
         user_keyword = [UserKeyword.objects.get_or_create(user=user, keyword=keyword) for keyword in keywords_create]
         # YourModel 객체들을 일괄 저장
         return user_keyword
-
+    
+    def delete(self, validated_data, user):
+        keywords = validated_data['keywords']
+        UserKeyword.objects.filter(user=user, keyword=keywords).delete()
+        
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class SaveUserSiteSerializer(serializers.Serializer):
     sites = serializers.ListField(child=serializers.CharField())
@@ -135,3 +146,7 @@ class SaveUserSiteSerializer(serializers.Serializer):
         sites_create = [Site.objects.get_or_create(name=site)[0] for site in sites]
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
         return user_site
+    
+    def delete(self, validated_data, user):
+        sites = validated_data['sites']
+        UserSite.objects.filter(user=user, site=sites).delete()
