@@ -6,7 +6,6 @@ from service.models import Keyword
 @receiver(post_save, sender=User.keywords.through)
 @receiver(post_delete, sender=User.keywords.through)
 def update_keyword_count(sender, instance, **kwargs):
-    print("삭제 시그널 작동")
     # 유저별 소유한 keyword 개수를 업데이트하는 시그널 핸들러
     user = User.objects.get(id=instance.user_id)
     user.keywordCount = user.keywords.count()

@@ -1,101 +1,43 @@
+// basic
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {
     StyleSheet, Text, View, ActivityIndicator,
-    TextInput, Pressable, Button,
+    TextInput, Pressable, ScrollView, Image
 } from 'react-native';
-import axios from 'axios';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-import { TOKEN } from '../../App';
-import { NAME } from '../../App';
+// install
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+
+// from App.js
+import { AccessTOKEN , RefreshTOKEN, NAME } from '../../App';
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
 import { BaseURL } from '../../App';
 
-export default function LoginPage({ navigation }) {
-    const [login, setLogin] = useState(false);
-    const [signUp, setSignUp] = useState(false);
+// component
+import BasicButton from '../components/Button';
 
+export default function Login() {
+    const { dispatch } = useContext(dataContext);
+    const navigation = useNavigation();
+
+    const [login, setLogin] = useState(false);
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
+    const [showPass, setShowPass] = useState(true);
+    const [loading, setLoading] = useState(false); // true로 변경
+
     const [sites, setSites] = useState([]);
     const [keywords, setKeywords] = useState([]);
 
-    const [showpass, setshowpass] = useState(true);
-    const [loading, setLoading] = useState(true);
 
-    const { dispatch } = useContext(dataContext);
-
-    let token;
-
-    const swap = useCallback(() => {
-        setId('');
-        setPassword('');
-        setName('');
-        if (signUp === false) {
-            setSignUp(true);
-        } else if (signUp === true) {
-            setSignUp(false);
-        }
-    }, [signUp]);
-
-    // 자동 로그인시 등록 키워드 가져오기
-    const getKeyword = useCallback(async () => {
-        console.log("getKeyword");
-        try {
-            await axios.get(`${BaseURL}/user/keyword/`, {
-                headers: {
-                    Authorization: token,
-                }
-            })
-                .then((response) => {
-                    console.log("getKeyword", response.data);
-                    setKeywords(response.data)
-                })
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }, [keywords]);
-
-    // 자동 로그인시 등록 사이트 가져오기
-    const getSite = useCallback(async () => {
-        console.log("getSite");
-        try {
-            await axios.get(`${BaseURL}/user/site/`, {
-                headers: {
-                    Authorization: token,
-                }
-            })
-                .then((response) => {
-                    console.log("getSites", response.data);
-                    setSites(response.data);
-                })
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }, [sites]);
-
-    useEffect(() => {
-        console.log("user정보 dispatch");
-
-        dispatch({
-            type: LOGIN,
-            login: login,
-            sites: sites,
-            name: AsyncStorage.getItem(NAME),
-            keywords: keywords,
-        });
-    }, [login,sites,keywords]);
-
-    // 초기 로그인 확인
+    // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
         console.log(" 초기 로그인 확인")
-        AsyncStorage.getItem(TOKEN)
+        AsyncStorage.getItem(AccessTOKEN)
             .then(value => {
                 if (value) { // 자동 로그인
                     token = value;
@@ -111,41 +53,62 @@ export default function LoginPage({ navigation }) {
             })
     }, [])
 
-    // 회원가입
-    const checkSignUp = async () => {
-        console.log("회원가입")
-        if (id === "" || password === "") {
-            alert('아이디와 비밀번호를 입력해 주세요');
-        } else {
-            const data = {
-                email: id,
-                password: password,
-                username: name
-            }
-            try {
-                await axios
-                    .post(`${BaseURL}/user/signup/`, data)
-                    .then(function (response) {
-                        console.log("checkSignUp", response.data);
-                        setPassword("");
-                        alert("회원가입을 축하드립니다.")
-                        setSignUp(false);
-                    })
-                    .catch(function (error) {
-                        alert("에러발생")
-                        console.log(error);
-                        throw error;
-                    });
-            } catch (error) {
-                console.log(error);
-                throw error;
-            }
+    // 자동 로그인시 등록 키워드 가져오기
+    const getKeyword = useCallback(async () => {
+        // console.log("getKeyword");
+        try {
+            await axios.get(`${BaseURL}/user/keyword/`, {
+                headers: {
+                    Authorization: token,
+                }
+            })
+                .then((response) => {
+                    console.log("getKeyword", response.data);
+                    setKeywords(response.data)
+                })
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-    }
+    }, []);
+
+    // 자동 로그인시 등록 사이트 가져오기
+    const getSite = useCallback(async () => {
+        // console.log("getSite");
+        try {
+            await axios.get(`${BaseURL}/user/site/`, {
+                headers: {
+                    Authorization: token,
+                }
+            })
+                .then((response) => {
+                    console.log("getSites", response.data);
+                    setSites(response.data);
+                })
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }, []);
+
+    // login===true면 메인화면으로
+    useEffect(() => {
+        // console.log("user정보 dispatch");
+
+        dispatch({
+            type: LOGIN,
+            login :login,
+            sites: sites,
+            name: AsyncStorage.getItem(NAME),
+            keywords: keywords,
+        });
+        if(login === true){
+            navigation.navigate('Main')
+        }
+    }, [login]);
 
     // 로그인
     const checkLogin = async () => {
-        console.log("로그인")
         const data = {
             email: id,
             password: password
@@ -153,92 +116,85 @@ export default function LoginPage({ navigation }) {
         await axios
             .post(`${BaseURL}/user/login/`, data)
             .then(function (response) {
-<<<<<<< HEAD
-                console.log("checkLogin", response.data)
-                AsyncStorage.setItem(TOKEN, response.headers.authorization); // 자동 로그인 token 저장
-                AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에도 저장
+                // console.log("checkLogin", response.headers["refresh-token"])
+                AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
+                AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
+                AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
                 setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : []) // 저장한 사이트
                 setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
-=======
-                console.log("data",data)
-                console.log(response)
-                AsyncStorage.setItem(TOKEN, JSON.stringify(response.headers.authorization));
-                setName(response.data.username);
-                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : [])
-                setKeywords(response.data.keywords?.keywords !== 0 ? [...response.data.keywords] : [])
->>>>>>> df4dd5122fd75cdb1e8e9428e497f4835a71b92e
+
                 setLogin(true);
             })
             .catch(function (error) {
+                alert("아이디 또는 비밀번호가 틀렸습니다.");
                 console.log(error);
             });
     }
 
     return (
-        <View>
-            {loading === true ?
+        <View style={{ ...styles.container }}>
+            {loading ?
                 <View style={{ ...styles.day, alignItems: 'center' }}>
                     <ActivityIndicator color="black" size="large" style={{ marginTop: 10 }} />
-                </View> :
-                <View style={{ ...styles.login }}>
-                    <Text style={{ ...styles.loginText }}>총 알</Text>
-
-                    <View style={{ alignItems: 'center' }}>
-                        <TextInput
-                            style={{ ...styles.loginInput }} placeholder="아이디" autoCapitalize="none"
-                            value={id} onChangeText={(text) => setId(text)} autoCorrect={false} />
-                        <TextInput
-                            style={{ ...styles.loginInput }} placeholder="비밀번호" autoCapitalize="none" keyboardType="number-pad"
-                            autoCorrect={false} secureTextEntry={!showpass ? false : true} value={password}
-                            onChangeText={(text) => setPassword(text)}
-                            textContentType="password" />
-
-                        <BouncyCheckbox
-                            size={20} fillColor="black" unfillColor="#FFFFFF"
-                            text="비밀번호 보기" iconStyle={{ borderColor: 'red', marginTop: 5, color: 'black' }}
-                            onPress={() => setshowpass(!showpass)}
-                        />
-
-                        {signUp ? (
-                            <TextInput
-                                style={{ ...styles.loginInput, marginBottom: 20 }}
-                                autoCapitalize="none" autoCorrect={false}
-                                value={name} onChangeText={(text) => setName(text)}
-                                placeholder="이름">
-                            </TextInput>
-                        ) : null}
-
+                </View>
+                :
+                <ScrollView style={{ ...styles.loginContainer }}>
+                    <View style={{ ...styles.textContainer }}>
+                        <Text style={{ ...styles.mainText, color: "black" }}>로그인</Text>
                     </View>
 
-                    {!signUp ? (
-                        <View>
-                            <View style={{ marginTop: 10 }}>
-                                <Button title="로그인" touchSoundDisabled
-                                    onPress={checkLogin}
-                                />
-                            </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Button title="회원가입" touchSoundDisabled
-                                    onPress={swap}
-                                />
-                            </View>
-                        </View>
-                    ) :
-                        <View>
-                            <View>
-                                <Button title="제출하기" touchSoundDisabled
-                                    onPress={checkSignUp}
-                                />
-                            </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Button
-                                    title="뒤로가기" touchSoundDisabled
-                                    onPress={swap}
-                                />
-                            </View>
-                        </View>
-                    }
-                </View>
+                    <View style={{
+                        ...styles.inputTextContainer,
+                        color:"black",
+                        backgroundColor:"white",
+                    }}>
+                        <TextInput
+                            style={{ ...styles.inputText }} placeholder="이메일" autoCapitalize="none" placeholderTextColor="#888"
+                            value={id} onChangeText={(text) => setId(text)} autoCorrect={false}
+                            keyboardType="email-address" />
+                        <TextInput
+                            style={{ ...styles.inputText }} placeholder="비밀번호" autoCapitalize="none" placeholderTextColor="#888"
+                            autoCorrect={false} secureTextEntry={!showPass ? false : true}
+                            value={password} onChangeText={(text) => setPassword(text)}
+                            textContentType="password" />
+
+                        <BouncyCheckbox style={{ paddingLeft: 10 }} textStyle={{ textDecorationLine: "none" }}
+                            size={20} fillColor="black" unfillColor="#FFFFFF"
+                            text="비밀번호 보기" iconStyle={{ borderColor: 'red', marginTop: 5, color: 'black' }}
+                            onPress={() => setShowPass(!showPass)}
+                        />
+                    </View>
+
+                    <View style={{ ...styles.buttonContainer }}>
+                        <BasicButton text="로그인" bg="black" marginBottom={20}
+                            textColor="white" onPressEvent={checkLogin} />
+                        <BasicButton text="회원가입" bg="white"
+                            textColor="black" onPressEvent={() => { navigation.navigate('SignUp') }} />
+                    </View>
+
+                    <View style={{ ...styles.findContainer }}>
+                        <Pressable>
+                            <Text style={{ fontSize: 10, color: '#888' }}>
+                                비밀번호 찾기
+                            </Text>
+                        </Pressable>
+                    </View>
+
+                    <View style={{ ...styles.socialLoginContainer }}>
+                        <Pressable style={{ ...styles.socialLogin}}>
+                            <Image style={{...styles.img}} source={require('../../assets/social/kakao.png')} />
+                            <Text>카카오</Text>
+                        </Pressable>
+                        <Pressable style={{ ...styles.socialLogin}}>
+                            <Image style={{...styles.img}} source={require('../../assets/social/naver.png')} />
+                            <Text>네이버</Text>
+                        </Pressable>
+                        <Pressable style={{ ...styles.socialLogin}}>
+                            <Image style={{...styles.img}} source={require('../../assets/social/google.png')} />
+                            <Text>구글</Text>
+                        </Pressable>
+                    </View>
+                </ScrollView>
             }
         </View>
 
@@ -246,35 +202,68 @@ export default function LoginPage({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    login: {
-        borderWidth: 2,
-        borderRadius: 5,
-        borderStyle: 'solid',
-        backgroundColor: '#0081f1',
+    container: {
+        height: '100%',
+        justifyContent: "center",
+        alignItems: 'center',
 
+        backgroundColor: "white",
+        flex: 1,
+    },
+    loginContainer: {
         width: '70%',
+        height: '70%',
+
+        marginTop: '30%',
     },
-    loginText: {
-        color: "white",
+    textContainer: {
+        flex: 0.5,
+        width: '100%',
 
-        marginTop: 20,
-
-        textAlign: 'center',
+        justifyContent: "center",
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    mainText: {
         fontSize: 30,
-        fontWeight: 700,
     },
-    loginInput: {
-        color: "white",
-
-        width: '90%',
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-
-        borderWidth: 2,
-        borderRadius: 5,
-        borderStyle: 'solid',
-
-        marginTop: 20,
-        fontSize: 18,
+    inputTextContainer: {
+        flex: 1,
+        width: '100%',
+        marginBottom: 20,
     },
+    inputText: {
+        width: '100%',
+        borderBottomWidth: 1,
+        borderColor: '#888',
+
+        marginBottom: 20,
+        fontSize: 20,
+        paddingHorizontal: 10,
+
+        color: '#888'
+    },
+    findContainer: {
+        flex: 0.2,
+        alignItems: "center",
+        justifyContent: 'center',
+        marginBottom: 20,
+    },
+    buttonContainer: {
+        flex: 1,
+        width: '100%',
+        marginBottom: 20,
+    },
+    socialLoginContainer: {
+        flex: 0.8,
+        width: '100%',
+        flexDirection: "row"
+    },
+    socialLogin: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: 'center'
+    },
+    img:{
+    }
 });

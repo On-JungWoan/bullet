@@ -1,30 +1,65 @@
-import React, { useEffect, useState } from "react";
-
+// basic
+import React, { useContext } from "react";
 import {
-    StyleSheet,
-    Text,
-    View,
+    Text, View, Pressable, StyleSheet, Image
 } from 'react-native';
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// install
+import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
-const Stack = createNativeStackNavigator();
+// from App.js
+import { dataContext } from '../../App';
 
-import MainHeader from "../components/MainHeader";
-import BottomTabNavigator from "../components/BottomTabNavigator";
+export default function Main() {
+    const { dispatch, dark } = useContext(dataContext);
+    const navigation = useNavigation();
 
-export default function MainPage() {
     return (
-        <View style={{ flex: 1, width: '100%' }}>
-            <MainHeader />
-            <View style={{ flex: 9, width: '100%' }}>
-                <NavigationContainer>
-                    <Stack.Navigator>
-                        <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-                    </Stack.Navigator>
-                </NavigationContainer>
+        <View style={{ ...styles.container }}>
+            <View style={{ ...styles.mainContainer }}>
+                <Pressable style={{ ...styles.pressContainer, backgroundColor: "black" }} onPress={() => { navigation.navigate("Register");}}>
+                    <Image style={{width:"40%", height:"50%", resizeMode : "stretch"}} source={require("../../assets/main/register.png")}/>
+                    <Text style={{ ...styles.text, color:"white"}}>
+                        등록하기
+                    </Text>
+                </Pressable>
+                <Pressable style={{ ...styles.pressContainer, backgroundColor:"black" }} onPress={() => { navigation.navigate("Alarm");}}>
+                <Image style={{width:"30%", height:"40%", resizeMode : "stretch"}} source={require("../../assets/main/alarm.png")}/>
+                    <Text  style={{ ...styles.text, color:"white" }}>
+                        알림 확인하기
+                    </Text>
+                </Pressable>
             </View>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        height: '100%',
+        justifyContent: "center",
+        alignItems: 'center',
+
+        backgroundColor: "white",
+        flex: 1,
+    },
+    mainContainer: {
+        width: '70%',
+        height: '60%',
+    },
+    pressContainer: {
+        flex: 1,
+        marginVertical: 10,
+
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+
+        borderRadius: 20,
+    },
+    text: {
+        fontSize: 20,
+        marginTop: 20,
+    }
+})

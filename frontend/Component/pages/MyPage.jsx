@@ -2,15 +2,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import React, { useEffect, useState, memo, useContext, useRef } from "react";
 import {
-    Text, Button,
-    View,
+    Text, Button, View,
 } from 'react-native';
-import { TOKEN, NAME } from '../../App';
+import { NAME } from '../../App';
 
+import { useNavigation } from '@react-navigation/native';
 import { dataContext } from '../../App';
 import { LOGOUT } from "../../App";
 
-const MyPage = memo(()=>{
+const MyPage = ()=>{
+
+    const navigation = useNavigation();
 
     const { dispatch,user } = useContext(dataContext);
     const [name,setName]=useState('');
@@ -28,11 +30,12 @@ const MyPage = memo(()=>{
                     type : LOGOUT,
                     login : false,
                 });
+                navigation.navigate("Login")
                 AsyncStorage.clear();
             }} />
 
         </View>
     )
-})
+}
 
 export default MyPage;

@@ -11,7 +11,6 @@ class UserManager(BaseUserManager):
             username = username,
             email = self.normalize_email(email),
             is_superuser = 0,
-            is_staff = 0,
             is_active = 1,
         )
         user.set_password(password)
@@ -27,7 +26,6 @@ class UserManager(BaseUserManager):
             email = email
         )
         user.is_superuser = 1
-        user.is_staff = 1
         user.is_admin = 1
         user.save(using=self._db)
         return user
@@ -37,11 +35,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     #선언해주면 superuser와 admin이 관리할 수 있음
     objects = UserManager()
 
-    #user의 테이블 속성들 정의
+    #user 기본정보
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=200, unique=True)
     username = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='image', null=True)
+    #키워드, site개수
     keywordCount = models.IntegerField(default=0)
     siteCount = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -49,7 +49,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     # User 모델의 필수 field
     is_active = models.BooleanField(default=True)    
     is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
     #다대다 관계는 테이블이 추가되는데 자동으로 생성된다. 하지만 중간 테이블을 직접 만들면 추가적인 정보를 저장할 수 있다.
     keywords = models.ManyToManyField(Keyword, through='UserKeyword')
     sites = models.ManyToManyField(Site, through='UserSite')

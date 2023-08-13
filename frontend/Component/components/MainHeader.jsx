@@ -1,35 +1,62 @@
-import React, { useContext, useState, memo } from "react";
+// basic
+import React, { useContext} from "react";
 import {
-    Text,
-    View,
-    Pressable
+    Text, View, Image, Pressable, StyleSheet
 } from 'react-native';
 
+// install
+import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 
+// from App.js
 import { dataContext } from "../../App";
-import { TEST } from "../../App";
 
-const MainHeader = memo(() => {
-
-    const { dispatch } = useContext(dataContext);
+const MainHeader = () => {
+    const navigation = useNavigation();
+    const { login } = useContext(dataContext);
 
     return (
         <View style={{ flex: 1, width: '100%' }}>
-            <View style={{ flex: 1, borderBottomWidth: 1, alignItems: 'center', marginTop:20, flexDirection:'row' }}>
-                <Text style={{
-                    textAlign: 'left', fontSize: 30, fontWeight: 700,
-                    marginHorizontal: 20
-                }}>총알
-                </Text>
-                <Pressable style={{position:'absolute', right:20, marginTop:5}} onPress={()=>{
-                    dispatch({type:TEST});
-                }}>
-                    <FontAwesome name="bars" size={35} color="black" />
-                </Pressable>
+            <View style={{ ...styles.container }}>
+
+                {login ?
+                    <Pressable style={{...styles.image}} onPress={() => { navigation.navigate("Main"); }}>
+                        <Image style={{width:'100%', height: '100%', resizeMode : "stretch"}} source={require("../../assets/LOGO.png")} />
+                    </Pressable>
+                    : <Image style={{...styles.image}} source={require("../../assets/LOGO.png")} />
+                }
+                {login === true ?
+                    <Pressable style={{ ...styles.myPageImage }}
+                        onPress={() => { navigation.navigate("MyPage"); }}>
+                        <FontAwesome name="user-o" size={24} color="white" />
+                    </Pressable>
+                    : null
+                }
             </View>
         </View>
     )
-})
+}
+
+const styles = StyleSheet.create({
+    container:{
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+
+        backgroundColor : "black"
+    },
+    image: {
+        width:'20%',
+        height: '50%',
+        marginLeft : '5%',
+        resizeMode : "stretch"
+    },
+    myPageImage:{
+        position: 'absolute',
+        right: '10%',
+        marginTop: 5 
+    }
+});
 
 export default MainHeader;

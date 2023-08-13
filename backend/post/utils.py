@@ -1,31 +1,17 @@
-import json
+import sys
 import os
-from .serializers import PostSerializer
+from django.core.management.base import BaseCommand
 from apscheduler.schedulers.background import BackgroundScheduler
-#새로운 뉴스를 끌고 오는 함수
-# def savePost():
+from config.settings import BASE_DIR
+# class Command(BaseCommand):
+#     def handle(self, *args, **options):
 #         # 상위의 상위의 경로 가져오기
-#         parent_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#         parent_path = BASE_DIR.parent
 #         # 상위 디렉토리에서 한 단계 아래 디렉토리의 경로 만들기
-#         announce_path = os.path.join(parent_path,'result\\announce_jnu.json')
-#         #raw string으로 표현
-#         path_string = r'{}'.format(announce_path)
-
-#         with open(path_string) as f:
-#             jsonData = json.load(f)
-
-#         #전달받은 json객체를 폼에 대입
-#         form = PostCreateForm()
-#         form.title = jsonData['title']
-#         form.content = "요약데이터가 들어갈 공간입니다."
-#         form.url = jsonData['href']
-#         form.date = jsonData['date']
+#         sys.path(0, os.path.join(parent_path, 'component'))
+#         import crawling.main
         
-#         print(form)
-#         #외래키를 위한 site, keyword 데이터가 없어 지금은 유효하지 않음
-#         if form.is_valid():
-#             print("데이터가 유효합니다.")
-#             form.save(commit=False)
+
 
 # #background에서 주기적으로 실행되는 함수
 # def cronMethod(method, term=1):
