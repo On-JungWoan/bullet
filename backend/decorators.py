@@ -26,6 +26,10 @@ def dataIO(func):
         cursor.execute(select_query)
         # 결과 가져오기
         data = cursor.fetchall()
+
+        # test용 하드코딩
+        data = [('jnu', '아이디어', 5)]
+
         print(data)
         # 인자값 전달
         print(func.__name__, 'start')
@@ -37,21 +41,23 @@ def dataIO(func):
 #           ("Site C", "Keyword C", ...)
 #       ]
         output = func(data)
-        title = list(output.keys())
-        data_to_insert = tuple(
-           title + [val for val in output[title[0]].values()]
-        )
+        title = tuple(output.keys())
+        data_to_insert = [
+            title + tuple(val for val in output[title[0]].values())
+        ]
         # output 예시
         #
         # ('[모집공고]\xa02023 LINC 3.0 ... 공고', '「2023 LINC 3.0 혁신기술연... 지원하고자 한다.', 'https://www.jnu.ac.k...&key=57254', 'jnu', ['공고'], '2023-08-04')
         print('Input 작업시작----------------------')
         # INSERT 쿼리 작성
-        insert_query = "INSERT INTO post_post (title, content, url, site, keyword, date) VALUES (%s, %s, %s, %s, %s, %s)"
+        insert_query = "INSERT INTO post_post (title, content, url, date, created_at, keyword, site) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         # 여러 개의 데이터 INSERT
         cursor.executemany(insert_query, data_to_insert)
-        # 변경 내용을 커밋
         conn.commit()
-        # 연결 닫기
-        conn.close()
+
+        cursor.execute("SELECT * FROM post_post")
+        res = cursor.fetchall()
+
+        cursor.close()    
 
     return wrapper

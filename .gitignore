@@ -47,3 +47,6 @@ scripts/
 *.ttf
 *.jpg
 *.pdf
+
+# res
+*.json

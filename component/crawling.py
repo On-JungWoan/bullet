@@ -17,6 +17,7 @@ from backend.decorators import dataIO
 from arguments import get_args_parser
 from utils import pat_post_process, load_chrome_driver, prepare
 
+
 def crawling(args, obj,
         driver:webdriver, tree:html, page_num:int, res:dict
     ) -> Tuple[int, bool, dict]:
@@ -60,14 +61,16 @@ def crawling(args, obj,
                     else : 
                         print(response.status_code)
                     # 문서 요약하기
+                    print('==== 요약 중 ====')
                     sum_res = summarize(contents)
 
                 res[title] = {
                     'content':sum_res, 
                     'url':title_href,
-                    'site':args.univ_name,
-                    'keyword':args.keyword,
                     'date':date.strftime(obj.date_format),
+                    'created_at':date.strftime(obj.date_format),
+                    'keyword':args.keyword[0],
+                    'site':args.univ_name,
                 }
             idx += 1
         except:
@@ -81,8 +84,8 @@ def crawling(args, obj,
             return page_num + 1, False, res
 
 
-@dataIO
-def main(args)->str:
+def get_result(args):
+    print(args.name, args.keyword, args.period)    
     obj = prepare(args)
 
     # get announcement page
@@ -113,11 +116,25 @@ def main(args)->str:
         return None
 
 
-if __name__ == '__main__':
+@dataIO
+def main(info_list:list=None)->str:
     parser = argparse.ArgumentParser('pipeline script', parents=[get_args_parser()])
     args = parser.parse_args()
 
     if not os.path.isdir(args.output_dir):
-        os.mkdir(args.output_dir)
+        os.mkdir(args.output_dir)    
 
-    main(args)
+    if info_list is not None:
+        for info in info_list:
+            args.name, args.keyword, args.period = info
+
+            if not isinstance(args.keyword, list):
+                args.keyword = [args.keyword]
+
+            return get_result(args)
+    else:
+        return get_result(args)
+
+
+if __name__ == '__main__':
+    main()

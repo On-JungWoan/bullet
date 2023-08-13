@@ -5,7 +5,7 @@ Django
 djangorestframework
 drf-yasg
 inflection
-mysqlclient
+# mysqlclient
 packaging
 pytz
 PyYAML
@@ -17,4 +17,10 @@ apscheduler
 drf-api-logger
 django-environ
 beautifulsoup4
-Pillow
+mysql-connector-python
+
+# kobart
+git+https://github.com/SKT-AI/KoBART#egg=kobart
+pytorch
+transformers
+pytorch-lightning
