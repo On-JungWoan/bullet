@@ -11,32 +11,32 @@ import { useNavigation } from "@react-navigation/native";
 import { dataContext } from '../../App';
 
 // data
-import Show from "./Show";
+import Site from "./Site";
 import { newsData } from "../../news";
 import { universityData } from "../../university";
 
 const Register = memo(() => {
     const navigation = useNavigation();
 
-    const [show, setShow] = useState(false); // 사이트 등록 page로
+    const [site, setSite] = useState(false); // 사이트 등록 page로
     const [transData, setData] = useState([]); // 다음 페이지에 보여줄 데이터 (공지, 직업 등)
 
     // 뉴스 선택
     onPressNews = useCallback(() => {
         console.log("뉴스")
         setData(newsData);
-        setShow(true);
+        setSite(true);
     }, [])
     // 공지사항 선택
     onPressNotice = useCallback(() => {
         console.log("대학교")
         setData(universityData);
-        setShow(true);
+        setSite(true);
     }, [])
     // 직업 선택
     onPressJob = useCallback(() => {
         console.log("일")
-        setShow(true);
+        setSite(true);
     }, [])
     // 키워드 등록
     onPressKeyword = useCallback(() => {
@@ -47,9 +47,9 @@ const Register = memo(() => {
 
     return (
         <View style={{ ...styles.container }}>
-            {show ? // show가 true면 검색창을 보여줌
+            {site ? // show가 true면 검색창을 보여줌
                 <View style={{ flex: 1, width: '90%' }}>
-                    <Show transData={transData} setShow={setShow} />
+                    <Site transData={transData} setSite={setSite} />
                 </View>
                 : <View style={styles.moveCompo}>
                     <Pressable style={{ ...styles.press }} onPress={onPressNews}>

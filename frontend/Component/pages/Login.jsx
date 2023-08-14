@@ -37,6 +37,7 @@ export default function Login() {
     // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
         console.log(" 초기 로그인 확인")
+        // setLogin(true);
         AsyncStorage.getItem(AccessTOKEN)
             .then(value => {
                 if (value) { // 자동 로그인
@@ -116,7 +117,7 @@ export default function Login() {
         await axios
             .post(`${BaseURL}/user/login/`, data)
             .then(function (response) {
-                // console.log("checkLogin", response.headers["refresh-token"])
+                console.log("checkLogin", response.data)
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
                 AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
