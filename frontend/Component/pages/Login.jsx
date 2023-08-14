@@ -94,7 +94,7 @@ export default function Login() {
 
     // login===true면 메인화면으로
     useEffect(() => {
-        // console.log("user정보 dispatch");
+        console.log("user정보 dispatch");
 
         dispatch({
             type: LOGIN,
@@ -110,6 +110,7 @@ export default function Login() {
 
     // 로그인
     const checkLogin = async () => {
+        console.log("login");
         const data = {
             email: id,
             password: password

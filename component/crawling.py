@@ -131,9 +131,9 @@ def main(info_list:list=None)->str:
             if not isinstance(args.keyword, list):
                 args.keyword = [args.keyword]
 
-            return get_result(args)
+            yield get_result(args)
     else:
-        return get_result(args)
+        yield get_result(args)
 
 
 if __name__ == '__main__':

@@ -85,7 +85,7 @@ class GetUserPostSerializer(serializers.ModelSerializer):
         fields =  ['posts']
 
     def get_posts(self, user):
-        return str(user.posts.values_list('name',flat=True))
+        return str(user.posts.values_list('title',flat=True))
 
 #뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
 class GetUserKeywordSerializer(serializers.ModelSerializer):

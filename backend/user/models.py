@@ -26,6 +26,7 @@ class UserManager(BaseUserManager):
             email = email
         )
         user.is_superuser = 1
+        user.is_staff = 1
         user.is_admin = 1
         user.save(using=self._db)
         return user
@@ -49,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # User 모델의 필수 field
     is_active = models.BooleanField(default=True)    
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     #다대다 관계는 테이블이 추가되는데 자동으로 생성된다. 하지만 중간 테이블을 직접 만들면 추가적인 정보를 저장할 수 있다.
     keywords = models.ManyToManyField(Keyword, through='UserKeyword')
     sites = models.ManyToManyField(Site, through='UserSite')
