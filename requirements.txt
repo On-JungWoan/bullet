@@ -20,7 +20,7 @@ beautifulsoup4
 mysql-connector-python
 
 # kobart
-git+https://github.com/SKT-AI/KoBART#egg=kobart
-pytorch
+# git+https://github.com/SKT-AI/KoBART#egg=kobart
+torch
 transformers
 pytorch-lightning
