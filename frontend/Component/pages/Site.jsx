@@ -13,9 +13,9 @@ import { TOKEN, NAME } from '../../App';
 import { dataContext } from '../../App';
 
 // component
-import SitesSelectPage from './Sites';
+import SitesSelectPage from "../components/SiteContainer";
 
-export default function Show({ transData, setShow }) {
+export default function Site({ transData, setSite }) {
     const [searchValue, setSearchValue] = useState(''); // 검색 값
     const [token, setToken] = useState("");
 
@@ -47,7 +47,7 @@ export default function Show({ transData, setShow }) {
 
         <View style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
-                <Pressable style={styles.arrow} onPress={() => { setShow(false) }}>
+                <Pressable style={styles.arrow} onPress={() => { setSite(false) }}>
                     <FontAwesome name="arrow-circle-left" size={40} color="black" />
                 </Pressable>
             </View>

@@ -110,10 +110,10 @@ export default function App() {
     <NavigationContainer>
       <dataContext.Provider value={value} style={{ flex: 1 }}>
         <StatusBar backgroundColor="black" color='white'/>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex:1 }}>
           <MainHeader />
         </View>
-        <View style={{ flex: 9 }}>
+        <View style={{ flex:10 }}>
 
           <Stack.Navigator initialRouteName="Login" screenOptions={{ animation: 'none' }}>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
