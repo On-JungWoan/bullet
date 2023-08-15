@@ -8,7 +8,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 // from App.js
-import { dataContext } from '../../App';
 
 // data
 import Site from "./Site";
@@ -41,7 +40,7 @@ const Register = memo(() => {
     // 키워드 등록
     onPressKeyword = useCallback(() => {
         console.log("키워드")
-        navigation.navigate('Alarm');
+        navigation.navigate('Keywords');
     }, [])
 
 
@@ -87,12 +86,13 @@ const styles = StyleSheet.create({
 
         textAlign: 'center',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center',        
+        
+        backgroundColor: "white",
     },
     moveCompo: {
         width: '75%',
         height: '60%',
-
     },
     press: {
         flex: 1,

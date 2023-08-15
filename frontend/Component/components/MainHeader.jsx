@@ -16,7 +16,7 @@ const MainHeader = () => {
     const { login } = useContext(dataContext);
 
     return (
-        <View style={{ height : "100%", width: '100%' }}>
+        <View style={{flex:1}}>
             <View style={{ ...styles.container }}>
 
                 {login ?
@@ -28,7 +28,7 @@ const MainHeader = () => {
                 {login === true ?
                     <Pressable style={{ ...styles.myPageImage }}
                         onPress={() => { navigation.navigate("MyPage"); }}>
-                        <FontAwesome name="user-o" size={30} color="white" />
+                        <FontAwesome name="user-o" size={27} color="white" />
                     </Pressable>
                     : null
                 }
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
         backgroundColor : "black"
     },
     image: {
-        width:'20%',
-        height: '50%',
+        width:'18%',
+        height: '40%',
         marginLeft : '5%',
         resizeMode : "stretch"
     },

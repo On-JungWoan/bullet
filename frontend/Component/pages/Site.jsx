@@ -1,31 +1,24 @@
 // basic
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
-    Text, View, StyleSheet, TextInput, Pressable
+    Text, View, StyleSheet, TextInput, KeyboardAvoidingView
 } from 'react-native';
 
 // install
-import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // from App.js
-import { TOKEN, NAME } from '../../App';
+import { AccessTOKEN } from '../../App';
 import { dataContext } from '../../App';
 
 // component
 import SitesSelectPage from "../components/SiteContainer";
 
 export default function Site({ transData, setSite }) {
-    const [searchValue, setSearchValue] = useState(''); // 검색 값
-    const [token, setToken] = useState("");
-
     const { user } = useContext(dataContext);
-    const [keywords, setKeywords] = useState(user.keywords?.length ? [...user.keywords] : []);
 
-    // token 저장
-    useEffect(() => {
-        AsyncStorage.getItem(TOKEN).then(value => setToken(value));
-    }, [])
+    const [searchValue, setSearchValue] = useState(''); // 검색 값
+    const [keywords, setKeywords] = useState(user.keywords?.length ? [...user.keywords] : []);
 
 
     // 검색 기능
@@ -46,28 +39,33 @@ export default function Site({ transData, setSite }) {
     return (
 
         <View style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-                <Pressable style={styles.arrow} onPress={() => { setSite(false) }}>
-                    <FontAwesome name="arrow-circle-left" size={40} color="black" />
-                </Pressable>
-            </View>
-            <View style={{ ...styles.showSite, flex: 7 }}>
-                <Text style={{ ...styles.searchText, textAlign: 'center' }}>원하는 사이트를 선택하세요</Text>
-                <TextInput placeholder="사이트를 검색하세요" autoFocus autoCapitalize="none" autoCorrect={false}
-                    style={{ ...styles.searchInput, marginTop: 10 }} value={searchValue} onChangeText={onChangeSearch}
-                    onSubmitEditing={onSubmitText} />
+            <View style={{ ...styles.headContainer }}>
+                <Text style={{ ...styles.searchText }}>원하는 사이트를 선택하세요</Text>
 
-                <View style={{ flex: 1 }}>
-                    <SitesSelectPage transData={transData} token={token} />
-                </View>
+                <TextInput placeholder="사이트를 검색하세요" autoCapitalize="none" autoCorrect={false}
+                    style={{ ...styles.searchInput }} value={searchValue} onChangeText={onChangeSearch}
+                    onSubmitEditing={onSubmitText} />
+            </View>
+            <View style={{ ...styles.showSite }}>
+                <SitesSelectPage transData={transData} setSite={setSite} />
+            </View>
+            <View style={{ flex: 1}}>
+
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    headContainer: {
+        flex: 1.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        marginTop : "15%",
+    },
     showSite: {
-        flex: 1,
+        flex: 7,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -78,14 +76,16 @@ const styles = StyleSheet.create({
     },
     searchText: {
         color: 'black',
-        fontSize: 30,
+        fontSize: 20,
         fontWeight: 700,
+        textAlign: 'center',
     },
     searchInput: {
         textAlign: 'center',
         fontSize: 20,
         borderRadius: 10,
         borderWidth: 1,
-        width: '90%',
+        width: '80%',
+        marginTop: 10
     }
 })

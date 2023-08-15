@@ -12,7 +12,7 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 // from App.js
-import { AccessTOKEN , RefreshTOKEN, NAME } from '../../App';
+import { AccessTOKEN, RefreshTOKEN, NAME } from '../../App';
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
 import { BaseURL } from '../../App';
@@ -24,54 +24,55 @@ export default function Login() {
     const { dispatch } = useContext(dataContext);
     const navigation = useNavigation();
 
-    const [login, setLogin] = useState(false);
+    const [login, setLogin] = useState(false); // 나중에 false로 변경
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [showPass, setShowPass] = useState(true);
     const [loading, setLoading] = useState(false); // true로 변경
 
-    const [sites, setSites] = useState([]);
+    const [newsSites, setNewsSites] = useState([]);
+    const [uniSites, setUniSites] = useState([]);
+    const [workSites, setWorkSites] = useState([]);
     const [keywords, setKeywords] = useState([]);
 
 
     // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
-        console.log(" 초기 로그인 확인")
-        // setLogin(true);
-        AsyncStorage.getItem(AccessTOKEN)
-            .then(value => {
-                if (value) { // 자동 로그인
-                    token = value;
-                    console.log("token", token)
+        console.log(" 초기 로그인 확인");
+        // AsyncStorage.getItem(AccessTOKEN)
+        //     .then(value => {
+        //         if (value) { // 자동 로그인
+        //             token = value;
+        //             console.log("token", token)
 
-                    getSite();
-                    getKeyword();
+        //             getSite();
+        //             getKeyword();
 
-                    setLogin(true);
-                } else {
-                    setLoading(false);
-                }
-            })
+        //             setLogin(true);
+        //         } else {
+        //             setLoading(false);
+        //         }
+        //     })
     }, [])
 
     // 자동 로그인시 등록 키워드 가져오기
-    const getKeyword = useCallback(async () => {
-        // console.log("getKeyword");
-        try {
-            await axios.get(`${BaseURL}/user/keyword/`, {
-                headers: {
-                    Authorization: token,
-                }
-            })
-                .then((response) => {
-                    console.log("getKeyword", response.data);
-                    setKeywords(response.data)
-                })
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }, []);
+    // const getKeyword = useCallback(async () => {
+    //     // console.log("getKeyword");
+    //     try {
+    //         await axios.get(`${BaseURL}/user/keyword/`, {
+    //             headers: {
+    //                 Authorization: token,
+    //             }
+    //         })
+    //             .then((response) => {
+    //                 console.log("getKeyword", response.data);
+    //                 setKeywords(response.data)
+    //             })
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error;
+    //     }
+    // }, []);
 
     // 자동 로그인시 등록 사이트 가져오기
     const getSite = useCallback(async () => {
@@ -84,7 +85,7 @@ export default function Login() {
             })
                 .then((response) => {
                     console.log("getSites", response.data);
-                    setSites(response.data);
+                    // 사이트 지정
                 })
         } catch (error) {
             console.log(error);
@@ -94,16 +95,18 @@ export default function Login() {
 
     // login===true면 메인화면으로
     useEffect(() => {
-        // console.log("user정보 dispatch");
+        console.log("user정보 dispatch");
 
         dispatch({
             type: LOGIN,
-            login :login,
-            sites: sites,
+            login: login,
+            newsSites: newsSites,
+            uniSites: uniSites,
+            workSites: workSites,
             name: AsyncStorage.getItem(NAME),
             keywords: keywords,
         });
-        if(login === true){
+        if (login === true) {
             navigation.navigate('Main')
         }
     }, [login]);
@@ -117,11 +120,13 @@ export default function Login() {
         await axios
             .post(`${BaseURL}/user/login/`, data)
             .then(function (response) {
-                console.log("checkLogin", response.data)
+                console.log("checkLogin", response.data.sites)
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
                 AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
-                setSites(response.data.sites?.length !== 0 ? [...response.data.sites] : []) // 저장한 사이트
+                setNewsSites(response.data.sites?.length !== 0 ? [...response.data.sites[1]["뉴스"]] : []) // 저장한 뉴스 사이트
+                setUniSites(response.data.sites?.length !== 0 ? [...response.data.sites[0]["공지사항"]] : []) // 저장한 학교 사이트
+                setWorkSites(response.data.sites?.length !== 0 ? [...response.data.sites[2]["취업"]] : []) // 저장한 일 사이트
                 setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
 
                 setLogin(true);
@@ -146,8 +151,8 @@ export default function Login() {
 
                     <View style={{
                         ...styles.inputTextContainer,
-                        color:"black",
-                        backgroundColor:"white",
+                        color: "black",
+                        backgroundColor: "white",
                     }}>
                         <TextInput
                             style={{ ...styles.inputText }} placeholder="이메일" autoCapitalize="none" placeholderTextColor="#888"
@@ -182,16 +187,16 @@ export default function Login() {
                     </View>
 
                     <View style={{ ...styles.socialLoginContainer }}>
-                        <Pressable style={{ ...styles.socialLogin}}>
-                            <Image style={{...styles.img}} source={require('../../assets/social/kakao.png')} />
+                        <Pressable style={{ ...styles.socialLogin }}>
+                            <Image style={{ ...styles.img }} source={require('../../assets/social/kakao.png')} />
                             <Text>카카오</Text>
                         </Pressable>
-                        <Pressable style={{ ...styles.socialLogin}}>
-                            <Image style={{...styles.img}} source={require('../../assets/social/naver.png')} />
+                        <Pressable style={{ ...styles.socialLogin }}>
+                            <Image style={{ ...styles.img }} source={require('../../assets/social/naver.png')} />
                             <Text>네이버</Text>
                         </Pressable>
-                        <Pressable style={{ ...styles.socialLogin}}>
-                            <Image style={{...styles.img}} source={require('../../assets/social/google.png')} />
+                        <Pressable style={{ ...styles.socialLogin }}>
+                            <Image style={{ ...styles.img }} source={require('../../assets/social/google.png')} />
                             <Text>구글</Text>
                         </Pressable>
                     </View>
@@ -265,6 +270,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: 'center'
     },
-    img:{
+    img: {
     }
 });

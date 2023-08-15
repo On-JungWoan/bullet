@@ -11,7 +11,9 @@ const initState = {
   user: {
     "name": "",
     "keywords": [], // 키워드
-    "sites": [], // 사이트
+    "newsSites": [], // 사이트
+    "uniSites": [], // 사이트
+    "workSites": [], // 사이트
   },
 }
 
@@ -26,16 +28,18 @@ export const TEST = "TEST";
 
 // action
 const reducer = (state, action) => {
-  // console.log("State", state);
+  console.log("State", state);
   switch (action.type) {
     case LOGIN: // 로그인 시 모든 정보를 받아옴
       return {
         ...state,
         login: action.login,
         user: {
-          "sites": action.sites,
-          "name": action.name,
           "keywords": action.keywords,
+          "name": action.name,
+          "newsSites": action.newsSites,
+          "uniSites": action.uniSites,
+          "workSites": action.workSites,
         }
       }
     case LOGOUT:
@@ -43,20 +47,13 @@ const reducer = (state, action) => {
         ...state,
         login: action.login,
       }
-    case AddSITE:
-      return {
-        ...state,
-        user: {
-          "sites": action.sites,
-          "name": state.user.name,
-          "keywords": state.user.keywords,
-        }
-      }
     case AddKEYWORD:
       return {
         ...state,
         user: {
-          "sites": state.user.sites,
+          "newsSites": action.newsSites,
+          "uniSites": action.uniSites,
+          "workSites": action.workSites,
           "name": state.user.name,
           "keywords": action.keywords,
         }
@@ -93,6 +90,7 @@ import SignUp from './Component/pages/SignUp.jsx'
 import Register from "./Component/pages/Register.jsx";
 import Main from "./Component/pages/Main.jsx";
 import Alarm from "./Component/pages/Alarm.jsx";
+import KeywordsSelectPage from './Component/pages/Keywords.jsx'
 
 // component
 import MainHeader from "./Component/components/MainHeader.jsx"
@@ -122,6 +120,7 @@ export default function App() {
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
             <Stack.Screen name="Alarm" component={Alarm} options={{ headerShown: false }} />
+            <Stack.Screen name="Keywords" component={KeywordsSelectPage} options={{ headerShown: false }} />
           </Stack.Navigator>
 
         </View>

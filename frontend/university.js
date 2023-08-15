@@ -6,7 +6,7 @@ export const universityData = [
     },
     {
         "id": "경북대",
-        "src": require("./assets/university/경북대.jpg"),
+        "src": require("./assets/university/경북대.png"),
         "site": "경북대"
     },
     {
@@ -16,7 +16,7 @@ export const universityData = [
     },
     {
         "id": "서울대",
-        "src": require("./assets/university/서울대.jpg"),
+        "src": require("./assets/university/서울대.png"),
         "site": "서울대"
     },
     {
@@ -31,12 +31,12 @@ export const universityData = [
     },
     {
         "id": "제주대",
-        "src": require("./assets/university/제주대.jpg"),
+        "src": require("./assets/university/제주대.png"),
         "site": "제주대"
     },
     {
         "id": "충남대",
-        "src": require("./assets/university/충남대.jpg"),
+        "src": require("./assets/university/충남대.png"),
         "site": "충남대"
     },
     {
