@@ -1,19 +1,35 @@
 // basic
-import React, { useContext } from "react";
+import React,{useEffect, useState} from "react";
 import {
     Text, View, Pressable, StyleSheet, Image
 } from 'react-native';
 
 // install
-import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// from App.js
-import { dataContext } from '../../App';
+// 상수
+import { AccessTOKEN } from '../../App';
+
+
+export let TOKEN = '';
 
 export default function Main() {
-    const { dispatch, dark } = useContext(dataContext);
     const navigation = useNavigation();
+
+    const [token, setToken] = useState("");
+
+    useEffect(()=>{
+        AsyncStorage.getItem(AccessTOKEN).then(value => {
+            setToken(value)
+            console.log("token",token);
+        });
+    },[])
+
+    useEffect(()=>{
+        TOKEN = token;
+        console.log(TOKEN);
+    },[token])
 
     return (
         <View style={{ ...styles.container }}>

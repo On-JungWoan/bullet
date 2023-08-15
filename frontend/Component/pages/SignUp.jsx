@@ -8,11 +8,10 @@ import {
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 // from App.js
 import { BaseURL } from '../../App';
-import { dataContext } from '../../App';
 
 // component
 import BasicButton from '../components/Button';
@@ -31,13 +30,13 @@ export default function SignUp() {
     const [errorPassword, setErrorPassword] = useState('');
     const [errorCheckPassword, setErrorCheckPassword] = useState('');
 
-    useEffect(()=>{
+    useEffect(() => {
         setId('')
         setPassword('')
         setCheckPassword('')
         setShowPass(false);
         setName('')
-    },[])
+    }, [])
 
     // ID 형식 확인
     const idForm = (e) => {
@@ -112,7 +111,7 @@ export default function SignUp() {
             <ScrollView style={{ ...styles.sighUpContainer }}>
                 <View style={{ ...styles.textContainer }}>
                     <Pressable style={{ position: "absolute", left: 10 }} onPress={() => { navigation.navigate("Login") }}>
-                        <FontAwesome name="arrow-circle-left" size={40} color="black" />
+                        <Ionicons name="arrow-back-sharp" size={40} color="black" />
                     </Pressable>
                     <Text style={{ ...styles.mainText }}>회원가입</Text>
                 </View>
@@ -154,11 +153,11 @@ export default function SignUp() {
 
                     <Text style={{ ...styles.formText }}>이름</Text>
                     <TextInput
-                        style={{ ...styles.inputText, marginBottom : 50 }} placeholder="이름을 입력하세요." autoCapitalize="none" placeholderTextColor="#888"
+                        style={{ ...styles.inputText, marginBottom: 50 }} placeholder="이름을 입력하세요." autoCapitalize="none" placeholderTextColor="#888"
                         value={name} onChangeText={(text) => setName(text)} autoCorrect={false} />
                 </View>
                 <View style={{ ...styles.buttonContainer }}>
-                    <BasicButton text="제출하기" bg="black" marginBottom={0}
+                    <BasicButton text="가입하기" bg="black" marginBottom={0}
                         textColor="white" onPressEvent={checkSignUp} />
                 </View>
             </ScrollView>
@@ -176,9 +175,9 @@ const styles = StyleSheet.create({
     },
     sighUpContainer: {
         width: '70%',
-        height : '70%',
+        height: '70%',
 
-        marginTop:'20%',
+        marginTop: '20%',
     },
     textContainer: {
         flex: 1,
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
 
         justifyContent: "center",
         alignItems: 'center',
-        marginBottom : 20,
+        marginBottom: 20,
     },
     mainText: {
         fontSize: 30,
@@ -220,6 +219,6 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flex: 1,
-        width:'100%',
+        width: '100%',
     },
 })
