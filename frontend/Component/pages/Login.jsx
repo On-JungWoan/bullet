@@ -113,6 +113,7 @@ export default function Login() {
 
     // 로그인
     const checkLogin = async () => {
+        console.log("login");
         const data = {
             email: id,
             password: password

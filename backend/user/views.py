@@ -136,13 +136,17 @@ class UserSiteViewSet(viewsets.ViewSet):
         return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)
 
+    @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=[
+          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
+            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
+        )])
     def delete(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
             user, _ = user_and_token
             serializer = serializers.SaveUserSiteSerializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
-                serializer.delete()
+                serializer.delete(validated_data=serializer.validated_data, user = user)
                 return Response(status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -21,6 +21,7 @@ from itertools import product
 class PostViewSet(viewsets.ViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    jwt_auth = JWTAuthentication()
 
     def findById(request):
         id=request.GET.get('id')
@@ -28,22 +29,26 @@ class PostViewSet(viewsets.ViewSet):
         return Response(post)
 
     #프론트엔드에서 user의 id를 통해 그 유저가 등록한 뉴스를 검색할 수 있음
-    def findByUserId(request):
-        user_id=request.GET.get('user_id')
+    def findByUserId(self, request):
         # 유저 객체 가져오기
-        user = User.objects.get(id=user_id)
-        # 해당 유저와 관련된 뉴스 인스턴스들을 가져오되, 키워드 정보도 함께 로드하기
-        keywords = list(UserKeyword.objects.filter(user=user).values_list('name',flat=True))
-        sites = list(UserSite.objects.filter(user=user).values_list('name', flat=True))
+        user_and_token = self.jwt_auth.authenticate(request)
+        if user_and_token is not None:
+            user, _ = user_and_token
+            user = User.objects.get(id=user.id)
+            # 해당 유저와 관련된 뉴스 인스턴스들을 가져오되, 키워드 정보도 함께 로드하기
+            keywords = list(user.keywords.values_list('name',flat=True))
+            sites = list(user.sites.values_list('code', flat=True))
 
-        q_objects = Q()
+            q_objects = Q()
 
-        # 모든 조합을 생성하여 Q 객체에 추가. 형식 : Q(keyword=keyword1, site=site1) 또는 Q(keyword=keyword1, site=site2) 또는 ...
-        for keyword, site in product(keywords, sites):
-            q_objects |= Q(keyword=keyword, site=site)
-        # post들을 Q object로 생성하고 한번에 필터링
-        posts = Post.objects.filter(q_objects)
-        return Response(posts)
+            # 모든 조합을 생성하여 Q 객체에 추가. 형식 : Q(keyword=keyword1, site=site1) 또는 Q(keyword=keyword1, site=site2) 또는 ...
+            for keyword, site in product(keywords, sites):
+                q_objects |= Q(keyword=keyword, site=site)
+            # post들을 Q object로 생성하고 한번에 필터링
+            posts = Post.objects.filter(q_objects)
+            posts_serializer = PostSerializer(posts, many=True)
+            print(posts_serializer.data)
+            return Response(posts_serializer.data)
 
 # @api_view(['POST'])
 # def create(request):

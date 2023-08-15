@@ -17,7 +17,7 @@ const initState = {
   },
 }
 
-export const BaseURL = 'http://192.168.0.9:8000'
+export const BaseURL = 'http://192.168.0.42:8000'
 
 // dispatch 상수
 export const LOGIN = "LOGIN"

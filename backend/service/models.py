@@ -20,8 +20,9 @@ class Category(models.Model):
 
 class Site(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200)
-    url = models.CharField(max_length=200)
+    name = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     def __str__(self):
         """String for representing the Model object."""

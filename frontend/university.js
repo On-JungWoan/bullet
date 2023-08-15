@@ -9,11 +9,13 @@ export const universityData = [
         "src": require("./assets/university/경북대.png"),
         "site": "경북대"
     },
+
     {
         "id": "부산대",
         "src": require("./assets/university/부산대.png"),
         "site": "부산대"
     },
+
     {
         "id": "서울대",
         "src": require("./assets/university/서울대.png"),
@@ -39,6 +41,7 @@ export const universityData = [
         "src": require("./assets/university/충남대.png"),
         "site": "충남대"
     },
+
     {
         "id": "충북대",
         "src": require("./assets/university/충북대.png"),

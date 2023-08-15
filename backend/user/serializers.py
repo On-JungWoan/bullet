@@ -19,24 +19,32 @@ class UserModelSerializer(serializers.ModelSerializer):
         return user
 
 #유저의 모든 정보를 저장하는 클래스
-class UserFullDataSerializer(serializers.ModelSerializer):
+class UserFullDataSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    keywordCount = serializers.IntegerField()
     keywords = serializers.SerializerMethodField()
-    sites = serializers.SerializerMethodField()
+    announce = serializers.SerializerMethodField()
+    news = serializers.SerializerMethodField()
+    jobs = serializers.SerializerMethodField()
     image = serializers.ImageField(use_url=True)
-    class Meta:
-        model = User
-        fields = ('id','email','username','image','keywordCount','keywords','sites','siteCount')
+
 
     def get_keywords(self, user):
         return list(user.keywords.values_list('name',flat=True))
-    def get_sites(self, user):
-        sites_by_category = []
-        categories = Category.objects.all()
-        print(categories)
-        for category in categories:
-            sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-            sites_by_category.append({category.name: list(sites_in_category)})
-        return sites_by_category
+    def get_announce(self, user):
+        category = 1
+        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+        return sites_in_category
+    def get_news(self, user):
+        category = 2
+        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+        return sites_in_category
+    def get_jobs(self, user):
+        category = 3
+        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+        return sites_in_category
     # def update(self, validated_data):
     #     user = User.objects.get(id=validated_data['id'])
     #     user.username = validated_data['username']
@@ -78,14 +86,14 @@ class CheckEmailSerializer(serializers.ModelSerializer):
 
 #-----------------유저와 관계가 있는 모델 시리얼라이저---------
 #유저와 포스트 사이에서 유저에게 전송될 뉴스를 저장하는 클래스
-class GetUserPostSerializer(serializers.ModelSerializer):
+class GetUserPostSerializer(serializers.Serializer):
     posts = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields =  ['posts']
 
     def get_posts(self, user):
-        return str(user.posts.values_list('name',flat=True))
+        return str(user.posts.values_list('title',flat=True))
 
 #뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
 class GetUserKeywordSerializer(serializers.ModelSerializer):
@@ -99,14 +107,23 @@ class GetUserKeywordSerializer(serializers.ModelSerializer):
         return list(user.keywords.values_list('name',flat=True))
 
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
-class GetUserSiteSerializer(serializers.ModelSerializer):
-    sites = serializers.SerializerMethodField()
-    class Meta:
-        model = User
-        fields = ('sites',)
+class GetUserSiteSerializer(serializers.Serializer):
+    announce = serializers.SerializerMethodField()
+    news = serializers.SerializerMethodField()
+    jobs = serializers.SerializerMethodField()
     
-    def get_sites(self, user):
-        return list(user.sites.values_list('name',flat=True))
+    def get_announce(self, user):
+        category = 1
+        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+        return sites_in_category
+    def get_news(self, user):
+        category = 2
+        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+        return sites_in_category
+    def get_jobs(self, user):
+        category = 3
+        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
+        return sites_in_category
     
 class SaveUserPostSerializer(serializers.Serializer):
     posts = serializers.ListField(child=serializers.CharField())
@@ -139,14 +156,17 @@ class SaveUserKeywordSerializer(serializers.Serializer):
         
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class SaveUserSiteSerializer(serializers.Serializer):
-    sites = serializers.ListField(child=serializers.CharField())
+    announce = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
+    news = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
+    jobs = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
 
     def save(self, validated_data, user):
-        sites = validated_data['sites']
-        sites_create = [Site.objects.get_or_create(name=site)[0] for site in sites]
-        user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
+        sites = [Site.objects.filter(name__in = validated_data.get(category)) for category in validated_data]
+        print(sites)
+        user_site = [UserSite.objects.get_or_create(user=user, site=site[0]) for site in sites]
         return user_site
     
     def delete(self, validated_data, user):
-        sites = validated_data['sites']
-        UserSite.objects.filter(user=user, site=sites).delete()
+        for category in validated_data:
+            sites = Site.objects.filter(name__in = validated_data.get(category))
+            UserSite.objects.filter(user=user, site__in=sites).delete()
