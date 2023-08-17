@@ -156,14 +156,12 @@ class SaveUserKeywordSerializer(serializers.Serializer):
         
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class SaveUserSiteSerializer(serializers.Serializer):
-    announce = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
-    news = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
-    jobs = serializers.ListField(child=serializers.CharField(allow_blank=True), required=False)
+    sites = serializers.ListField(child=serializers.CharField())
 
     def save(self, validated_data, user):
-        sites = [Site.objects.filter(name__in = validated_data.get(category)) for category in validated_data]
-        print(sites)
-        user_site = [UserSite.objects.get_or_create(user=user, site=site[0]) for site in sites]
+        sites = validated_data['sites']
+        sites_create = [Site.objects.get(name=site)[0] for site in sites]
+        user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
         return user_site
     
     def delete(self, validated_data, user):

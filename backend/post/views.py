@@ -12,9 +12,9 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 #from rest_framework_simplejwt.authentication import JSONWebTokenAuthentication
-from user.models import UserSite, UserKeyword
 from django.db.models import Q
 from itertools import product
+from drf_yasg.utils import swagger_auto_schema
 #쿼리용 import
 
 #프론트에서 id를 통해 post를 검색
@@ -29,6 +29,7 @@ class PostViewSet(viewsets.ViewSet):
         return Response(post)
 
     #프론트엔드에서 user의 id를 통해 그 유저가 등록한 뉴스를 검색할 수 있음
+    @swagger_auto_schema(operation_description="유저의 id를 통해 그 유저가 등록한 뉴스를 검색할 수 있음")
     def findByUserId(self, request):
         # 유저 객체 가져오기
         user_and_token = self.jwt_auth.authenticate(request)

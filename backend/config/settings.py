@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'user',
     'service',
     'post',
-
     #토큰
     'rest_framework_simplejwt',
 ]
@@ -242,3 +241,7 @@ SWAGGER_SETTINGS = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+CRAWLING_PATH = os.path.join(BASE_DIR.parent, 'component')
+
+SCHEDULER_DEFAULT = True
