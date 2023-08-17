@@ -23,7 +23,9 @@ export const BaseURL = 'http://192.168.0.42:8000'
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"
 export const AddKEYWORD = "ADDKEYWORD"
-export const AddSITE = "ADDSITE"
+export const AddNewsSITE = "AddNewsSITE"
+export const AddUniSITE = "AddUniSITE"
+export const AddWorkSITE = "AddWorkSITE"
 export const TEST = "TEST";
 
 // action
@@ -42,18 +44,51 @@ const reducer = (state, action) => {
           "workSites": action.workSites,
         }
       }
-    case LOGOUT:
+    case LOGOUT: // 로그아웃
       return {
         ...state,
         login: action.login,
       }
-    case AddKEYWORD:
-      return {
+    case AddNewsSITE: // 뉴스 사이트 추가
+      return{
         ...state,
         user: {
           "newsSites": action.newsSites,
-          "uniSites": action.uniSites,
-          "workSites": action.workSites,
+          "uniSites": state.user.uniSites,
+          "workSites": state.user.workSites,
+          "name": state.user.name,
+          "keywords": state.user.keywords,
+        }
+      }
+      case AddUniSITE: // 대학교 사이트 추가
+        return{
+          ...state,
+          user: {
+            "newsSites": state.user.newsSites,
+            "uniSites": action.uniSites,
+            "workSites": state.user.workSites,
+            "name": state.user.name,
+            "keywords": state.user.keywords,
+          }
+        }
+        case AddWorkSITE: // 일 사이트 추가
+          return{
+            ...state,
+            user: {
+              "newsSites": state.user.newsSites,
+              "uniSites": state.user.uniSites,
+              "workSites": action.workSites,
+              "name": state.user.name,
+              "keywords": state.user.keywords,
+            }
+          }
+    case AddKEYWORD: // 키워드 추가
+      return {
+        ...state,
+        user: {
+          "newsSites": state.user.newsSites,
+          "uniSites": state.user.uniSites,
+          "workSites": state.user.workSites,
           "name": state.user.name,
           "keywords": action.keywords,
         }
@@ -102,7 +137,9 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initState)
   const { login, user } = state;
 
-  const value = useMemo(() => ({ login, dispatch, user }), [login, user]) //로그인, dispatch, user 정보를 전송
+  const value = useMemo(() => (
+    { login, dispatch, user }),
+     [login, user]) //로그인, dispatch, user 정보를 전송
 
   return (
     <NavigationContainer>

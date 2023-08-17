@@ -22,13 +22,12 @@ export default function Main() {
     useEffect(()=>{
         AsyncStorage.getItem(AccessTOKEN).then(value => {
             setToken(value)
-            console.log("token",token);
         });
     },[])
 
     useEffect(()=>{
         TOKEN = token;
-        console.log(TOKEN);
+        console.log("mainToken",TOKEN);
     },[token])
 
     return (

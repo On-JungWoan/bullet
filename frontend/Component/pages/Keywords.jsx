@@ -61,7 +61,7 @@ export default function KeywordsSelectPage() {
                 )
                 .then(function (response) {
                     console.log("keyword", response.data);
-
+                    navigation.navigate('Register');
                 })
                 .catch(function (error) {
                     alert("에러발생")
@@ -77,20 +77,36 @@ export default function KeywordsSelectPage() {
     return (
 
         <View style={{ ...styles.container }}>
-            <View style={{ flex :1,width: '75%' }}>
+            <View style={{ flex: 1, width: '75%' }}>
                 <View style={{ ...styles.headContainer }}>
-                    <Text style={{ ...styles.searchText }}>원하는 사이트를 선택하세요</Text>
+                    <Text style={{ ...styles.searchText }}>원하는 키워드를 입력하세요</Text>
 
-                    <TextInput placeholder="사이트를 검색하세요" autoCapitalize="none" autoCorrect={false}
+                    <TextInput placeholder="키워드를 입력하세요" autoCapitalize="none" autoCorrect={false}
                         style={{ ...styles.searchInput }} value={searchValue} onChangeText={onChangeSearch}
                         onSubmitEditing={onSubmitText} />
                 </View>
 
-                <View style={{ ...styles.showKeywords }}>
-                    <View>
-                        {keywords?.length ?
-                            <Text style={{ fontSize: 20, }}>{`키워드 : ${keywords} `}</Text>
-                            : null}
+                <View>
+                    <Text style={{textAlign:"center", fontSize: 20}}>키워드</Text>
+                </View>
+
+                <View style={{ ...styles.showKeywords, backgroundColor : "Red" }}>
+                    <View style={{ flexDirection: "row" , flexWrap:"wrap"}}>
+                        {keywords?.map((keyword, index) => {
+                            return (
+                                <View style={{ ...styles.keyword }}>
+                                    <Text style={{ fontSize: 20, marginRight: 10 }}>{keyword}</Text>
+                                    <Pressable key={keyword} onPress={() => {
+                                        let deleteKeywords = keywords;
+                                        deleteKeywords.splice(deleteKeywords.indexOf(keyword), 1);
+                                        setKeywords([...deleteKeywords]);
+                                    }} >
+                                        <Text style={{ fontSize: 20 }}>x</Text>
+
+                                    </Pressable>
+                                </View>
+                            )
+                        })}
                     </View>
                 </View>
 
@@ -99,7 +115,7 @@ export default function KeywordsSelectPage() {
                         <Text style={{ color: "white", textAlign: 'center' }}>이전 화면</Text>
                     </Pressable>
 
-                    <Pressable style={{ ...styles.button }} onPress={() => {postKeyword() }}>
+                    <Pressable style={{ ...styles.button }} onPress={() => { postKeyword() }}>
                         <Text style={{ color: "white", textAlign: 'center' }}>등록하기</Text>
                     </Pressable>
                 </View>
@@ -107,7 +123,7 @@ export default function KeywordsSelectPage() {
 
                 </View>
             </View>
-        </View>
+        </View >
     )
 }
 
@@ -123,18 +139,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
         marginTop: "20%",
-        marginBottom : 20,
+        marginBottom: 20,
 
         borderBottomWidth: 1,
-        borderStyle : 'dashed'
+        borderStyle: 'dashed'
     },
     showKeywords: {
         flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
 
-        borderBottomWidth :1,
-        borderStyle : 'dashed'
+        borderBottomWidth: 1,
+        borderStyle: 'dashed'
 
     },
     arrow: {
@@ -158,6 +174,18 @@ const styles = StyleSheet.create({
         width: '80%',
         marginTop: 10
     },
+    keyword: {
+        borderWidth: 1, 
+        borderRadius: 10, 
+
+        flexDirection: "row", 
+
+        marginHorizontal: 5,
+        marginBottom : 5,
+
+        paddingHorizontal: 8, 
+        paddingVertical: 3,
+    },
     buttonContainer: {
         flex: 1,
         flexDirection: "row",
@@ -168,7 +196,7 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1,
-        
+
         backgroundColor: "black",
         borderWidth: 1,
         borderRadius: 20,

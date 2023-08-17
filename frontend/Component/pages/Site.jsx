@@ -5,16 +5,14 @@ import {
 } from 'react-native';
 
 // install
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // from App.js
-import { AccessTOKEN } from '../../App';
 import { dataContext } from '../../App';
 
 // component
 import SitesSelectPage from "../components/SiteContainer";
 
-export default function Site({ transData, setSite }) {
+export default function Site({ transData, setSite, transSite }) {
     const { user } = useContext(dataContext);
 
     const [searchValue, setSearchValue] = useState(''); // 검색 값
@@ -47,9 +45,9 @@ export default function Site({ transData, setSite }) {
                     onSubmitEditing={onSubmitText} />
             </View>
             <View style={{ ...styles.showSite }}>
-                <SitesSelectPage transData={transData} setSite={setSite} />
+                <SitesSelectPage transData={transData} setSite={setSite} transSite={transSite} />
             </View>
-            <View style={{ flex: 1}}>
+            <View style={{ flex: 1 }}>
 
             </View>
         </View>
@@ -62,7 +60,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
 
-        marginTop : "15%",
+        marginTop: "15%",
     },
     showSite: {
         flex: 7,

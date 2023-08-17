@@ -38,45 +38,80 @@ export default function Login() {
 
     // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
-        console.log(" 초기 로그인 확인");
-        // AsyncStorage.getItem(AccessTOKEN)
-        //     .then(value => {
-        //         if (value) { // 자동 로그인
-        //             token = value;
-        //             console.log("token", token)
+        setLogin(false);
+        getAccessToken(); // token 유무를 확인 후 토큰 재발급
+    }, [])
 
-        //             getSite();
-        //             getKeyword();
 
-        //             setLogin(true);
-        //         } else {
-        //             setLoading(false);
-        //         }
-        //     })
+    const getAccessToken = async() =>{
+        let token;
+        await AsyncStorage.getItem(AccessTOKEN)
+        .then(value => {
+            if (value) { // accessToken
+                token = value;
+                console.log("login",token)
+                getRefreshToken(); // accessToken이 있으면 refresh를 통해 재 발급
+            } else{
+                setLoading(false);
+            }
+        })
+    }
+
+    const getRefreshToken = async () => {
+        let token=[];
+        await AsyncStorage.getItem(RefreshTOKEN)
+            .then(value => {
+                if (value) { // refreshToken
+                    token = value;
+
+                }
+            })
+        reissueToken(token);
+    }
+
+    // token 재발급
+    const reissueToken = useCallback(async (token) => {
+        const data = {
+            "refresh" : token,
+        }
+        try {
+            await axios.post(`${BaseURL}/api/token/refresh/`, data)
+            .then( function(response) {
+                AsyncStorage.setItem(AccessTOKEN, response.headers.authorization);
+
+                getKeyword(response.headers.authorization);
+                getSite(response.headers.authorization);
+                setLoading(false);
+
+                setLogin(true);
+            }
+
+            )
+        } catch (error) {
+
+        }
     }, [])
 
     // 자동 로그인시 등록 키워드 가져오기
-    // const getKeyword = useCallback(async () => {
-    //     // console.log("getKeyword");
-    //     try {
-    //         await axios.get(`${BaseURL}/user/keyword/`, {
-    //             headers: {
-    //                 Authorization: token,
-    //             }
-    //         })
-    //             .then((response) => {
-    //                 console.log("getKeyword", response.data);
-    //                 setKeywords(response.data)
-    //             })
-    //     } catch (error) {
-    //         console.log(error);
-    //         throw error;
-    //     }
-    // }, []);
+    const getKeyword = useCallback(async (token) => {
+        try {
+            await axios.get(`${BaseURL}/user/keyword/`, {
+                headers: {
+                    Authorization: token,
+                }
+            })
+                .then((response) => {
+                    console.log("setKeywords", response.data);
+                    setKeywords(response.data)
+                })
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }, []);
 
     // 자동 로그인시 등록 사이트 가져오기
-    const getSite = useCallback(async () => {
-        // console.log("getSite");
+    const getSite = useCallback(async (token) => {
         try {
             await axios.get(`${BaseURL}/user/site/`, {
                 headers: {
@@ -86,6 +121,9 @@ export default function Login() {
                 .then((response) => {
                     console.log("getSites", response.data);
                     // 사이트 지정
+                    // setNewsSites(response.data.sites?.length !== 0 ? [...response.data.sites[1]["뉴스"]] : []) // 저장한 뉴스 사이트
+                    // setUniSites(response.data.sites?.length !== 0 ? [...response.data.sites[0]["공지사항"]] : []) // 저장한 학교 사이트
+                    // setWorkSites(response.data.sites?.length !== 0 ? [...response.data.sites[2]["취업"]] : []) // 저장한 일 사이트
                 })
         } catch (error) {
             console.log(error);
@@ -95,8 +133,6 @@ export default function Login() {
 
     // login===true면 메인화면으로
     useEffect(() => {
-        console.log("user정보 dispatch");
-
         dispatch({
             type: LOGIN,
             login: login,
@@ -109,7 +145,7 @@ export default function Login() {
         if (login === true) {
             navigation.navigate('Main')
         }
-    }, [login]);
+    }, [login, keywords]);
 
     // 로그인
     const checkLogin = async () => {
@@ -121,7 +157,7 @@ export default function Login() {
         await axios
             .post(`${BaseURL}/user/login/`, data)
             .then(function (response) {
-                console.log("checkLogin", response.data.sites)
+                console.log("login", response.data);
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
                 AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
