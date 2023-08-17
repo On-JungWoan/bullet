@@ -23,7 +23,7 @@ urlpatterns = [
     #user의 키워드, 사이트, 포스트 검색 url
     path('keyword/', views.UserKeywordViewSet.as_view({'get' : 'findByUserId'})),
     path('site/', views.UserSiteViewSet.as_view({'get' : 'findByUserId'})),
-    path('post/', views.UserPostViewSet.as_view({'get' : 'findByUserId'})),
+    #path('post/', views.UserPostViewSet.as_view({'get' : 'findByUserId'})),
     #user의 키워드, 사이트, 포스트 삭제 url
     path('keyword/delete/', views.UserKeywordViewSet.as_view({'post' : 'delete'})),
     path('site/delete/', views.UserSiteViewSet.as_view({'post' : 'delete'})),
