@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'user',
     'service',
     'post',
-    'django_apscheduler',
     #토큰
     'rest_framework_simplejwt',
 ]
@@ -244,9 +243,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 CRAWLING_PATH = os.path.join(BASE_DIR.parent, 'component')
-
-APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-
-APSCHEDULER_RUN_NOW_TIMEOUT = 60  # Seconds
 
 SCHEDULER_DEFAULT = True
