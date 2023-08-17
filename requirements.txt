@@ -13,12 +13,11 @@ sqlparse
 typing_extensions
 tzdata
 uritemplate
-apscheduler
 drf-api-logger
 django-environ
 beautifulsoup4
 mysql-connector-python
-
+django-apscheduler
 # kobart
 # git+https://github.com/SKT-AI/KoBART#egg=kobart
 torch

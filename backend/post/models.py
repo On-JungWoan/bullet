@@ -3,9 +3,9 @@ from service.models import Site, Keyword
 # Create your models here.
 class Post(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     content = models.TextField()
-    url = models.CharField(max_length=200)
+    url = models.CharField(max_length=200, unique=True)
     site = models.CharField(max_length=200)
     keyword = models.CharField(max_length=200)
     date = models.DateTimeField()
