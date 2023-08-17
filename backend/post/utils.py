@@ -3,7 +3,6 @@ import os
 from django.core.management.base import BaseCommand
 from config.settings import CRAWLING_PATH, TIME_ZONE
 from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import register_events, DjangoJobStore
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,7 +14,6 @@ def crawler():
 
 def start():
     scheduler=BackgroundScheduler()
-    scheduler.add_jobstore(DjangoJobStore(), 'djangojobstore')
     scheduler.remove_all_jobs()
     scheduler.add_job(
         crawler,

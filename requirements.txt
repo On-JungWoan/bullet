@@ -17,7 +17,7 @@ drf-api-logger
 django-environ
 beautifulsoup4
 mysql-connector-python
-django-apscheduler
+APScheduler
 # kobart
 # git+https://github.com/SKT-AI/KoBART#egg=kobart
 torch
