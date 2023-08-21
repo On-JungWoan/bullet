@@ -37,6 +37,10 @@ def crawling(args, obj,
             # get details of announcement
             date, title, title_href = [pat_post_process(tree, idx, element) for element in PAT_LIST]
             date = datetime.strptime(str(date), obj.date_format)
+
+            if date.year == 1900:
+                date = date.replace(datetime.now().year)
+
             title_href = obj.parent_path + title_href
                 
             margin_date = datetime.now() - timedelta(days=args.period)
@@ -53,11 +57,14 @@ def crawling(args, obj,
                 sum_res = None
                 if not args.no_summarize:
                     # bs4로 공지 내용 받아오기
+                    if 'https:' not in title_href:
+                        title_href = 'https:' + title_href
+
                     response = requests.get(title_href)
                     if response.status_code == 200:
                         html = response.text
                         soup = BeautifulSoup(html, 'html.parser')
-                        contents = soup.select_one('#ctl00_ctl00_ContentPlaceHolder1_PageContent_pnlBoard > div.board_view_wrap > div.view_body').text
+                        contents = soup.select_one('#articleWrap > div.content01.scroll-article-zone01 > div > div > article').text
                     else : 
                         print(response.status_code)
                     # 문서 요약하기
@@ -70,7 +77,7 @@ def crawling(args, obj,
                     'date':date.strftime(obj.date_format),
                     'created_at':date.strftime(obj.date_format),
                     'keyword':args.keyword[0],
-                    'site':args.univ_name,
+                    'site':args.name,
                 }
             idx += 1
         except:
@@ -78,8 +85,11 @@ def crawling(args, obj,
                 if '****PAT****' in obj.next_btn \
                 else obj.next_btn
 
-            next_btn = driver.find_element(by=By.XPATH, value=next_XPath)
-            next_btn.click()
+            try:
+                next_btn = driver.find_element(by=By.XPATH, value=next_XPath)
+                next_btn.click()
+            except:
+                return page_num, True, res
 
             return page_num + 1, False, res
 
@@ -106,7 +116,7 @@ def get_result(args):
     driver.quit()
 
     if len(result) > 0:
-        save_file = os.path.join(args.output_dir, f'{args.mode}_{args.univ_name}_{datetime.now().strftime("%m%d_%H%M")}.json')
+        save_file = os.path.join(args.output_dir, f'{args.mode}_{args.name}_{datetime.now().strftime("%m%d_%H%M")}.json')
         with open(save_file, 'w') as f:
             json.dump(result, f)
         return result
@@ -133,6 +143,7 @@ def main(info_list:list=None)->str:
 
             yield get_result(args)
     else:
+        # for main debug
         yield get_result(args)
 
 
