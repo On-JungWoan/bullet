@@ -160,7 +160,7 @@ class SaveUserSiteSerializer(serializers.Serializer):
 
     def save(self, validated_data, user):
         sites = validated_data['sites']
-        sites_create = [Site.objects.get(name=site)[0] for site in sites]
+        sites_create = [Site.objects.get(name=site) for site in sites]
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
         return user_site
     

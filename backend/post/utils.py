@@ -18,7 +18,7 @@ def start():
     scheduler.add_job(
         crawler,
         'interval',
-        minutes = 5,
+        minutes = 2,
         id="crawler",
         misfire_grace_time=60,
         replace_existing=True,
