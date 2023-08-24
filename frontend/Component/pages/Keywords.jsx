@@ -91,10 +91,10 @@ export default function KeywordsSelectPage() {
                 </View>
 
                 <View style={{ ...styles.showKeywords, backgroundColor : "Red" }}>
-                    <View style={{ flexDirection: "row" , flexWrap:"wrap"}}>
+                    <View style={{ flexDirection: "row" , flexWrap:"wrap", justifyContent: 'center', alignItems: 'center',}}>
                         {keywords?.map((keyword, index) => {
                             return (
-                                <View style={{ ...styles.keyword }}>
+                                <View style={{ ...styles.keyword }} key={keyword}>
                                     <Text style={{ fontSize: 20, marginRight: 10 }}>{keyword}</Text>
                                     <Pressable key={keyword} onPress={() => {
                                         let deleteKeywords = keywords;

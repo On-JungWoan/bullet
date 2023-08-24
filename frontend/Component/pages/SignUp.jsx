@@ -128,7 +128,7 @@ export default function SignUp() {
                     <Text style={{ ...styles.formText }}>비밀번호</Text>
                     <TextInput
                         style={{ ...styles.inputText }} placeholder="비밀번호을 입력하세요." autoCapitalize="none" placeholderTextColor="#888"
-                        keyboardType="number-pad" autoCorrect={false} secureTextEntry={!showPass ? false : true}
+                        autoCorrect={false} secureTextEntry={!showPass ? true : false}
                         value={password} onChangeText={passwordForm}
                         textContentType="password" />
                     {errorPassword !== '' ? <Text style={{ ...styles.errorText }}>{errorPassword}</Text>
@@ -138,7 +138,7 @@ export default function SignUp() {
                     <Text style={{ ...styles.formText }}>비밀번호 확인</Text>
                     <TextInput
                         style={{ ...styles.inputText }} placeholder="비밀번호을 입력하세요." autoCapitalize="none" placeholderTextColor="#888"
-                        keyboardType="number-pad" autoCorrect={false} secureTextEntry={!showPass ? false : true}
+                        autoCorrect={false} secureTextEntry={!showPass ? true : false}
                         value={checkPassword} onChangeText={equalPassword}
                         textContentType="password" />
                     {errorCheckPassword !== '' ? <Text style={{ ...styles.errorText }}>{errorCheckPassword}</Text>

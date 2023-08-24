@@ -23,8 +23,7 @@ const Alarm = memo(() => {
                 }
             })
                 .then((response) => {
-                    console.log("getKeyword", response.data);
-                    setKeywords(response.data)
+                    console.log("Al", response.data);
                 })
         } catch (error) {
             console.log(error);

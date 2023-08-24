@@ -17,15 +17,13 @@ const initState = {
   },
 }
 
-export const BaseURL = 'http://192.168.0.42:8000'
+export const BaseURL = 'http://192.168.0.9:8000/'
 
 // dispatch 상수
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"
 export const AddKEYWORD = "ADDKEYWORD"
-export const AddNewsSITE = "AddNewsSITE"
-export const AddUniSITE = "AddUniSITE"
-export const AddWorkSITE = "AddWorkSITE"
+export const AddSITE = "AddSITE"
 export const TEST = "TEST";
 
 // action
@@ -49,39 +47,17 @@ const reducer = (state, action) => {
         ...state,
         login: action.login,
       }
-    case AddNewsSITE: // 뉴스 사이트 추가
+    case AddSITE: // 뉴스 사이트 추가
       return{
         ...state,
         user: {
           "newsSites": action.newsSites,
-          "uniSites": state.user.uniSites,
-          "workSites": state.user.workSites,
+          "uniSites": action.uniSites,
+          "workSites": action.workSites,
           "name": state.user.name,
           "keywords": state.user.keywords,
         }
       }
-      case AddUniSITE: // 대학교 사이트 추가
-        return{
-          ...state,
-          user: {
-            "newsSites": state.user.newsSites,
-            "uniSites": action.uniSites,
-            "workSites": state.user.workSites,
-            "name": state.user.name,
-            "keywords": state.user.keywords,
-          }
-        }
-        case AddWorkSITE: // 일 사이트 추가
-          return{
-            ...state,
-            user: {
-              "newsSites": state.user.newsSites,
-              "uniSites": state.user.uniSites,
-              "workSites": action.workSites,
-              "name": state.user.name,
-              "keywords": state.user.keywords,
-            }
-          }
     case AddKEYWORD: // 키워드 추가
       return {
         ...state,
@@ -119,13 +95,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // pages
-import Login from "./Component/pages/Login.jsx"
-import MyPage from "./Component/pages/MyPage.jsx"
-import SignUp from './Component/pages/SignUp.jsx'
-import Register from "./Component/pages/Register.jsx";
-import Main from "./Component/pages/Main.jsx";
-import Alarm from "./Component/pages/Alarm.jsx";
-import KeywordsSelectPage from './Component/pages/Keywords.jsx'
+import Login from "./Component/pages/Login.jsx" // 로그인
+import SignUp from './Component/pages/SignUp.jsx' // 회원가입
+
+import Main from "./Component/pages/Main.jsx"; // 로그인 후 메인
+import Register from "./Component/pages/Register.jsx"; // 키워드 및 사이트 등록 
+import KeywordsSelectPage from './Component/pages/Keywords.jsx' // 키워드 등록 
+import NewsSite from './Component/pages/NewsSite.jsx' // 뉴스 사이트 선택
+import UniSite from './Component/pages/UniSite.jsx' // 대학교 사이트 선택
+import WorkSite from './Component/pages/WorkSite.jsx' // 일 사이트 선택
+
+import Alarm from "./Component/pages/Alarm.jsx"; // 알림
+
+import MyPage from "./Component/pages/MyPage.jsx" // 마이페이지
 
 // component
 import MainHeader from "./Component/components/MainHeader.jsx"
@@ -153,11 +135,18 @@ export default function App() {
           <Stack.Navigator initialRouteName="Login" screenOptions={{ animation: 'none' }}>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+            
             <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+            
             <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
+            
             <Stack.Screen name="Alarm" component={Alarm} options={{ headerShown: false }} />
             <Stack.Screen name="Keywords" component={KeywordsSelectPage} options={{ headerShown: false }} />
+            
+            <Stack.Screen name="NewsSite" component={NewsSite} options={{ headerShown: false }} />
+            <Stack.Screen name="UniSite" component={UniSite} options={{ headerShown: false }} />
+            <Stack.Screen name="WorkSite" component={WorkSite} options={{ headerShown: false }} />
           </Stack.Navigator>
 
         </View>

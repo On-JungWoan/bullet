@@ -101,8 +101,8 @@ export default function Login() {
                 }
             })
                 .then((response) => {
-                    console.log("setKeywords", response.data);
-                    setKeywords(response.data)
+                    console.log("setKeywords", response.data.keywords);
+                    setKeywords(response.data.keywords)
                 })
         } catch (error) {
             console.log(error);
@@ -121,9 +121,9 @@ export default function Login() {
                 .then((response) => {
                     console.log("getSites", response.data);
                     // 사이트 지정
-                    // setNewsSites(response.data.sites?.length !== 0 ? [...response.data.sites[1]["뉴스"]] : []) // 저장한 뉴스 사이트
-                    // setUniSites(response.data.sites?.length !== 0 ? [...response.data.sites[0]["공지사항"]] : []) // 저장한 학교 사이트
-                    // setWorkSites(response.data.sites?.length !== 0 ? [...response.data.sites[2]["취업"]] : []) // 저장한 일 사이트
+                    setNewsSites(response.data.news?.length !== 0 ? [...response.data.news] : []) // 저장한 뉴스 사이트
+                    setUniSites(response.data.announce?.length !== 0 ? [...response.data.announce] : []) // 저장한 학교 사이트
+                    setWorkSites(response.data.jobs?.length !== 0 ? [...response.data.jobs] : []) // 저장한 일 사이트
                 })
         } catch (error) {
             console.log(error);
@@ -133,6 +133,8 @@ export default function Login() {
 
     // login===true면 메인화면으로
     useEffect(() => {
+        console.log("dispatch")
+
         dispatch({
             type: LOGIN,
             login: login,
@@ -145,7 +147,7 @@ export default function Login() {
         if (login === true) {
             navigation.navigate('Main')
         }
-    }, [login, keywords]);
+    }, [login, keywords, newsSites, uniSites, workSites]);
 
     // 로그인
     const checkLogin = async () => {
@@ -161,9 +163,9 @@ export default function Login() {
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
                 AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
-                setNewsSites(response.data.sites?.length !== 0 ? [...response.data.sites[1]["뉴스"]] : []) // 저장한 뉴스 사이트
-                setUniSites(response.data.sites?.length !== 0 ? [...response.data.sites[0]["공지사항"]] : []) // 저장한 학교 사이트
-                setWorkSites(response.data.sites?.length !== 0 ? [...response.data.sites[2]["취업"]] : []) // 저장한 일 사이트
+                setNewsSites(response.data.sites?.length !== 0 ? [...response.data.news] : []) // 저장한 뉴스 사이트
+                setUniSites(response.data.sites?.length !== 0 ? [...response.data.announce] : []) // 저장한 학교 사이트
+                setWorkSites(response.data.sites?.length !== 0 ? [...response.data.jobs] : []) // 저장한 일 사이트
                 setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
 
                 setLogin(true);

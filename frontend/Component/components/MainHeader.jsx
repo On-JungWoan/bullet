@@ -17,7 +17,7 @@ const MainHeader = () => {
 
     return (
         <View style={{flex:1}}>
-            <View style={{ ...styles.container }}>
+            <View style={{ ...styles.headContainer }}>
 
                 {login ?
                     <Pressable style={{...styles.image}} onPress={() => { navigation.navigate("Main"); }}>
@@ -38,7 +38,7 @@ const MainHeader = () => {
 }
 
 const styles = StyleSheet.create({
-    container:{
+    headContainer:{
         flex: 1,
         alignItems: 'center',
         flexDirection: 'row',
