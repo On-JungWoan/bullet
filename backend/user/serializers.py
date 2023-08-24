@@ -143,8 +143,10 @@ class SaveUserKeywordSerializer(serializers.Serializer):
 
     def save(self, validated_data, user):
         print(validated_data)
+        UserKeyword.objects.filter(user=user).delete()  # 해당 유저의 모든 키워드 삭제
         keywords = validated_data['keywords']
         keywords_create = [Keyword.objects.get_or_create(name=keyword)[0] for keyword in keywords]
+
         print(keywords_create)
         user_keyword = [UserKeyword.objects.get_or_create(user=user, keyword=keyword) for keyword in keywords_create]
         # YourModel 객체들을 일괄 저장
