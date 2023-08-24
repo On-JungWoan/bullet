@@ -161,6 +161,7 @@ class SaveUserSiteSerializer(serializers.Serializer):
     sites = serializers.ListField(child=serializers.CharField())
 
     def save(self, validated_data, user):
+        UserSite.objects.filter(user=user).delete()  # 해당 유저의 모든 사이트 삭제
         sites = validated_data['sites']
         sites_create = [Site.objects.get(name=site) for site in sites]
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
