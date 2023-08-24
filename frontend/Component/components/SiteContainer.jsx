@@ -5,53 +5,13 @@ import {
 } from 'react-native';
 
 // install
-import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 // from App.js
-import { dataContext } from '../../App';
-import { TOKEN } from "../pages/Main";
 
-export default function SitesSelectPage({ transData, setSite, transSite }) {
-    const { dispatch } = useContext(dataContext);
-    const [selectSite, setSelectSite] = useState(transSite?.length ? [...transSite] : []); // 처음 등록이면 []
+export default function SitesSelectPage({ transData,  transSite, setTransSite, postSite }) {
 
-
-    const postSite = async () => {
-
-        if (selectSite.length === 0) {
-            if (selectSite.length === 0) {
-                alert('선택한 사이트가 없습니다.');
-                return;
-            }
-            // dispatch({
-            //     type: AddSITE,
-            //     sites: selectSite
-            // });
-            const data = {
-                sites: selectSite,
-            }
-            try {
-                await axios
-                    .post(`${BaseURL}/user/site/create/`, data, {
-                        headers: {
-                            Authorization: TOKEN,
-                        },
-                    }
-                    )
-                    .then(function (response) {
-                        console.log("SitesSelectPage", response.data);
-                    })
-                    .catch(function (error) {
-                        alert("에러발생")
-                        console.log("error", error);
-                        throw error;
-                    });
-            } catch (error) {
-                console.log("error", error);
-                throw error;
-            }
-        }
-    }
+    const navigation = useNavigation();
 
     return (
         <View>
@@ -61,12 +21,12 @@ export default function SitesSelectPage({ transData, setSite, transSite }) {
                         return (
                             <Pressable style={{ marginBottom: 5 }} key={post.id} onPress={
                                 () => {
-                                    if (!selectSite.includes(post.site)) {
-                                        setSelectSite([...selectSite, post.site]);
+                                    if (!transSite.includes(post.site)) {
+                                        setTransSite([...transSite, post.site]);
                                     } else {
-                                        let deleteSite = selectSite;
+                                        let deleteSite = transSite;
                                         deleteSite.splice(deleteSite.indexOf(post.site), 1);
-                                        setSelectSite([...deleteSite]);
+                                        setTransSite([...deleteSite]);
                                     }
                                 }
                             }>
@@ -79,16 +39,16 @@ export default function SitesSelectPage({ transData, setSite, transSite }) {
             </ScrollView>
 
             <View style={{ ...styles.buttonContainer }}>
-                <Pressable style={{ ...styles.button }} onPress={() => { setSite(false) }}>
+                <Pressable style={{ ...styles.button }} onPress={() => { navigation.pop() }}>
                     <Text style={{ color: "white", textAlign: 'center' }}>이전 화면</Text>
                 </Pressable>
 
-                <Pressable style={{ ...styles.button }} onPress={() => {postSite()}}>
+                <Pressable style={{ ...styles.button }} onPress={() => { postSite() }}>
                     <Text style={{ color: "white", textAlign: 'center' }}>등록하기</Text>
                 </Pressable>
             </View>
             <View>
-                {selectSite?.length ? <Text style={{ fontSize: 20 }}>{`선택 : ${selectSite}`}</Text> : null}
+                {transSite?.length ? <Text style={{ fontSize: 20 }}>{`선택 : ${transSite}`}</Text> : null}
             </View>
         </View>
     )

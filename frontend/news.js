@@ -30,18 +30,18 @@ export const newsData = [
         "site": "경향신문"
     },
     {
-        "id": "KBS",
+        "id": "kbs",
         "src": require("./assets/newsImage/kbs.jpg"),
-        "site": "KBS"
+        "site": "kbs"
     },
     {
-        "id": "MBC",
+        "id": "mbc",
         "src": require("./assets/newsImage/mbc.jpg"),
-        "site": "MBC"
+        "site": "mbc"
     },
     {
-        "id": "SBS",
+        "id": "sbs",
         "src": require("./assets/newsImage/sbs.jpg"),
-        "site": "SBS"
+        "site": "sbs"
     }
 ]

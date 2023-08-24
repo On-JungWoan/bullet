@@ -24,10 +24,11 @@ const MyPage = ()=>{
     return(
         <View>
             <View><Text>{name}</Text></View>
-            <Text>{user.keywords}</Text>
-            <Text>{user.newsSites}</Text>
-            <Text>{user.uniSites}</Text>
-            <Text>{user.workSites}</Text>
+            <View><Text>{user.keywords}</Text></View>
+            <View><Text>{user.newsSites}</Text></View>
+            <View><Text>{user.uniSites}</Text></View>
+            <View><Text>{user.workSites}</Text></View>
+
             <Button title="로그아웃" 
             onPress={()=>{
                 dispatch({
