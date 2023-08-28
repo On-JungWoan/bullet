@@ -74,8 +74,8 @@ def crawling(args, obj,
                 res[title] = {
                     'content':sum_res, 
                     'url':title_href,
-                    'date':date.strftime(obj.date_format),
-                    'created_at':date.strftime(obj.date_format),
+                    'date':date.strftime('%Y-%m-%d'),
+                    'created_at':date.strftime('%Y-%m-%d'),
                     'keyword':args.keyword[0],
                     'site':args.name,
                 }
@@ -126,7 +126,7 @@ def get_result(args):
         return None
 
 
-@dataIO
+# @dataIO
 def main(info_list:list=None)->str:
     parser = argparse.ArgumentParser('pipeline script', parents=[get_args_parser()])
     args = parser.parse_args()
@@ -141,10 +141,10 @@ def main(info_list:list=None)->str:
             if not isinstance(args.keyword, list):
                 args.keyword = [args.keyword]
 
-            yield get_result(args)
+            return get_result(args)
     else:
         # for main debug
-        yield get_result(args)
+        return get_result(args)
 
 
 if __name__ == '__main__':
