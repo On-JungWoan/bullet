@@ -22,8 +22,6 @@ def crawling(args, obj,
         driver:webdriver, tree:html, page_num:int, res:dict
     ) -> Tuple[int, bool, dict]:
 
-    PAT_LIST = [v for v in obj.pat.values()]
-
     idx = 1
     while True:
         try:
@@ -35,7 +33,7 @@ def crawling(args, obj,
                 continue
 
             # get details of announcement
-            date, title, title_href = [pat_post_process(tree, idx, element) for element in PAT_LIST]
+            date, title, title_href = pat_post_process(tree=tree, idx=idx, **obj.pat)
             date = datetime.strptime(str(date), obj.date_format)
 
             if date.year == 1900:
@@ -60,22 +58,25 @@ def crawling(args, obj,
                     if 'https:' not in title_href:
                         title_href = 'https:' + title_href
 
-                    response = requests.get(title_href)
-                    if response.status_code == 200:
-                        html = response.text
-                        soup = BeautifulSoup(html, 'html.parser')
-                        contents = soup.select_one('#articleWrap > div.content01.scroll-article-zone01 > div > div > article').text
-                    else : 
-                        print(response.status_code)
-                    # 문서 요약하기
-                    print('==== 요약 중 ====')
-                    sum_res = summarize(contents)
-
+                    try:
+                        response = requests.get(title_href)
+                        if response.status_code == 200:
+                            html = response.text
+                            soup = BeautifulSoup(html, 'html.parser')
+                            contents = soup.select_one('#articleWrap > div.content01.scroll-article-zone01 > div > div > article').text
+                        else : 
+                            print(response.status_code)
+                        # 문서 요약하기
+                        print('==== 요약 중 ====')
+                        sum_res = summarize(contents)                        
+                    except:
+                        sum_res = title
+                        title_href = title
                 res[title] = {
                     'content':sum_res, 
                     'url':title_href,
-                    'date':date.strftime(obj.date_format),
-                    'created_at':date.strftime(obj.date_format),
+                    'date':date.strftime('%Y-%m-%d'),
+                    'created_at':date.strftime('%Y-%m-%d'),
                     'keyword':args.keyword[0],
                     'site':args.name,
                 }
