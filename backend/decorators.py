@@ -30,7 +30,7 @@ def dataIO(func):
         data = cursor.fetchall()
 
         # test용 하드코딩
-        data = [('yna', '정부', 1)]
+        data = [('work', '생산', 1)]
 
         print(data)
         # 인자값 전달
