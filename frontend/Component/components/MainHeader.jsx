@@ -21,7 +21,7 @@ const MainHeader = () => {
 
                 {login ?
                     <Pressable style={{...styles.image}} onPress={() => { navigation.navigate("Main"); }}>
-                        <Image style={{width:'100%', height: '100%', resizeMode : "stretch"}} source={require("../../assets/LOGO.png")} />
+                        <Image style={{width:'98%', height: '100%', resizeMode : "stretch"}} source={require("../../assets/LOGO.png")} />
                     </Pressable>
                     : <Image style={{...styles.image}} source={require("../../assets/LOGO.png")} />
                 }
