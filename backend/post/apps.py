@@ -4,10 +4,7 @@ import os
 class PostsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'post'
-    def ready(self):
-        if settings.SCHEDULER_DEFAULT:
-            from . import utils
-            utils.start()
-
-        from .utils import start_notification_loop
-        start_notification_loop()
+    # def ready(self):
+    #     if settings.SCHEDULER_DEFAULT:
+    #         from . import utils
+    #         utils.start()
