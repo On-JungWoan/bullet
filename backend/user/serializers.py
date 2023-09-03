@@ -171,3 +171,10 @@ class SaveUserSiteSerializer(serializers.Serializer):
         for category in validated_data:
             sites = Site.objects.filter(name__in = validated_data.get(category))
             UserSite.objects.filter(user=user, site__in=sites).delete()
+
+class SetIntervalSerializer(serializers.Serializer):
+    interval = serializers.IntegerField()
+    def save(self, validated_data, user):
+        user.interval = validated_data['interval']
+        user.save(update_fields=['interval'])
+        return user.interval

@@ -27,4 +27,6 @@ urlpatterns = [
     #user의 키워드, 사이트, 포스트 삭제 url
     path('keyword/delete/', views.UserKeywordViewSet.as_view({'post' : 'delete'})),
     path('site/delete/', views.UserSiteViewSet.as_view({'post' : 'delete'})),
+    #간격 설정
+    path('interval/', views.UserIntervalViewSet.as_view({'post' : 'setInterval'})),
 ]
