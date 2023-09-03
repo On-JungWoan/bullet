@@ -23,14 +23,15 @@ export default function SitesSelectPage({
   postSite,
 }) {
   const navigation = useNavigation();
-  console.log(width);
+  console.log("siteContainer 받은 크기",width);
+  
   return (
     <View>
       <ScrollView
         style={{ ...styles.sitesContainer }}
         persistentScrollbar={true}
       >
-        <KeyboardAvoidingView
+        <View
           behavior={Platform.select({ ios: "padding", android: undefined })}
           style={{ ...styles.site }}
         >
@@ -47,7 +48,7 @@ export default function SitesSelectPage({
                     deleteSite.splice(deleteSite.indexOf(post.site), 1);
                     setTransSite([...deleteSite]);
                   }
-                }}
+                }} 
               >
                 <Image
                   style={{
@@ -64,7 +65,7 @@ export default function SitesSelectPage({
               </Pressable>
             );
           })}
-        </KeyboardAvoidingView>
+        </View>
       </ScrollView>
 
       <View style={{ ...styles.buttonContainer }}>

@@ -29,8 +29,11 @@ export default function WorkSite() {
   const [keywords, setKeywords] = useState(
     user.keywords?.length ? [...user.keywords] : []
   );
-console.log(windowWidth)
+
   const [transSite, setTransSite] = useState([...user.workSites]); // 선택한 사이트
+
+    console.log("크기 ",windowWidth)
+    console.log("크기 0.9 ",windowWidth*0.9)
 
   const postSite = async () => {
     if (transSite.length === 0) {
@@ -63,6 +66,7 @@ console.log(windowWidth)
         })
         .then(function (response) {
           console.log("SitesSelectPage", response.data);
+          navigation.navigate("Register");
         })
         .catch(function (error) {
           alert("에러발생");
@@ -110,7 +114,7 @@ console.log(windowWidth)
         </View>
         <View style={{ ...styles.showSite }}>
           <SitesSelectPage
-            width={windowWidth * 0.45}
+            width={windowWidth*0.9*0.45}
             transData={workData}
             transSite={transSite}
             setTransSite={setTransSite}

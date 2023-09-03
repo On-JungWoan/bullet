@@ -49,7 +49,7 @@ export default function Login() {
         .then(value => {
             if (value) { // accessToken
                 token = value;
-                console.log("login",token)
+                // console.log("login",token)
                 getRefreshToken(); // accessToken이 있으면 refresh를 통해 재 발급
             } else{
                 setLoading(false);
@@ -101,7 +101,7 @@ export default function Login() {
                 }
             })
                 .then((response) => {
-                    console.log("setKeywords", response.data.keywords);
+                    // console.log("setKeywords", response.data.keywords);
                     setKeywords(response.data.keywords)
                 })
         } catch (error) {
@@ -119,7 +119,7 @@ export default function Login() {
                 }
             })
                 .then((response) => {
-                    console.log("getSites", response.data);
+                    // console.log("getSites", response.data);
                     // 사이트 지정
                     setNewsSites(response.data.news?.length !== 0 ? [...response.data.news] : []) // 저장한 뉴스 사이트
                     setUniSites(response.data.announce?.length !== 0 ? [...response.data.announce] : []) // 저장한 학교 사이트
@@ -133,7 +133,7 @@ export default function Login() {
 
     // login===true면 메인화면으로
     useEffect(() => {
-        console.log("dispatch")
+        // console.log("dispatch")
 
         dispatch({
             type: LOGIN,
