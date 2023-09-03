@@ -23,14 +23,5 @@ async def send_notification():
     instance.save()
     return send_notification()
 
-    while True:
-        instance = Notification.objects.filter().order_by('-time')[0]
-        current_time = datetime.datetime.now().time()
-        remaining_seconds = (instance.time.hour - current_time.hour) * 3600 + (instance.time.minute - current_time.minute) * 60
-
-        if remaining_seconds > 0:
-            print(f"Waiting for {remaining_seconds} seconds until {instance.time}")
-            await asyncio.sleep(remaining_seconds)
-
-        await send_notification()
+    
 
