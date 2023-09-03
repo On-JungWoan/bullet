@@ -28,7 +28,7 @@ export const TEST = "TEST";
 
 // action
 const reducer = (state, action) => {
-  console.log("State", state);
+  // console.log("State", state);
   switch (action.type) {
     case LOGIN: // 로그인 시 모든 정보를 받아옴
       return {
