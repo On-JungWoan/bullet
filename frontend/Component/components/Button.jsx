@@ -1,16 +1,16 @@
 import {
     View,
     StyleSheet,
-    TouchableOpacity,
+    Pressable,
     Text
 } from 'react-native';
 
 const BasicButton = ({text, bg, textColor, onPressEvent, marginBottom}) => {
     return (
         <View>
-            <TouchableOpacity style={{ ...styles.button, backgroundColor:bg, marginBottom:marginBottom}} onPress={onPressEvent}>
+            <Pressable style={{ ...styles.button, backgroundColor:bg, marginBottom:marginBottom}} onPress={onPressEvent}>
                 <Text style={{ color: textColor, fontSize: 20, fontWeight: 700 }}>{text}</Text>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 };

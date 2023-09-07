@@ -32,9 +32,6 @@ export default function WorkSite() {
 
   const [transSite, setTransSite] = useState([...user.workSites]); // 선택한 사이트
 
-    console.log("크기 ",windowWidth)
-    console.log("크기 0.9 ",windowWidth*0.9)
-
   const postSite = async () => {
     if (transSite.length === 0) {
       alert("선택한 사이트가 없습니다.");

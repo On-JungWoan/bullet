@@ -106,7 +106,7 @@ export default function NewsSite() {
         </View>
         <View style={{ ...styles.showSite }}>
           <SitesSelectPage
-            width={100}
+            width={windowWidth*0.9*0.3}
             transData={newsData}
             transSite={transSite}
             setTransSite={setTransSite}

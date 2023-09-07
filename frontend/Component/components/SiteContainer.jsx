@@ -1,29 +1,14 @@
 // basic
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Pressable,
-  KeyboardAvoidingView,
-} from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, Pressable} from "react-native";
 
 // install
 import { useNavigation } from "@react-navigation/native";
 
 // from App.js
 
-export default function SitesSelectPage({
-  width,
-  transData,
-  transSite,
-  setTransSite,
-  postSite,
-}) {
+export default function SitesSelectPage({ width, transData, transSite, setTransSite, postSite,}) {
   const navigation = useNavigation();
-  console.log("siteContainer 받은 크기",width);
   
   return (
     <View>

@@ -1,29 +1,35 @@
 // basic
-import React, { useEffect, useState, memo, useCallback } from "react";
+import React, {
+  useEffect, memo, useCallback,
+  useContext, useState
+} from "react";
 import {
-  Text,
-  View,
-  Pressable,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
+  Text, View, Pressable, StyleSheet, Dimensions, ScrollView,
 } from "react-native";
 
 // install
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
-// from App.js
+// from
 import { dataContext } from "../../App";
 import { BaseURL } from "../../App";
 import { TOKEN } from "./Main";
 
 let screenWidth = Dimensions.get("window").width;
-let screenHeight = Dimensions.get("window").height;
 
 const Alarm = memo(() => {
+  const navigation = useNavigation();
+
+  const { user } = useContext(dataContext);
+  const keywords = [...user?.keywords];
+
+  const [allAlarm, setAllAlarm] = useState([]); // 전체 알림 보관
+  const [showAlarm, setShowAlarm] = useState([]); // 키워드에 대응하는 알람
+
+  
   const getAlarm = useCallback(async () => {
     try {
-      console.log("TOKEN", TOKEN);
       await axios
         .get(`${BaseURL}/post/user/`, {
           headers: {
@@ -31,15 +37,26 @@ const Alarm = memo(() => {
           },
         })
         .then((response) => {
-          console.log("alarm data", response.data);
+          // console.log("alarm data", response.data);
+          setAllAlarm([...response.data]);
         });
     } catch (error) {
       console.log(error);
       throw error;
     }
   }, []);
+  
 
-  console.log("X");
+  // 키워드 클릭 -> 일치하는 기사 보여줌
+  const onPressKeyword = (text)=>{ 
+    let arr = [];
+    for (x in allAlarm) {
+      if (allAlarm[x].keyword === text) {
+        arr.push(allAlarm[x]);
+      }
+    }
+    setShowAlarm([...arr]);
+  }
 
   useEffect(() => {
     getAlarm();
@@ -48,44 +65,70 @@ const Alarm = memo(() => {
   return (
     <View style={{ ...styles.container }}>
       <View style={{ ...styles.main }}>
-        <View style={{ flex: 0.5 }}></View>
-        <View style={{...styles.keyContainer}}
-        >
-          <ScrollView horizontal pagingEnabled contentContainerStyle={{...styles.scrollBox}}>
-            <Pressable style={{...styles.keyBox}}>
-              <Text style={{ ...styles.key }}>
-                1
-              </Text>
-            </Pressable>
-            <Pressable style={{...styles.keyBox}}>
-              <Text style={{ ...styles.key }}>
-                2
-              </Text>
-            </Pressable>
-            <Pressable style={{...styles.keyBox}}>
-              <Text style={{ ...styles.key }}>
-                3
-              </Text>
-            </Pressable>
-            <Pressable style={{...styles.keyBox}}>
-              <Text style={{ ...styles.key }}>
-                4
-              </Text>
-            </Pressable>
-            <Pressable style={{...styles.keyBox}}>
-              <Text style={{ ...styles.key }}>
-                5
-              </Text>
-            </Pressable>
+        <View style={{ ...styles.keyContainer }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            {keywords?.map((keyword, index) => {
+              return (
+                <Pressable style={{ ...styles.keyBox }} key={keyword}>
+                  <Text
+                    style={{ ...styles.key }}
+                    onPress={() => {
+                      onPressKeyword(keyword);
+                    }}
+                  >
+                    {keyword}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </ScrollView>
         </View>
 
-        <View style={{...styles.infoContainer, backgroundColor: "blue" }}>
+        <View style={{ ...styles.infoContainer, borderWidth:1 }}>
+            <ScrollView>
+            {showAlarm?.map((ann, index) => {
+              return (
+                <View style={{ borderBottomWidth: 1 }} key={ann.title}>
+                  <Pressable
+                    onPress={() => {
+                      navigation.navigate('AlarmDetail', {data:showAlarm, index:index})
+                      console.log(ann.title);
+                      console.log(ann.content);
+                      console.log(ann.url);
+                      console.log(ann);
+                    }}>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.title}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.content}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.url}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.keyword}</Text>
+                  </Pressable>
+                </View>
+              );
+            })}
+            </ScrollView>
 
         </View>
 
-        <View style={{flex:1}}>
+        <View style={{ ...styles.buttonContainer }}>
+          <Pressable
+            style={{ ...styles.button }}
+            onPress={() => {
+              navigation.pop();
+            }}
+          >
+            <Text style={{ color: "white", textAlign: "center" }}>
+              이전 화면
+            </Text>
+          </Pressable>
 
+          <Pressable style={{ ...styles.button }} onPress={() => {}}>
+            <Text style={{ color: "white", textAlign: "center" }}>
+              등록하기
+            </Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -99,28 +142,46 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flex: 1,
   },
-  main:{
-    flex: 10, width: "90%", marginLeft: "5%"
+  main: {
+    flex: 10,
+    width: "90%",
+    marginLeft: "5%",
   },
-  keyContainer:{
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    flexDirection: "row"
-  },
-  scrollBox:{
-    width: screenWidth * 0.9,
-    backgroundColor: "red",
+  keyContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
   },
-  keyBox:{
-    width: "20%",
-    marginHorizontal: "5%",
+  keyBox: {
+    borderWidth: 1,
+    width: screenWidth * 0.2,
+    marginHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 30,
   },
-  key:{
-    height: "50%", borderWidth: 1, textAlign: "center"
+  key: {
+    textAlign: "center",
+    fontSize: 20,
+    lineHeight: 20,
   },
-  infoContainer:{
+  infoContainer: {
     flex: 6,
-  }
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 10,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: "black",
+    borderWidth: 1,
+    borderRadius: 20,
+
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginHorizontal: 10,
+  },
 });

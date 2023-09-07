@@ -28,7 +28,10 @@ export default function Login() {
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [showPass, setShowPass] = useState(true);
-    const [loading, setLoading] = useState(false); // true로 변경
+    const [loading, setLoading] = useState(true); // true로 변경
+
+    const[getk, setGetk] = useState(false);
+    const[getS, setGetS] = useState(false);
 
     const [newsSites, setNewsSites] = useState([]);
     const [uniSites, setUniSites] = useState([]);
@@ -103,6 +106,7 @@ export default function Login() {
                 .then((response) => {
                     // console.log("setKeywords", response.data.keywords);
                     setKeywords(response.data.keywords)
+                    setGetk(true);
                 })
         } catch (error) {
             console.log(error);
@@ -124,6 +128,8 @@ export default function Login() {
                     setNewsSites(response.data.news?.length !== 0 ? [...response.data.news] : []) // 저장한 뉴스 사이트
                     setUniSites(response.data.announce?.length !== 0 ? [...response.data.announce] : []) // 저장한 학교 사이트
                     setWorkSites(response.data.jobs?.length !== 0 ? [...response.data.jobs] : []) // 저장한 일 사이트
+
+                    setGetS(true);
                 })
         } catch (error) {
             console.log(error);
@@ -133,8 +139,6 @@ export default function Login() {
 
     // login===true면 메인화면으로
     useEffect(() => {
-        // console.log("dispatch")
-
         dispatch({
             type: LOGIN,
             login: login,
@@ -144,10 +148,10 @@ export default function Login() {
             name: AsyncStorage.getItem(NAME),
             keywords: keywords,
         });
-        if (login === true) {
-            navigation.navigate('Main')
+        if (login === true && getk ===true && getS===true) {
+            navigation.replace('Main')
         }
-    }, [login, keywords, newsSites, uniSites, workSites]);
+    }, [login, getk, getS]);
 
     // 로그인
     const checkLogin = async () => {
@@ -169,6 +173,8 @@ export default function Login() {
                 setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
 
                 setLogin(true);
+                setGetS(true)
+                setGetk(true)
             })
             .catch(function (error) {
                 alert("아이디 또는 비밀번호가 틀렸습니다.");
