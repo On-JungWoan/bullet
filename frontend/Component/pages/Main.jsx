@@ -27,7 +27,7 @@ export default function Main() {
 
     useEffect(()=>{
         TOKEN = token;
-        console.log("mainToken",TOKEN);
+        // console.log("mainToken",TOKEN);
     },[token])
 
     return (
