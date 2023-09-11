@@ -10,3 +10,9 @@ class Post(models.Model):
     keyword = models.CharField(max_length=200)
     date = models.DateTimeField()
     created_at = models.DateTimeField()
+
+class Notification(models.Model):
+    time = models.DateTimeField()
+    interval_minutes = models.PositiveIntegerField()
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE)
+    

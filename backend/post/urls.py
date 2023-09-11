@@ -6,6 +6,6 @@ app_name='post'
 
 
 urlpatterns = [ 
-    path('<int:id>/', views.PostViewSet.as_view({'get' : 'findById'})),
-    path('user/', views.PostViewSet.as_view({'get' : 'findByUserId'})),
+    path('<int:id>/', views.PostViewSet.as_view({'get' : 'get'})),
+    path('user/', views.PostViewSet.as_view({'get' : 'list'})),
 ]

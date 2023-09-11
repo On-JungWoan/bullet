@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     #drf
     'rest_framework',
     'drf_yasg',
+    # 'django_rq',
+
     # 'drf_api_logger',
 
     #apps
@@ -245,3 +247,23 @@ MEDIA_URL = '/media/'
 CRAWLING_PATH = os.path.join(BASE_DIR.parent, 'component')
 
 SCHEDULER_DEFAULT = True
+
+NOTICE_PATH = os.path.join(BASE_DIR, 'post','notice.py')
+
+# service_account_key = {
+#     "type": env("TYPE"),
+#     "project_id": env("PROJECT_ID"),
+#     "private_key_id": env("PRIVATE_KEY_ID"),
+#     "private_key": env("PRIVATE_KEY").replace("\\\\n", "\\n"),
+#     "client_email": env("CLIENT_EMAIL"),
+#     "client_id": env("CLIENT_ID"),
+#     "auth_uri": env("AUTH_URI"),
+#     "token_uri": env("TOKEN_URI"),
+#     "auth_provider_x509_cert_url": env("AUTH_PROVIDER_X509_CERT_URL"),
+#     "client_x509_cert_url": env("CLIENT_X_509_CERT_URL"),
+# }
+
+# cred = credentials.Certificate(service_account_key)
+# firebase_admin.initialize_app(cred)
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"

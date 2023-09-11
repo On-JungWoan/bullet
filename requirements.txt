@@ -18,6 +18,8 @@ django-environ
 beautifulsoup4
 mysql-connector-python
 APScheduler
+Pillow
+firebase-admin
 # kobart
 # git+https://github.com/SKT-AI/KoBART#egg=kobart
 torch

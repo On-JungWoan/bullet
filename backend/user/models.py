@@ -55,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     keywords = models.ManyToManyField(Keyword, through='UserKeyword')
     sites = models.ManyToManyField(Site, through='UserSite')
     posts = models.ManyToManyField(Post, through='UserPost')
+    interval = models.IntegerField(default=0)
     
     USERNAME_FIELD = 'email'
     # 필수로 작성해야하는 field
@@ -105,3 +106,11 @@ class UserPost(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return self.post.title
+    
+class Device(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    fcmtoken = models.CharField(max_length=200)
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.fcmtoken
