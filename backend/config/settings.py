@@ -248,33 +248,7 @@ CRAWLING_PATH = os.path.join(BASE_DIR.parent, 'component')
 
 SCHEDULER_DEFAULT = True
 
-# # CELERY SETTINGS
-# CELERY_TIMEZONE = 'Asia/Seoul'
-# CELERY_BROKER_URL = 'redis://redis_server:6379/1'
-# CELERY_RESULT_BACKEND = 'redis://redis_server:6379/1'
-# CELERY_ACCEPT_CONTENT = ["json"]
-# CELERY_TASK_SERIALIZER = "json"
-# CELERY_RESULT_SERIALIZER = "json"
-
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': 'redis://redis_server:6379/1',  # redis_server: docker container이름
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-# SESSION_CACHE_ALIAS = "default"
-
-# RQ_QUEUES = {
-#     'default': {
-#     'HOST': 'localhost',
-#     'PORT': 6379,
-#     'DB': 0,
-#     }
-# }
+NOTICE_PATH = os.path.join(BASE_DIR, 'post','notice.py')
 
 # service_account_key = {
 #     "type": env("TYPE"),

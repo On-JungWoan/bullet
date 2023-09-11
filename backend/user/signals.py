@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from .models import User
 from service.models import Keyword
 import asyncio
-from post.utils import send_notification
+#from post.utils import send_notification
 @receiver(post_save, sender=User.keywords.through)
 @receiver(post_delete, sender=User.keywords.through)
 def update_keyword_count(sender, instance, **kwargs):

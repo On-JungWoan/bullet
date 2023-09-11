@@ -5,35 +5,30 @@ from rest_framework import status
 from rest_framework import viewsets
 #models
 from .models import Post
-from user.models import User, UserPost
+from user.models import User
 from .serializers import PostSerializer
 #유저는 데이터를 조회 이외에는 하지 않는다. 유저는 데이터 조회를 위해 토큰 소유를 인증해야 한다.
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-#from rest_framework_simplejwt.authentication import JSONWebTokenAuthentication
-from django.db.models import Q
-from itertools import product
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from config.swagger import auth_param
 #쿼리용 import
-
+from itertools import product
+from django.db.models import Q
 #프론트에서 id를 통해 post를 검색
-class PostViewSet(viewsets.ViewSet):
+class PostViewSet(viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     jwt_auth = JWTAuthentication()
 
-    def findById(request):
+    def get(request):
         id=request.GET.get('id')
         post=Post.objects.get(id=id)
         return Response(post)
 
     #프론트엔드에서 user의 id를 통해 그 유저가 등록한 뉴스를 검색할 수 있음
-    @swagger_auto_schema(manual_parameters=[
-            openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
-    def findByUserId(self, request):
+    @swagger_auto_schema(manual_parameters=auth_param)
+    def list(self, request):
         # 유저 객체 가져오기
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
@@ -53,12 +48,3 @@ class PostViewSet(viewsets.ViewSet):
             posts_serializer = PostSerializer(posts, many=True)
             print(posts_serializer.data)
             return Response(posts_serializer.data)
-
-# @api_view(['POST'])
-# def create(request):
-#     #프론트에서 받은 데이터
-#     serializer = PostSerializer(data=request.data)
-#     #post 인스턴스 저장
-#     serializer.save()
-#     return Response(serializer.data, status=status.HTTP_201_CREATED)
-# Create your views here.

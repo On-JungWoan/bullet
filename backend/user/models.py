@@ -106,3 +106,11 @@ class UserPost(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return self.post.title
+    
+class Device(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    fcmtoken = models.CharField(max_length=200)
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.fcmtoken

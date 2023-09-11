@@ -15,3 +15,4 @@ class Notification(models.Model):
     time = models.DateTimeField()
     interval_minutes = models.PositiveIntegerField()
     user = models.ForeignKey('user.User', on_delete=models.CASCADE)
+    

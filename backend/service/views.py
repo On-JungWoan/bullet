@@ -8,7 +8,7 @@ from .serializers import CategorySerializer, SiteSerializer
 #문서 관련
 from drf_yasg.utils import swagger_auto_schema
 
-class CategoryViewSet(viewsets.ViewSet):
+class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -16,9 +16,9 @@ class CategoryViewSet(viewsets.ViewSet):
     def findAll(self, request):
         categories = self.queryset
         serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-class SiteViewSet(viewsets.ViewSet):
+class SiteViewSet(viewsets.GenericViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
 
@@ -26,5 +26,5 @@ class SiteViewSet(viewsets.ViewSet):
     def findByCategory(self, request, categoryId):
         sites = Site.objects.filter(category = categoryId)
         serializer = SiteSerializer(sites, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -7,14 +7,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import check_password
 #유저 모델 호출
-from .models import User, UserSite, UserKeyword, UserPost
+from .models import User, UserSite, UserKeyword, UserPost, Device
 #데이터 전송 객체 호출
 from . import serializers
 #문서 관련
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from config.swagger import *
 
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
 
     @swagger_auto_schema(request_body=serializers.SignupSerializer())
@@ -28,10 +29,7 @@ class UserViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(request_body=serializers.LoginSerializer(),
-                         manual_parameters=[
-          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
-        )])
+                         manual_parameters=auth_param)
     def login(self, request):
         jwt_auth = JWTAuthentication()
         user_and_token = jwt_auth.authenticate(request)
@@ -82,13 +80,17 @@ class UserViewSet(viewsets.ViewSet):
         else:
             return Response({"message": "이메일이 중복됩니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(parameters = serializers.UserModelSerializer())
-    def findById(self, id):
+    #@swagger_auto_schema(request_body={'id':1}, manual_parameters=auth_param)
+    def get(self, id):
         user = User.objects.get(id=id)
         serializer = self.serializer(user)
         return Response(serializer)
+    
+    def list(self, request):
+        serializer = self.serializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(request_body=serializers.UserModelSerializer())
+    #@swagger_auto_schema(request_body={'password':'1234'}, manual_parameters=auth_param)
     def updatePassword(self, request):
         user = User.objects.get(id = request.user)
         #비밀번호가 동일하다면?
@@ -101,13 +103,10 @@ class UserViewSet(viewsets.ViewSet):
 
 
 #-----------유저별 키워드, 사이트, 포스트 관련-------
-class UserSiteViewSet(viewsets.ViewSet):
+class UserSiteViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()  
-    @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=[
-          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
-        )])
+    @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=auth_param)
     def createUserSite(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
@@ -121,14 +120,12 @@ class UserSiteViewSet(viewsets.ViewSet):
         else:
             return Response({"message": "확인되지않은 유저입니다."},status=status.HTTP_401_UNAUTHORIZED)
 
-    def findAll(self, request):
+    def list(self, request):
             serializer = self.serializer(self.queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @swagger_auto_schema(manual_parameters=[
-            openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
-    def findByUserId(self, request):
+    @swagger_auto_schema(manual_parameters=auth_param)
+    def get(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
             user, _ = user_and_token
@@ -137,10 +134,7 @@ class UserSiteViewSet(viewsets.ViewSet):
         return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)
 
-    @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=[
-          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
-        )])
+    @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=auth_param)
     def delete(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
@@ -155,14 +149,11 @@ class UserSiteViewSet(viewsets.ViewSet):
             return Response({"message": "인증되지않은 유저입니다."},status=status.HTTP_401_UNAUTHORIZED)
     
 
-class UserKeywordViewSet(viewsets.ViewSet):
+class UserKeywordViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
 
-    @swagger_auto_schema(request_body=serializers.SaveUserKeywordSerializer, manual_parameters=[
-          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
-        )])
+    @swagger_auto_schema(request_body=serializers.SaveUserKeywordSerializer, manual_parameters=auth_param)
     def createUserKeyword(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
@@ -176,14 +167,12 @@ class UserKeywordViewSet(viewsets.ViewSet):
                         ,status=status.HTTP_401_UNAUTHORIZED)
 
 
-    def findAll(self, request):
+    def list(self, request):
             serializer = self.serializer(self.queryset, many=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    @swagger_auto_schema(manual_parameters=[
-            openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
-    def findByUserId(self, request):
+    @swagger_auto_schema(manual_parameters=auth_param)
+    def get(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
             user, _ = user_and_token
@@ -208,14 +197,11 @@ class UserKeywordViewSet(viewsets.ViewSet):
                         ,status=status.HTTP_401_UNAUTHORIZED)
         
 
-class UserPostViewSet(viewsets.ViewSet):
+class UserPostViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
 
-    @swagger_auto_schema(request_body=serializers.SaveUserPostSerializer, manual_parameters=[
-            openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
-        )])
+    @swagger_auto_schema(request_body=serializers.SaveUserPostSerializer, manual_parameters=auth_param)
     def createUserPost(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
@@ -226,14 +212,12 @@ class UserPostViewSet(viewsets.ViewSet):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     @swagger_auto_schema()
-    def findAll(self, request):
+    def list(self, request):
         serializer = self.serializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @swagger_auto_schema(manual_parameters=[
-            openapi.Parameter('authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달')])
-    def findByUserId(self, request):
+    @swagger_auto_schema(manual_parameters=auth_param)
+    def get(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
             user, _ = user_and_token
@@ -241,14 +225,11 @@ class UserPostViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-class UserIntervalViewSet(viewsets.ViewSet):
+class UserIntervalViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
     
-    @swagger_auto_schema(request_body=serializers.SetIntervalSerializer, manual_parameters=[
-          openapi.Parameter('Authorization',openapi.IN_HEADER,type=openapi.TYPE_STRING,required=False,
-            description='JWT: 헤더에 Authorization Bearer + access token 형태로 전달'
-        )])
+    @swagger_auto_schema(request_body=serializers.SetIntervalSerializer, manual_parameters=auth_param)
     def setInterval(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
@@ -262,3 +243,14 @@ class UserIntervalViewSet(viewsets.ViewSet):
         else:
             return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)
+        
+class UserFcmTokenViewSet(viewsets.GenericViewSet):
+    queryset = Device.objects.all()
+    @swagger_auto_schema(request_body=serializers.SaveFcmTokenSerializer)
+    def saveFcmToken(self, request):
+        serializer = serializers.SaveFcmTokenSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(validated_data=serializer.validated_data)
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

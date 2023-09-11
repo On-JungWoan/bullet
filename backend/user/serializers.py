@@ -1,22 +1,10 @@
 from rest_framework import serializers
-from .models import User, UserKeyword, UserSite, UserPost
+from .models import User, UserKeyword, UserSite, UserPost, Device
 from post.models import Post
 from post.serializers import PostSerializer
 from service.models import Keyword, Site, Category
 from service.serializers import KeywordSerializer, SiteSerializer, CategorySerializer
 import json
-class UserModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
-
-    def create(self, validated_data):
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return user
 
 #유저의 모든 정보를 저장하는 클래스
 class UserFullDataSerializer(serializers.Serializer):
@@ -45,13 +33,7 @@ class UserFullDataSerializer(serializers.Serializer):
         category = 3
         sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
         return sites_in_category
-    # def update(self, validated_data):
-    #     user = User.objects.get(id=validated_data['id'])
-    #     user.username = validated_data['username']
-    #     user.email = validated_data['email']
-    #     user.image = validated_data['image']
-    #     user.save()
-    #     return user
+
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -106,7 +88,7 @@ class GetUserKeywordSerializer(serializers.ModelSerializer):
     def get_keywords(self, user):
         return list(user.keywords.values_list('name',flat=True))
 
-#유저가 어떤 사이트를 구독했는지 저장하는 클래스
+#유저가 어떤 사이트를 구독했는지를 확인하는 클래스
 class GetUserSiteSerializer(serializers.Serializer):
     announce = serializers.SerializerMethodField()
     news = serializers.SerializerMethodField()
@@ -178,3 +160,11 @@ class SetIntervalSerializer(serializers.Serializer):
         user.interval = validated_data['interval']
         user.save(update_fields=['interval'])
         return user.interval
+    
+class SaveFcmTokenSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    def save(self, validated_data, user):
+        device = Device.objects.get_or_create(user=user)[0]
+        device.fcmtoken = validated_data['token']
+        device.save()
+        return device.fcmtoken
