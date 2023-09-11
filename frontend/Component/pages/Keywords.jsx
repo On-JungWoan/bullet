@@ -1,5 +1,5 @@
 // basic
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import {
     Text, View, TextInput, Pressable, StyleSheet
 } from 'react-native';
@@ -22,6 +22,8 @@ export default function KeywordsSelectPage() {
     const [searchValue, setSearchValue] = useState(''); // 검색 값
 
     const [keywords, setKeywords] = useState(user.keywords?.length ? [...user.keywords] : []);
+
+    const textRef = useRef([])
 
     // 검색 기능
     onChangeSearch = (e) => {

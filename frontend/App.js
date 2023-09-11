@@ -17,6 +17,7 @@ const initState = {
   },
 }
 
+// BaseURL
 export const BaseURL = 'http://192.168.0.9:8000/'
 
 // dispatch 상수
@@ -28,7 +29,7 @@ export const TEST = "TEST";
 
 // action
 const reducer = (state, action) => {
-  console.log("State", state);
+  // console.log("State", state);
   switch (action.type) {
     case LOGIN: // 로그인 시 모든 정보를 받아옴
       return {
@@ -106,6 +107,7 @@ import UniSite from './Component/pages/UniSite.jsx' // 대학교 사이트 선�
 import WorkSite from './Component/pages/WorkSite.jsx' // 일 사이트 선택
 
 import Alarm from "./Component/pages/Alarm.jsx"; // 알림
+import AlarmDetail from './Component/pages/AlarmDetail.jsx' // 알림 자세히
 
 import MyPage from "./Component/pages/MyPage.jsx" // 마이페이지
 
@@ -142,6 +144,7 @@ export default function App() {
             <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
             
             <Stack.Screen name="Alarm" component={Alarm} options={{ headerShown: false }} />
+            <Stack.Screen name="AlarmDetail" component={AlarmDetail} options={{ headerShown: false }} />
             <Stack.Screen name="Keywords" component={KeywordsSelectPage} options={{ headerShown: false }} />
             
             <Stack.Screen name="NewsSite" component={NewsSite} options={{ headerShown: false }} />

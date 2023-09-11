@@ -1,36 +1,22 @@
 // basic
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Pressable,
-  KeyboardAvoidingView,
-} from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, Pressable} from "react-native";
 
 // install
 import { useNavigation } from "@react-navigation/native";
 
 // from App.js
 
-export default function SitesSelectPage({
-  width,
-  transData,
-  transSite,
-  setTransSite,
-  postSite,
-}) {
+export default function SitesSelectPage({ width, transData, transSite, setTransSite, postSite,}) {
   const navigation = useNavigation();
-  console.log(width);
+  
   return (
     <View>
       <ScrollView
         style={{ ...styles.sitesContainer }}
         persistentScrollbar={true}
       >
-        <KeyboardAvoidingView
+        <View
           behavior={Platform.select({ ios: "padding", android: undefined })}
           style={{ ...styles.site }}
         >
@@ -47,7 +33,7 @@ export default function SitesSelectPage({
                     deleteSite.splice(deleteSite.indexOf(post.site), 1);
                     setTransSite([...deleteSite]);
                   }
-                }}
+                }} 
               >
                 <Image
                   style={{
@@ -64,7 +50,7 @@ export default function SitesSelectPage({
               </Pressable>
             );
           })}
-        </KeyboardAvoidingView>
+        </View>
       </ScrollView>
 
       <View style={{ ...styles.buttonContainer }}>

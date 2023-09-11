@@ -101,9 +101,7 @@ def get_result(args):
 
     # get announcement page
     driver = load_chrome_driver(args.chrome_version)
-    # 화면 안뜨게 하기
     # driver.options.add_argument('headless')
-
     driver.get(obj.notice_path)
     driver.implicitly_wait(0.5)
 

@@ -56,6 +56,15 @@ def build_obj(args):
         elif args.name == 'yna':
             from .news import yna
             return yna()
+        elif args.name == 'hani':
+            from .news import hani
+            return hani()
+        elif args.name == 'joongang':
+            from .news import joongang
+            return joongang()
+        elif args.name == 'ytn':
+            from .news import ytn
+            return ytn()               
         
         # job
         elif args.name == 'work':
