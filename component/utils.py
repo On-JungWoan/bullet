@@ -12,7 +12,7 @@ def pat_post_process(tree, idx:int, filter:str = '****PAT****', **pat_dict
         try:
             tmp = tree.xpath(val.replace(filter, f'{idx:02}'))[0]
         except:
-            tmp = tree.xpath(val.replace(filter, f'{idx}'))[0]
+            tmp = tree.xpath(val.replace(filter, f'{idx+3}'))[0]
         
         if key == 'DATE_PAT':
             res.append(

@@ -34,7 +34,11 @@ def crawling(args, obj,
 
             # get details of announcement
             date, title, title_href = pat_post_process(tree=tree, idx=idx, **obj.pat)
-            date = datetime.strptime(str(date), obj.date_format)
+            try:
+                date = datetime.strptime(str(date), obj.date_format)
+            except:
+                print(f'Not validated date : {date}') # format이랑 안맞는 경우 today로 맞춰줌
+                date = datetime.today()
 
             if date.year == 1900:
                 date = date.replace(datetime.now().year)
@@ -53,17 +57,18 @@ def crawling(args, obj,
                     print(f'[제목]{title}\n[링크] {title_href}\n[작성일자] {date}\n')
 
                 sum_res = None
+
                 if not args.no_summarize:
                     # bs4로 공지 내용 받아오기
                     if 'https:' not in title_href:
-                        title_href = 'https:' + title_href
+                        title_href = obj.notice_path + title_href
 
                     try:
                         response = requests.get(title_href)
                         if response.status_code == 200:
                             html = response.text
                             soup = BeautifulSoup(html, 'html.parser')
-                            contents = soup.select_one('#articleWrap > div.content01.scroll-article-zone01 > div > div > article').text
+                            contents = soup.select_one('#article_txt').text
                         else : 
                             print(response.status_code)
                         # 문서 요약하기

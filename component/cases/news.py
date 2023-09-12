@@ -42,3 +42,38 @@ class ytn(news):
                        notice_path='https://www.ytn.co.kr/news/list.php?mcd=0101',
                        next_btn='//*[@id="nav_content"]/div[2]/a[****PAT****]',
                        date_format='%Y-%m-%d %H:%M')
+        
+
+# 조선일보
+class chosun(news):
+    def __init__(self):
+        super().__init__(
+                       date_pat= f'//*[@id="main"]/div[2]/section/div/div/div/div[****PAT****]/div/div/div/div[1]/div[1]/div[3]/div/div[2]/text()',
+                       title_pat=f'//*[@id="main"]/div[2]/section/div/div/div/div[****PAT****]/div/div/div/div[1]/div[1]/div[1]/a/span',
+                       href_pat=f'//*[@id="main"]/div[2]/section/div/div/div/div[****PAT****]/div/div/div/div[1]/div[1]/div[1]/a',
+                       notice_path='https://www.chosun.com/politics/politics_general',
+                       next_btn='//*[@id="nav_content"]/div[2]/a[****PAT****]',
+                       date_format='%Y-%m-%d %H:%M')
+
+
+# 매일경제
+class mk(news):
+    def __init__(self):
+        super().__init__(
+                       date_pat= f'//*[@id="list_area"]/li[****PAT****]/a/div[3]/span/text()',
+                       title_pat=f'//*[@id="list_area"]/li[****PAT****]/a/div[2]/h3',
+                       href_pat=f'//*[@id="list_area"]/li[****PAT****]/a',
+                       notice_path='https://www.mk.co.kr/news/politics',
+                       next_btn='//*[@id="nav_content"]/div[2]/a[****PAT****]',
+                       date_format='%m.%d')
+
+
+# 동아일보
+class donga(news):
+    def __init__(self):
+        super().__init__(
+                       date_pat= f'//*[@id="content"]/div[3]/div[1]/div[****PAT****]/div[2]/span[3]/text()',
+                       title_pat=f'//*[@id="content"]/div[3]/div[1]/div[****PAT****]/div[2]/span[1]/a',
+                       notice_path='https://www.donga.com/news/Politics',
+                       next_btn='//*[@id="nav_content"]/div[2]/a[****PAT****]',
+                       date_format='%Y-%m-%d %H:%M')
