@@ -64,7 +64,16 @@ def build_obj(args):
             return joongang()
         elif args.name == 'ytn':
             from .news import ytn
-            return ytn()               
+            return ytn()
+        elif args.name == 'chosun':
+            from .news import chosun
+            return chosun()
+        elif args.name == 'mk':
+            from .news import mk
+            return mk()
+        elif args.name == 'donga':
+            from .news import donga
+            return donga()
         
         # job
         elif args.name == 'work':
