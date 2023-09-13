@@ -28,7 +28,6 @@ export default function Login() {
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [showPass, setShowPass] = useState(true);
-    const [loading, setLoading] = useState(true); // true로 변경
 
     const[getk, setGetk] = useState(false);
     const[getS, setGetS] = useState(false);
@@ -54,8 +53,6 @@ export default function Login() {
                 token = value;
                 // console.log("login",token)
                 getRefreshToken(); // accessToken이 있으면 refresh를 통해 재 발급
-            } else{
-                setLoading(false);
             }
         })
     }
@@ -84,7 +81,6 @@ export default function Login() {
 
                 getKeyword(response.headers.authorization);
                 getSite(response.headers.authorization);
-                setLoading(false);
 
                 setLogin(true);
             }
@@ -184,12 +180,7 @@ export default function Login() {
 
     return (
         <View style={{ ...styles.container }}>
-            {loading ?
-                <View style={{ ...styles.day, alignItems: 'center' }}>
-                    <ActivityIndicator color="black" size="large" style={{ marginTop: 10 }} />
-                </View>
-                :
-                <ScrollView style={{ ...styles.loginContainer }}>
+            <ScrollView style={{ ...styles.loginContainer }}>
                     <View style={{ ...styles.textContainer }}>
                         <Text style={{ ...styles.mainText, color: "black" }}>로그인</Text>
                     </View>
@@ -246,7 +237,6 @@ export default function Login() {
                         </Pressable>
                     </View>
                 </ScrollView>
-            }
         </View>
 
     );

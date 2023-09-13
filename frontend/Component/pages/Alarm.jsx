@@ -95,10 +95,6 @@ const Alarm = memo(() => {
                   <Pressable
                     onPress={() => {
                       navigation.navigate('AlarmDetail', {data:showAlarm, index:index})
-                      console.log(ann.title);
-                      console.log(ann.content);
-                      console.log(ann.url);
-                      console.log(ann);
                     }}>
                     <Text numberOfLines={1} ellipsizeMode="tail">{ann.title}</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail">{ann.content}</Text>
@@ -155,15 +151,14 @@ const styles = StyleSheet.create({
   },
   keyBox: {
     borderWidth: 1,
-    width: screenWidth * 0.2,
     marginHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
     borderRadius: 30,
   },
   key: {
     textAlign: "center",
     fontSize: 20,
-    lineHeight: 20,
   },
   infoContainer: {
     flex: 6,
