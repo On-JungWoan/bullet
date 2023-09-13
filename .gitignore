@@ -50,3 +50,6 @@ scripts/
 
 # res
 *.json
+!package.json
+node_modules
+google-services.com

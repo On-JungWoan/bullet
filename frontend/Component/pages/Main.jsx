@@ -4,6 +4,8 @@ import {
     Text, View, Pressable, StyleSheet, Image
 } from 'react-native';
 
+import * as Notifications from 'expo-notifications';
+
 // install
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,24 +13,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // 상수
 import { AccessTOKEN } from '../../App';
 
-
 export let TOKEN = '';
+
+// 알림
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: true,
+	}),
+});
 
 export default function Main() {
     const navigation = useNavigation();
 
     const [token, setToken] = useState("");
+    const [notiToken, setNotiToken] = useState("")
 
-    useEffect(()=>{
-        AsyncStorage.getItem(AccessTOKEN).then(value => {
+    useEffect(async ()=>{
+        await AsyncStorage.getItem(AccessTOKEN).then(value => {
             setToken(value)
         });
+        getNotiToken();
     },[])
+
+    const getNotiToken = () =>{
+        Notifications.getExpoPushTokenAsync().then(value=>{
+            setNotiToken(value);
+        })
+    }
 
     useEffect(()=>{
         TOKEN = token;
         // console.log("mainToken",TOKEN);
-    },[token])
+        console.log("notiToken",notiToken)
+    },[token,notiToken])
 
     return (
         <View style={{ ...styles.container }}>

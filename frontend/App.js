@@ -86,10 +86,12 @@ export const dataContext = createContext({
 
 // basic
 // import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, StatusBar} from 'react-native';
+import { StyleSheet, View, StatusBar, Dimensions} from 'react-native';
 import React, {
   useMemo, createContext, useReducer
 } from 'react';
+
+const windowHeight = Dimensions.get("window").height;
 
 // navigator
 import { NavigationContainer } from "@react-navigation/native";
@@ -127,12 +129,12 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <dataContext.Provider value={value} style={{ flex: 1 }}>
+      <dataContext.Provider value={value} style={{ flex: 100 }}>
         <StatusBar backgroundColor="black" color='white'/>
-        <View style={{ flex:1 }}>
+        <View style={{ width:'100%', height:windowHeight*0.1 }}>
           <MainHeader />
         </View>
-        <View style={{ flex:10 }}>
+        <View style={{ width:'100%', height:windowHeight*0.9 }}>
 
           <Stack.Navigator initialRouteName="Login" screenOptions={{ animation: 'none' }}>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
