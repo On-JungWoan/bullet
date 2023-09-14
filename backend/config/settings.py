@@ -17,6 +17,9 @@ from django.core.exceptions import ImproperlyConfigured
 #토큰 유효기간을 설정하기 위한 라이브러리
 from datetime import timedelta
 
+import firebase_admin
+from firebase_admin import credentials
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -250,20 +253,6 @@ SCHEDULER_DEFAULT = True
 
 NOTICE_PATH = os.path.join(BASE_DIR, 'post','notice.py')
 
-# service_account_key = {
-#     "type": env("TYPE"),
-#     "project_id": env("PROJECT_ID"),
-#     "private_key_id": env("PRIVATE_KEY_ID"),
-#     "private_key": env("PRIVATE_KEY").replace("\\\\n", "\\n"),
-#     "client_email": env("CLIENT_EMAIL"),
-#     "client_id": env("CLIENT_ID"),
-#     "auth_uri": env("AUTH_URI"),
-#     "token_uri": env("TOKEN_URI"),
-#     "auth_provider_x509_cert_url": env("AUTH_PROVIDER_X509_CERT_URL"),
-#     "client_x509_cert_url": env("CLIENT_X_509_CERT_URL"),
-# }
-
-# cred = credentials.Certificate(service_account_key)
-# firebase_admin.initialize_app(cred)
+FIREBASE_PATH = os.path.join(BASE_DIR, 'firebase.json')
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"

@@ -9,6 +9,7 @@ launch.json
 *.pyc
 *.sqlite3
 secrets.json
+backend/bullet-68b42-firebase-adminsdk-n3x3l-2f0e861426.json
 
 # summarize model
 *.bin
