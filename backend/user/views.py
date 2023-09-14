@@ -248,11 +248,19 @@ class UserIntervalViewSet(viewsets.GenericViewSet):
         
 class UserFcmTokenViewSet(viewsets.GenericViewSet):
     queryset = Device.objects.all()
-    @swagger_auto_schema(request_body=serializers.SaveFcmTokenSerializer)
+    jwt_auth = JWTAuthentication()
+    
+    @swagger_auto_schema(request_body=serializers.SaveFcmTokenSerializer, manual_parameters=auth_param)
     def saveFcmToken(self, request):
         serializer = serializers.SaveFcmTokenSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(validated_data=serializer.validated_data)
-            return Response(status=status.HTTP_201_CREATED)
+        user_and_token = self.jwt_auth.authenticate(request)
+        if user_and_token is not None:
+            user, _ = user_and_token
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(validated_data=serializer.validated_data, user=user)
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message":"인증되지 않은 유저입니다."}
+                        ,status=status.HTTP_401_UNAUTHORIZED)

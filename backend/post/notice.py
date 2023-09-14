@@ -5,7 +5,15 @@ import mysql.connector
 from pathlib import Path
 import os
 import json
-from firebase_admin import messaging, auth
+import firebase_admin
+from firebase_admin import messaging, credentials
+
+
+def firebase_init():
+    #파이어베이스 토큰을 가져오기 위한 인증
+    cred = credentials.Certificate("FIREBASE_PATH")
+    firebase_admin.initialize_app(cred)
+
 #정해진 시간동안 비동기로 자고있다가 깨어나는 함수. 
 async def send_notification(db_config):
     conn = mysql.connector.connect(**db_config)
@@ -33,7 +41,7 @@ async def send_notification(db_config):
         if messages is not None:
             for message in messages:
                 print(message)
-                # send_to_firebase_cloud_messaging(message[0], message[1])
+                send_to_firebase_cloud_messaging(message[0], message[1])
     else:
         print("Target time has already passed.")
 
@@ -72,6 +80,7 @@ if __name__ == '__main__':
 
 #파이어베이스 클라우드 메시징을 통해 유저에게 알림을 보낸다.
 def send_to_firebase_cloud_messaging(token, count):
+    firebase_init()
     registration_token = token
     message = messaging.Message(
         notification=messaging.Notification(
@@ -98,7 +107,6 @@ def find_message(cur, user_id):
         JOIN post_post AS p ON (k.name = p.keyword AND s.code = p.site)
         WHERE u.id = %s
         GROUP BY ud.id;'''
-    print(user_id)
     cur.execute(select_query, (user_id,))
     data = cur.fetchone()
     print(data)
