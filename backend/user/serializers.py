@@ -125,6 +125,8 @@ class SaveUserKeywordSerializer(serializers.Serializer):
 
     def save(self, validated_data, user):
         print(validated_data)
+        if len(validated_data['keywords']) > 5:
+            return serializers.ValidationError("키워드는 5개까지만 등록할 수 있습니다.")
         UserKeyword.objects.filter(user=user).delete()  # 해당 유저의 모든 키워드 삭제
         keywords = validated_data['keywords']
         keywords_create = [Keyword.objects.get_or_create(name=keyword)[0] for keyword in keywords]
@@ -143,6 +145,8 @@ class SaveUserSiteSerializer(serializers.Serializer):
     sites = serializers.ListField(child=serializers.CharField())
 
     def save(self, validated_data, user):
+        if len(validated_data['sites']) > 5:
+            return serializers.ValidationError("사이트는 5개까지만 등록할 수 있습니다.")
         UserSite.objects.filter(user=user).delete()  # 해당 유저의 모든 사이트 삭제
         sites = validated_data['sites']
         sites_create = [Site.objects.get(name=site) for site in sites]
