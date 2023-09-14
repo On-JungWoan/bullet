@@ -116,7 +116,7 @@ class UserSiteViewSet(viewsets.GenericViewSet):
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "등록되지 않은 사이트입니다."},status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message": "확인되지않은 유저입니다."},status=status.HTTP_401_UNAUTHORIZED)
 
@@ -144,7 +144,7 @@ class UserSiteViewSet(viewsets.GenericViewSet):
                 serializer.delete(validated_data=serializer.validated_data, user = user)
                 return Response(status=status.HTTP_200_OK)
             else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message":"등록되지 않은 사이트입니다."},status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message": "인증되지않은 유저입니다."},status=status.HTTP_401_UNAUTHORIZED)
     
@@ -162,6 +162,8 @@ class UserKeywordViewSet(viewsets.GenericViewSet):
             if serializer.is_valid(raise_exception=True):
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"message":"잘못된 키워드입니다."},status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)
@@ -191,7 +193,7 @@ class UserKeywordViewSet(viewsets.GenericViewSet):
                 serializer.delete(validated_data=serializer.validated_data,user=user)
                 return Response(status=status.HTTP_201_CREATED)
             else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message":"잘못된 키워드 요청입니다."},status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message":"인증되지 않은 유저입니다."}
                         ,status=status.HTTP_401_UNAUTHORIZED)

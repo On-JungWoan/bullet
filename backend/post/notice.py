@@ -30,9 +30,10 @@ async def send_notification(db_config):
         print(messages)
         #추후에 유저 아이디가 아닌 프론트 완성 시 유저의 파이어베이스 토큰으로 교환할 예정
         #param : 유저 아이디, 제목, 내용, 링크 
-        for message in messages:
-            print(message)
-            # send_to_firebase_cloud_messaging(message[0], message[1])
+        if messages is not None:
+            for message in messages:
+                print(message)
+                # send_to_firebase_cloud_messaging(message[0], message[1])
     else:
         print("Target time has already passed.")
 
@@ -97,7 +98,9 @@ def find_message(cur, user_id):
         JOIN post_post AS p ON (k.name = p.keyword AND s.code = p.site)
         WHERE u.id = %s
         GROUP BY ud.id;'''
+    print(user_id)
     cur.execute(select_query, (user_id,))
     data = cur.fetchone()
+    print(data)
     return data
 

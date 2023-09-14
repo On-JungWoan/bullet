@@ -48,3 +48,6 @@ class PostViewSet(viewsets.GenericViewSet):
             posts_serializer = PostSerializer(posts, many=True)
             print(posts_serializer.data)
             return Response(posts_serializer.data)
+        else:
+            return Response({"message":"인증되지 않은 유저입니다."}
+                        ,status=status.HTTP_401_UNAUTHORIZED)
