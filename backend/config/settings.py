@@ -253,6 +253,6 @@ SCHEDULER_DEFAULT = True
 
 NOTICE_PATH = os.path.join(BASE_DIR, 'post','notice.py')
 
-FIREBASE_PATH = os.path.join(BASE_DIR, 'firebase.json')
+FIREBASE_PATH = os.path.join(BASE_DIR, 'bullet-68b42-firebase-adminsdk-n3x3l-2f0e861426.json')
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
