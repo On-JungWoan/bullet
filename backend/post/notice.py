@@ -7,11 +7,12 @@ import os
 import json
 import firebase_admin
 from firebase_admin import messaging, credentials
-
+from config.settings import FIREBASE_PATH
+import requests as r
 
 def firebase_init():
     #파이어베이스 토큰을 가져오기 위한 인증
-    cred = credentials.Certificate("FIREBASE_PATH")
+    cred = credentials.Certificate(FIREBASE_PATH)
     firebase_admin.initialize_app(cred)
 
 #정해진 시간동안 비동기로 자고있다가 깨어나는 함수. 
@@ -39,9 +40,12 @@ async def send_notification(db_config):
         #추후에 유저 아이디가 아닌 프론트 완성 시 유저의 파이어베이스 토큰으로 교환할 예정
         #param : 유저 아이디, 제목, 내용, 링크 
         if messages is not None:
-            for message in messages:
-                print(message)
-                send_to_firebase_cloud_messaging(message[0], message[1])
+            if messages is not list:
+                result = send_to_firebase_cloud_messaging(messages[0], messages[1])
+            else:
+                for message in messages:
+                    result = send_to_firebase_cloud_messaging(message[0], message[1])
+            print(result)
     else:
         print("Target time has already passed.")
 
@@ -80,20 +84,26 @@ if __name__ == '__main__':
 
 #파이어베이스 클라우드 메시징을 통해 유저에게 알림을 보낸다.
 def send_to_firebase_cloud_messaging(token, count):
-    firebase_init()
+    #firebase_init()
     registration_token = token
-    message = messaging.Message(
-        notification=messaging.Notification(
-            title="알림",
-            body="새 소식이 %s개 도착했습니다.".format(count),
-        ),
-        token=registration_token
-    )
-    try:
-        response = messaging.send(message)
-        print(f"Successfully sent message: {response}")
-    except Exception as e:
-        print("예외가 발생했습니다.", e)
+    # message = messaging.Message(
+    #     notification=messaging.Notification(
+    #         title="알림",
+    #         body="새 소식이 %s개 도착했습니다.".format(count),
+    #     ),
+    #     token=registration_token
+    # )
+    # try:
+    #     response = messaging.send(message)
+    #     print(f"Successfully sent message: {response}")
+    # except Exception as e:
+    #     print("예외가 발생했습니다.", e)
+    message = {
+    'to' : token,
+    'title' : "알림",
+    'body' : "새 소식이 %s개 도착했습니다.".format(count),
+  }
+    return r.post('https://exp.host/--/api/v2/push/send', json = message)
 
 #유저에게 해당하는 사이트, 키워드에 대한 첫번째 포스트만 가져온다. 리팩토링해야함.
 def find_message(cur, user_id):
