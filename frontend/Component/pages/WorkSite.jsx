@@ -111,7 +111,7 @@ export default function WorkSite() {
         </View>
         <View style={{ ...styles.showSite }}>
           <SitesSelectPage
-            width={windowWidth*0.9*0.45}
+            numColumns={2}
             transData={workData}
             transSite={transSite}
             setTransSite={setTransSite}

@@ -29,19 +29,34 @@ export const newsData = [
         "src": require("./assets/newsImage/경향.jpg"),
         "site": "경향신문"
     },
+    // {
+    //     "id": "kbs",
+    //     "src": require("./assets/newsImage/kbs.jpg"),
+    //     "site": "kbs"
+    // },
+    // {
+    //     "id": "mbc",
+    //     "src": require("./assets/newsImage/mbc.jpg"),
+    //     "site": "mbc"
+    // },
+    // {
+    //     "id": "sbs",
+    //     "src": require("./assets/newsImage/sbs.jpg"),
+    //     "site": "sbs"
+    // },
     {
-        "id": "kbs",
-        "src": require("./assets/newsImage/kbs.jpg"),
-        "site": "kbs"
+        "id": "ytn",
+        "src": require("./assets/newsImage/Ytn.png"),
+        "site": "ytn"
     },
     {
-        "id": "mbc",
-        "src": require("./assets/newsImage/mbc.jpg"),
-        "site": "mbc"
+        "id": "중앙일보",
+        "src": require("./assets/newsImage/중앙일보.png"),
+        "site": "중앙일보"
     },
     {
-        "id": "sbs",
-        "src": require("./assets/newsImage/sbs.jpg"),
-        "site": "sbs"
+        "id": "한국경제",
+        "src": require("./assets/newsImage/한국경제.png"),
+        "site": "한국경제"
     }
 ]

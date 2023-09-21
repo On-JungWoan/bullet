@@ -111,7 +111,7 @@ export default function UniSite() {
         </View>
         <View style={{ ...styles.showSite }}>
           <SitesSelectPage
-            width={windowWidth*0.9*0.3}
+            numColumns={3}
             transData={universityData}
             transSite={transSite}
             setTransSite={setTransSite}

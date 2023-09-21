@@ -1,57 +1,44 @@
 // basic
-import React, { useEffect, useState, useContext, useCallback } from "react";
-import { Text, View, StyleSheet, Image, ScrollView, Pressable} from "react-native";
+import React from "react";
+import { Text, View, StyleSheet, Image, FlatList, Pressable} from "react-native";
 
 // install
 import { useNavigation } from "@react-navigation/native";
 
 // from App.js
 
-export default function SitesSelectPage({ width, transData, transSite, setTransSite, postSite,}) {
+export default function SitesSelectPage({numColumns, transData, transSite, setTransSite, postSite,}) {
   const navigation = useNavigation();
   
+  const renderItem = ({item, index}) =>{
+    return(
+      <Pressable style={{ marginBottom: 5, flex:1 }} onPress={() => {
+        if (!transSite.includes(item.site)) {
+          setTransSite([...transSite, item.site]);
+        } else {
+          let deleteSite = transSite;
+          deleteSite.splice(deleteSite.indexOf(item.site), 1);
+          setTransSite([...deleteSite]);
+        }
+      }}>
+        <Image style={{ width: '100%', height: 80,
+                    resizeMode: "contain", marginBottom: 3}}
+          source={item.src}
+        />
+        <Text style={{ fontSize: 15, textAlign: "center" }}>{item.id}</Text>
+      </Pressable>
+    )
+  }
+
   return (
-    <View>
-      <ScrollView
-        style={{ ...styles.sitesContainer }}
-        persistentScrollbar={true}
-      >
-        <View
-          behavior={Platform.select({ ios: "padding", android: undefined })}
-          style={{ ...styles.site }}
-        >
-          {transData.map((post, index) => {
-            return (
-              <Pressable
-                style={{ marginBottom: 5 }}
-                key={post.id}
-                onPress={() => {
-                  if (!transSite.includes(post.site)) {
-                    setTransSite([...transSite, post.site]);
-                  } else {
-                    let deleteSite = transSite;
-                    deleteSite.splice(deleteSite.indexOf(post.site), 1);
-                    setTransSite([...deleteSite]);
-                  }
-                }} 
-              >
-                <Image
-                  style={{
-                    width: width,
-                    height: 80,
-                    resizeMode: "stretch",
-                    marginBottom: 3,
-                  }}
-                  source={post.src}
-                />
-                <Text style={{ fontSize: 15, textAlign: "center" }}>
-                  {post.site}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </ScrollView>
+    <View style={{flex:1, width:'100%'}}>
+      <View style={{...styles.sitesContainer, flex:5}}>
+        <FlatList
+          data={transData}
+          renderItem={renderItem}
+          numColumns={numColumns}
+        />
+      </View>
 
       <View style={{ ...styles.buttonContainer }}>
         <Pressable
@@ -85,13 +72,6 @@ const styles = StyleSheet.create({
   sitesContainer: {
     borderWidth: 2,
     marginTop: 10,
-  },
-  site: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    justifyContent: "space-between",
   },
   buttonContainer: {
     flex: 1,
