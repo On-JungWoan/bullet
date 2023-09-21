@@ -1,5 +1,5 @@
 // basic
-import React,{useEffect, useState} from "react";
+import React,{useCallback, useEffect, useState} from "react";
 import {
     Text, View, Pressable, StyleSheet, Image
 } from 'react-native';
@@ -9,9 +9,11 @@ import * as Notifications from 'expo-notifications';
 // install
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 // 상수
 import { AccessTOKEN } from '../../App';
+import { BaseURL } from "../../App";
 
 export let TOKEN = '';
 
@@ -30,23 +32,54 @@ export default function Main() {
     const [token, setToken] = useState("");
     const [notiToken, setNotiToken] = useState("")
 
-    useEffect(async ()=>{
-        await AsyncStorage.getItem(AccessTOKEN).then(value => {
+    useEffect( ()=>{
+        AsyncStorage.getItem(AccessTOKEN).then(value => {
             setToken(value)
         });
-        getNotiToken();
+        // getNotiToken();
     },[])
 
     const getNotiToken = () =>{
-        Notifications.getExpoPushTokenAsync().then(value=>{
-            setNotiToken(value);
+        Notifications.getDevicePushTokenAsync().then(value=>{
+            setNotiToken(value["data"].slice(value["data"].indexOf('[')+1,value["data"].indexOf(']')));
+            // setNotiToken(value["data"]);
         })
     }
+
+    const postAlarmToken = useCallback(async (notiToken) =>{
+        console.log("notiToken2",notiToken)
+        try {
+            await axios
+                .post(`${BaseURL}/user/fcm/`,
+                {
+                    "token":notiToken
+                }, {
+                    headers: {
+                        Authorization: TOKEN,
+                    },
+                }
+                )
+                .then(function (response) {
+                    console.log("notiToken response", response.data);
+                })
+                .catch(function (error) {
+                    alert("에러발생")
+                    console.log("error", error);
+                    throw error;
+                });
+        } catch (error) {
+            console.log("error", error);
+            throw error;
+        }
+    })
 
     useEffect(()=>{
         TOKEN = token;
         // console.log("mainToken",TOKEN);
         console.log("notiToken",notiToken)
+        if(notiToken !==''){
+            postAlarmToken(notiToken);
+        }
     },[token,notiToken])
 
     return (

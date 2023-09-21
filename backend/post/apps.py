@@ -7,5 +7,5 @@ class PostsConfig(AppConfig):
     name = 'post'
     def ready(self):
         from .utils import proc1_main, proc2_main
-        proc1_main()
+        # proc1_main()
     #     proc2_main()
