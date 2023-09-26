@@ -33,11 +33,16 @@ def crawling(args, obj,
                 continue
 
             # get details of announcement
-            date, title, title_href = pat_post_process(tree=tree, idx=idx, **obj.pat)
+            try:
+                date, title, title_href = pat_post_process(tree=tree, idx=idx, **obj.pat)
+            except:
+                idx += 1
+                continue
+
             try:
                 date = datetime.strptime(str(date), obj.date_format)
             except:
-                print(f'Not validated date : {date}') # format이랑 안맞는 경우 today로 맞춰줌
+                # print(f'Not validated date : {date}') # format이랑 안맞는 경우 today로 맞춰줌
                 date = datetime.today()
 
             if date.year == 1900:

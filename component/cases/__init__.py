@@ -74,11 +74,26 @@ def build_obj(args):
         elif args.name == 'donga':
             from .news import donga
             return donga()
+        elif args.name == 'hankyung':
+            from .news import hankyung
+            return hankyung()
+        elif args.name == 'khan':
+            from .news import khan
+            return khan()                
         
         # job
         elif args.name == 'work':
             from .job import work
-            return work()        
+            return work()
+        elif args.name == 'linkareer':
+            from .job import linkareer
+            return linkareer()
+        elif args.name == 'jobkorea':
+            from .job import jobkorea
+            return jobkorea()
+        elif args.name == 'saramin':
+            from .job import saramin
+            return saramin()                        
 
         else:
             msg = '매칭되는 사이트가 없습니다.'
