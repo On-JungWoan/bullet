@@ -77,3 +77,25 @@ class donga(news):
                        notice_path='https://www.donga.com/news/Politics',
                        next_btn='//*[@id="nav_content"]/div[2]/a[****PAT****]',
                        date_format='%Y-%m-%d %H:%M')
+        
+
+# 한국경제
+class hankyung(news):
+    def __init__(self):
+        super().__init__(
+                       date_pat= f'//*[@id="container"]/div/div[1]/div[3]/div/div[2]/ul/li[****PAT****]/div[1]/span/text()',
+                       title_pat=f'//*[@id="container"]/div/div[1]/div[3]/div/div[2]/ul/li[****PAT****]/div[1]/h3/a',
+                       notice_path='https://www.hankyung.com/economy',
+                       next_btn='//*[@id="container"]/div/div[1]/div[****PAT****]/div/div[2]/div[2]/a[3]',
+                       date_format='%Y.%m.%d %H:%M')
+        
+
+# 경향신문
+class khan(news):
+    def __init__(self):
+        super().__init__(
+                       date_pat= f'//*[@id="recentList"]/li[****PAT****]/div[2]/span[1]/text()',
+                       title_pat=f'//*[@id="recentList"]/li[****PAT****]/div[2]/h2/a',
+                       notice_path='https://www.khan.co.kr/politics/politics-general/articles',
+                       next_btn='//*[@id="paging"]/a[****PAT****]',
+                       date_format='%Y.%m.%d %H:%M')
