@@ -12,7 +12,7 @@ export default function SitesSelectPage({numColumns, transData, transSite, setTr
   
   const renderItem = ({item, index}) =>{
     return(
-      <Pressable style={{ marginBottom: 5, flex:1 }} onPress={() => {
+      <Pressable style={{ marginVertical: 10, flex:1 }} onPress={() => {
         if (!transSite.includes(item.site)) {
           setTransSite([...transSite, item.site]);
         } else {

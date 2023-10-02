@@ -6,8 +6,7 @@ import {
 
 // install
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 // from App.js
 import { AddKEYWORD } from "../../App";
@@ -16,14 +15,19 @@ import { TOKEN } from "./Main";
 
 export default function KeywordsSelectPage() {
     const navigation = useNavigation();
+    const route = useRoute("Keywords");
 
     const { dispatch, user } = useContext(dataContext);
 
     const [searchValue, setSearchValue] = useState(''); // 검색 값
-
     const [keywords, setKeywords] = useState(user.keywords?.length ? [...user.keywords] : []);
+    const [category, setCategory] = useState("")
 
     const textRef = useRef([])
+
+    useEffect(()=>{
+        setCategory(route.params?.category)
+    },[])
 
     // 검색 기능
     onChangeSearch = (e) => {
@@ -51,29 +55,31 @@ export default function KeywordsSelectPage() {
             keywords: keywords,
         })
         const data = {
+            category : category,
             keywords: keywords,
         }
-        try {
-            await axios
-                .post(`${BaseURL}/user/keyword/create/`, data, {
-                    headers: {
-                        Authorization: TOKEN,
-                    },
-                }
-                )
-                .then(function (response) {
-                    console.log("keyword", response.data);
-                    navigation.navigate('Register');
-                })
-                .catch(function (error) {
-                    alert("에러발생")
-                    console.log("error", error);
-                    throw error;
-                });
-        } catch (error) {
-            console.log("error", error);
-            throw error;
-        }
+        console.log(data);
+        // try {
+        //     await axios
+        //         .post(`${BaseURL}/user/keyword/create/`, data, {
+        //             headers: {
+        //                 Authorization: TOKEN,
+        //             },
+        //         }
+        //         )
+        //         .then(function (response) {
+        //             console.log("keyword", response.data);
+        //             navigation.navigate('Register');
+        //         })
+        //         .catch(function (error) {
+        //             alert("에러발생")
+        //             console.log("error", error);
+        //             throw error;
+        //         });
+        // } catch (error) {
+        //     console.log("error", error);
+        //     throw error;
+        // }
 
     }
     return (
@@ -113,7 +119,7 @@ export default function KeywordsSelectPage() {
                 </View>
 
                 <View style={{ ...styles.buttonContainer }}>
-                    <Pressable style={{ ...styles.button }} onPress={() => { navigation.navigate('Register'); }}>
+                    <Pressable style={{ ...styles.button }} onPress={() => { navigation.pop(); }}>
                         <Text style={{ color: "white", textAlign: 'center' }}>이전 화면</Text>
                     </Pressable>
 

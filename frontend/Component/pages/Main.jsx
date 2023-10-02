@@ -36,7 +36,7 @@ export default function Main() {
         AsyncStorage.getItem(AccessTOKEN).then(value => {
             setToken(value)
         });
-        // getNotiToken();
+        getNotiToken();
     },[])
 
     const getNotiToken = () =>{
@@ -47,7 +47,7 @@ export default function Main() {
     }
 
     const postAlarmToken = useCallback(async (notiToken) =>{
-        console.log("notiToken2",notiToken)
+        // console.log("notiToken2",notiToken)
         try {
             await axios
                 .post(`${BaseURL}/user/fcm/`,
@@ -60,15 +60,14 @@ export default function Main() {
                 }
                 )
                 .then(function (response) {
-                    console.log("notiToken response", response.data);
+                    // console.log("notiToken response", response.data);
                 })
                 .catch(function (error) {
-                    alert("에러발생")
-                    console.log("error", error);
+                    alert(error)
                     throw error;
                 });
         } catch (error) {
-            console.log("error", error);
+            alert(error);
             throw error;
         }
     })

@@ -63,7 +63,7 @@ export default function UniSite() {
         })
         .then(function (response) {
           // console.log("SitesSelectPage", response.data);
-          navigation.navigate("Register");
+          navigation.navigate("Keywords",{category:"대학"});
         })
         .catch(function (error) {
           alert("에러발생");

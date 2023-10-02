@@ -3,8 +3,6 @@ export const AccessTOKEN = 'AccessTOKEN'
 export const RefreshTOKEN = 'RefreshTOKEN'
 export const NAME = 'NAME'
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-
 // state
 const initState = {
   login: false, // true면 로그인
@@ -18,7 +16,7 @@ const initState = {
 }
 
 // BaseURL
-export const BaseURL = 'http://192.168.0.9:8000/'
+export const BaseURL = 'http://35.216.55.158:80'
 
 // dispatch 상수
 export const LOGIN = "LOGIN"
