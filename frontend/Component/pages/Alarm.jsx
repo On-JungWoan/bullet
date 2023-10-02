@@ -109,22 +109,7 @@ const Alarm = memo(() => {
         </View>
 
         <View style={{ ...styles.buttonContainer }}>
-          <Pressable
-            style={{ ...styles.button }}
-            onPress={() => {
-              navigation.pop();
-            }}
-          >
-            <Text style={{ color: "white", textAlign: "center" }}>
-              이전 화면
-            </Text>
-          </Pressable>
-
-          <Pressable style={{ ...styles.button }} onPress={() => {}}>
-            <Text style={{ color: "white", textAlign: "center" }}>
-              등록하기
-            </Text>
-          </Pressable>
+          
         </View>
       </View>
     </View>

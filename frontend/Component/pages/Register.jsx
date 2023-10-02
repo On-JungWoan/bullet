@@ -32,13 +32,6 @@ const Register = memo(() => {
         navigation.navigate('WorkSite');
     }, [])
 
-    // 키워드 등록
-    onPressKeyword = useCallback(() => {
-        console.log("키워드")
-        navigation.navigate('Keywords');
-    }, [])
-
-
     return (
         <View style={{ ...styles.container }}>
             <View style={styles.moveCompo}>
@@ -46,20 +39,15 @@ const Register = memo(() => {
                     <Image style={{ ...styles.image }} source={require('../../assets/icon.png')} />
                     <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>뉴스 사이트 선택</Text>
                 </Pressable>
-
+                <View style={{flex:0.3}}></View>
                 <Pressable style={{ ...styles.press }} onPress={onPressNotice}>
                     <Image style={{ ...styles.image }} source={require('../../assets/icon.png')} />
                     <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>대학교 사이트 선택</Text>
                 </Pressable>
-
+                <View style={{flex:0.3}}></View>
                 <Pressable style={{ ...styles.press }} onPress={onPressJob}>
                     <Image style={{ ...styles.image }} source={require('../../assets/icon.png')} />
                     <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>취업 사이트 선택</Text>
-                </Pressable>
-
-                <Pressable style={{ ...styles.press }} onPress={onPressKeyword}>
-                    <Image style={{ ...styles.image }} source={require('../../assets/icon.png')} />
-                    <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>키워드 등록</Text>
                 </Pressable>
             </View>
         </View>
@@ -82,7 +70,7 @@ const styles = StyleSheet.create({
     },
     moveCompo: {
         width: '75%',
-        height: '60%',
+        height: '50%',
     },
     press: {
         flex: 1,
@@ -91,8 +79,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
         backgroundColor: 'black',
-
-        marginBottom: 20,
 
         borderRadius: 20,
     },

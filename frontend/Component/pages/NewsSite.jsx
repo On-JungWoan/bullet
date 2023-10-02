@@ -58,7 +58,7 @@ export default function NewsSite() {
         })
         .then(function (response) {
           // console.log("SitesSelectPage", response.data);
-          navigation.navigate("Register");
+          navigation.navigate("Keywords", {category:"뉴스"});
         })
         .catch(function (error) {
           alert("에러발생");

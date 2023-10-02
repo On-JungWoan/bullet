@@ -120,7 +120,7 @@ const MyPage = () => {
                     type : LOGOUT,
                     login : false,
                 });
-                navigation.navigate("Login")
+                navigation.replace("Login")
                 AsyncStorage.clear();
                 }} />
         </View>
