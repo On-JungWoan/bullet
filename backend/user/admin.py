@@ -11,8 +11,8 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(UserKeyword)
 class UserKeywordAdmin(admin.ModelAdmin):
-    list_display=['id','user','keyword']
-    list_filter = ('user','keyword')
+    list_display=['id','name','usersite']
+    list_filter = ('name','usersite')
 
 @admin.register(UserSite)
 class UserSiteAdmin(admin.ModelAdmin):

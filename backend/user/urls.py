@@ -13,7 +13,7 @@ urlpatterns = [
     path('password/update/', views.UserViewSet.as_view({'post' : 'updatePassword'})),
     #읽기용
     path('<int:id>/', views.UserViewSet.as_view({'get' : 'get'})),
-    path('/', views.UserViewSet.as_view({'get' : 'list'})),
+    path('', views.UserViewSet.as_view({'get' : 'list'})),
 
     #user의 키워드, 사이트, 포스트 등록 url
     path('keyword/create/', views.UserKeywordViewSet.as_view({'post' : 'createUserKeyword'})),

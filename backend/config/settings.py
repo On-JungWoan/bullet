@@ -48,6 +48,9 @@ SECRET_KEY = get_secret('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -74,6 +77,8 @@ INSTALLED_APPS = [
     'post',
     #토큰
     'rest_framework_simplejwt',
+    #cors
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +110,9 @@ TEMPLATES = [
         },
     },
 ]
+
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

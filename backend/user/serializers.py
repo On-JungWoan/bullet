@@ -2,9 +2,7 @@ from rest_framework import serializers
 from .models import User, UserKeyword, UserSite, UserPost, Device
 from post.models import Post
 from post.serializers import PostSerializer
-from service.models import Keyword, Site, Category
-from service.serializers import KeywordSerializer, SiteSerializer, CategorySerializer
-import json
+from service.models import Site, Category
 
 #유저의 모든 정보를 저장하는 클래스
 class UserFullDataSerializer(serializers.Serializer):
@@ -12,27 +10,39 @@ class UserFullDataSerializer(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.EmailField()
     keywordCount = serializers.IntegerField()
-    keywords = serializers.SerializerMethodField()
+  #  keywords = serializers.SerializerMethodField()
     announce = serializers.SerializerMethodField()
     news = serializers.SerializerMethodField()
     jobs = serializers.SerializerMethodField()
     image = serializers.ImageField(use_url=True)
 
 
-    def get_keywords(self, user):
-        return list(user.keywords.values_list('name',flat=True))
+    # def get_keywords(self, user):
+    #     return list(user.site.keywords.values_list('name',flat=True))
     def get_announce(self, user):
         category = 1
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return sites_in_category
+        listfield = []
+        sites_in_category = user.sites.filter(category=category)
+        for site in sites_in_category:
+            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
+            listfield.append({site.name:keywords})
+        return listfield
     def get_news(self, user):
         category = 2
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return sites_in_category
+        listfield = []
+        sites_in_category = user.sites.filter(category=category)
+        for site in sites_in_category:
+            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
+            listfield.append({site.name:keywords})
+        return listfield
     def get_jobs(self, user):
         category = 3
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return sites_in_category
+        listfield = []
+        sites_in_category = user.sites.filter(category=category)
+        for site in sites_in_category:
+            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
+            listfield.append({site.name:keywords})
+        return listfield
 
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
 class SignupSerializer(serializers.ModelSerializer):
@@ -82,11 +92,11 @@ class GetUserKeywordSerializer(serializers.ModelSerializer):
     keywords = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
-        fields = ('keywords',)
+        model = UserKeyword
+        fields = ('name','site')
 
     def get_keywords(self, user):
-        return list(user.keywords.values_list('name',flat=True))
+        return list(UserKeyword.objects.filter(site__user_id = user.id).values_list('name',flat=True))
 
 #유저가 어떤 사이트를 구독했는지를 확인하는 클래스
 class GetUserSiteSerializer(serializers.Serializer):
@@ -121,24 +131,30 @@ class SaveUserPostSerializer(serializers.Serializer):
 
 #뉴스를 저장할 때 키워드와 사이트를 통해 저장하기 때문에 유저가 어떤 키워드를 구독했는지 알아야 한다.
 class SaveUserKeywordSerializer(serializers.Serializer):
+    category = serializers.CharField()
     keywords = serializers.ListField(child=serializers.CharField())
 
     def save(self, validated_data, user):
         print(validated_data)
         if len(validated_data['keywords']) > 5:
             return serializers.ValidationError("키워드는 5개까지만 등록할 수 있습니다.")
-        UserKeyword.objects.filter(user=user).delete()  # 해당 유저의 모든 키워드 삭제
+        
+        category = Category.objects.get(name=validated_data['category'])
+        print(category)
+        
+        usersites = UserSite.objects.filter(user=user, site__category=category) 
+        print(usersites)
+        UserKeyword.objects.filter(usersite__in = usersites).delete()  # 해당 유저의 모든 키워드 삭제
+        print("Asdfasdfadf")
         keywords = validated_data['keywords']
-        keywords_create = [Keyword.objects.get_or_create(name=keyword)[0] for keyword in keywords]
-
-        print(keywords_create)
-        user_keyword = [UserKeyword.objects.get_or_create(user=user, keyword=keyword) for keyword in keywords_create]
+        for usersite in usersites:
+            user_keyword = [UserKeyword.objects.get_or_create(usersite=usersite, name=keyword) for keyword in keywords]
         # YourModel 객체들을 일괄 저장
         return user_keyword
     
     def delete(self, validated_data, user):
         keywords = validated_data['keywords']
-        UserKeyword.objects.filter(user=user, keyword=keywords).delete()
+        UserKeyword.objects.filter(site__user=user, keyword=keywords).delete()
         
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class SaveUserSiteSerializer(serializers.Serializer):
@@ -149,8 +165,13 @@ class SaveUserSiteSerializer(serializers.Serializer):
             return serializers.ValidationError("사이트는 5개까지만 등록할 수 있습니다.")
         UserSite.objects.filter(user=user).delete()  # 해당 유저의 모든 사이트 삭제
         sites = validated_data['sites']
-        sites_create = [Site.objects.get(name=site) for site in sites]
-        user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites_create]
+        sites = Site.objects.filter(name__in=sites)
+        print(sites)
+        if len(sites) == 0:
+            print("asdfsf")
+            return serializers.ValidationError("존재하지 않는 사이트입니다.")
+        
+        user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites]
         return user_site
     
     def delete(self, validated_data, user):

@@ -20,10 +20,8 @@ def dataIO(func):
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
         # SELECT 쿼리 작성
-        select_query='''select S.code, K.name, 5 as period from (SELECT DISTINCT S.site_id, K.keyword_id FROM user_usersite S
-                        INNER JOIN user_userkeyword K where S.user_id=K.user_id) SK 
-                        inner join service_site S inner join service_keyword K
-                        where SK.site_id = S.id and SK.keyword_id = K.id and S.code IS NOT NULL;'''
+        select_query='''select S.code, UK.name, 5 as period from user_user U join user_usersite US on US.user_id = U.id
+	join user_userkeyword UK on UK.usersite_id = US.site_id join service_site S on US.site_id=S.id where U.id = 1 IS NOT NULL;'''
         # 쿼리 실행
         cursor.execute(select_query)
         # 결과 가져오기

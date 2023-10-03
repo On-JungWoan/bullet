@@ -20,6 +20,8 @@ mysql-connector-python
 APScheduler
 Pillow
 firebase-admin
+djangorestframework-simplejwt
+django-cors-headers
 # kobart
 # git+https://github.com/SKT-AI/KoBART#egg=kobart
 torch

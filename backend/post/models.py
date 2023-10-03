@@ -1,5 +1,5 @@
 from django.db import models
-from service.models import Site, Keyword
+from service.models import Site
 # Create your models here.
 class Post(models.Model):
     id = models.AutoField(primary_key=True)
