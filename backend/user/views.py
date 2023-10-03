@@ -17,7 +17,7 @@ from config.swagger import *
 
 class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
-
+    serializer_class = serializers.UserFullDataSerializer
     @swagger_auto_schema(request_body=serializers.SignupSerializer())
     def signup(self, request):
         #프론트에서 받아온 데이터
@@ -106,13 +106,14 @@ class UserViewSet(viewsets.GenericViewSet):
 class UserSiteViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()  
+    serializer_class = serializers.SaveUserSiteSerializer
     @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=auth_param)
     def createUserSite(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
         if user_and_token is not None:
             user, _ = user_and_token
             serializer = serializers.SaveUserSiteSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
                 serializer.save(validated_data=serializer.validated_data,user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
@@ -152,7 +153,7 @@ class UserSiteViewSet(viewsets.GenericViewSet):
 class UserKeywordViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
-
+    serializer_class = serializers.SaveUserKeywordSerializer
     @swagger_auto_schema(request_body=serializers.SaveUserKeywordSerializer, manual_parameters=auth_param)
     def createUserKeyword(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
@@ -202,7 +203,7 @@ class UserKeywordViewSet(viewsets.GenericViewSet):
 class UserPostViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
-
+    serializer_class = serializers.SaveUserPostSerializer
     @swagger_auto_schema(request_body=serializers.SaveUserPostSerializer, manual_parameters=auth_param)
     def createUserPost(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
@@ -230,7 +231,7 @@ class UserPostViewSet(viewsets.GenericViewSet):
 class UserIntervalViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     jwt_auth = JWTAuthentication()
-    
+    serializer_class = serializers.SetIntervalSerializer
     @swagger_auto_schema(request_body=serializers.SetIntervalSerializer, manual_parameters=auth_param)
     def setInterval(self, request):
         user_and_token = self.jwt_auth.authenticate(request)
@@ -249,7 +250,7 @@ class UserIntervalViewSet(viewsets.GenericViewSet):
 class UserFcmTokenViewSet(viewsets.GenericViewSet):
     queryset = Device.objects.all()
     jwt_auth = JWTAuthentication()
-    
+    serializer_class = serializers.SaveFcmTokenSerializer
     @swagger_auto_schema(request_body=serializers.SaveFcmTokenSerializer, manual_parameters=auth_param)
     def saveFcmToken(self, request):
         serializer = serializers.SaveFcmTokenSerializer(data=request.data)

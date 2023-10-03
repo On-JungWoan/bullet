@@ -27,10 +27,3 @@ class Site(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return self.name
-
-class Keyword(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200)
-    def __str__(self):
-        """String for representing the Model object."""
-        return self.name

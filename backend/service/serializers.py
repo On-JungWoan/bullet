@@ -1,10 +1,5 @@
 from rest_framework import serializers
-from .models import Keyword, Site, Category
-
-class KeywordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Keyword
-        fields = '__all__'
+from .models import  Site, Category
 
 class SiteSerializer(serializers.ModelSerializer):
     class Meta:
