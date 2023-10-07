@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000"
       },
       "package": "com.leeseungmin.frontend",
@@ -32,6 +32,16 @@
       "eas": {
         "projectId": "01da315c-c056-4ee3-ba6b-a70d9d1eb81c"
       }
-    }
+    },
+    "plugins":[
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ]
   }
 }

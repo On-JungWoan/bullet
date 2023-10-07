@@ -7,10 +7,12 @@ import {
 // install
 import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { API_URL } from '@env';
+const URL = API_URL
 
 // from App.js
 import { AddKEYWORD } from "../../App";
-import { dataContext, BaseURL, AccessTOKEN } from '../../App';
+import { dataContext } from '../../App';
 import { TOKEN } from "./Main";
 
 export default function KeywordsSelectPage() {
@@ -58,28 +60,28 @@ export default function KeywordsSelectPage() {
             category : category,
             keywords: keywords,
         }
-        console.log(data);
-        // try {
-        //     await axios
-        //         .post(`${BaseURL}/user/keyword/create/`, data, {
-        //             headers: {
-        //                 Authorization: TOKEN,
-        //             },
-        //         }
-        //         )
-        //         .then(function (response) {
-        //             console.log("keyword", response.data);
-        //             navigation.navigate('Register');
-        //         })
-        //         .catch(function (error) {
-        //             alert("에러발생")
-        //             console.log("error", error);
-        //             throw error;
-        //         });
-        // } catch (error) {
-        //     console.log("error", error);
-        //     throw error;
-        // }
+        // console.log(data);
+        try {
+            await axios
+                .post(`${URL}/user/keyword/create/`, data, {
+                    headers: {
+                        Authorization: TOKEN,
+                    },
+                }
+                )
+                .then(function (response) {
+                    // console.log("keyword", response.data);
+                    navigation.navigate('Register');
+                })
+                .catch(function (error) {
+                    alert("에러발생")
+                    console.log("error", error);
+                    throw error;
+                });
+        } catch (error) {
+            alert(error);
+            throw error;
+        }
 
     }
     return (

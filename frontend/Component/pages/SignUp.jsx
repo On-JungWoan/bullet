@@ -9,9 +9,8 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Ionicons } from '@expo/vector-icons';
-
-// from App.js
-import { BaseURL } from '../../App';
+import { API_URL } from '@env';
+const URL = API_URL
 
 // component
 import BasicButton from '../components/Button';
@@ -56,7 +55,12 @@ export default function SignUp() {
     // 비밀번호 형식 확인
     const passwordForm = (e) => {
         if (e) {
-            setErrorPassword('');
+            if(e !== checkPassword){
+                setErrorCheckPassword('비밀번호가 다릅니다.')
+            } else{
+                setErrorPassword('');
+                setErrorCheckPassword('');
+            }
         } else {
             setErrorPassword('비밀번호를 입력해주세요');
         }
@@ -87,7 +91,7 @@ export default function SignUp() {
             }
             try {
                 await axios
-                    .post(`${BaseURL}/user/signup/`, data)
+                    .post(`${URL}/user/signup/`, data)
                     .then(function (response) {
                         console.log("checkSignUp", response.data);
                         alert("회원가입을 축하드립니다.");
@@ -215,7 +219,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
 
         fontSize: 20,
-        color: '#888'
+        color: '#888',
+        marginBottom : 5,
     },
     buttonContainer: {
         flex: 1,
