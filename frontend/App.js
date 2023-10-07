@@ -15,9 +15,6 @@ const initState = {
   },
 }
 
-// BaseURL
-export const BaseURL = 'http://35.216.55.158:80'
-
 // dispatch 상수
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"

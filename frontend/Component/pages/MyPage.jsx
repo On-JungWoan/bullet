@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import React, { useEffect, useState, useContext } from "react";
-import { Text, Button, View,StyleSheet } from "react-native";
+import { Text, Button, View, StyleSheet } from "react-native";
 import { NAME } from "../../App";
 
 import { useNavigation } from "@react-navigation/native";
@@ -30,25 +30,49 @@ const MyPage = () => {
         <View style={{ flex: 0.5 }}></View>
 
         <View style={{ flex: 2 }}>
-          <View style={{ ...styles.usingContainer}}>
+          <View style={{ ...styles.usingContainer }}>
             <View style={{ flex: 1 }}>
-              <Text style={{...styles.usingText}}>이용권</Text>
+              <Text style={{ ...styles.usingText }}>이용권</Text>
             </View>
             <View style={{ flex: 1 }}>
-                <Text style={{...styles.usingText}}>사이트</Text>
+              <Text style={{ ...styles.usingText }}>사이트</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{...styles.usingText}}>키워드</Text>
+              <Text style={{ ...styles.usingText }}>키워드</Text>
             </View>
           </View>
           <View style={{ ...styles.countContainer }}>
-            <View style={{ flex: 1, borderRightWidth: 1, justifyContent: "center", alignItems: "center"}}>
+            <View
+              style={{
+                flex: 1,
+                borderRightWidth: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            ></View>
+            <View
+              style={{
+                flex: 1,
+                borderRightWidth: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>
+                현재 사용 :{" "}
+                {user.newsSites.length +
+                  user.uniSites.length +
+                  user.workSites.length}
+              </Text>
             </View>
-            <View style={{ flex: 1, borderRightWidth: 1,justifyContent: "center", alignItems: "center" }}>
-                <Text>현재 사용 : {user.newsSites.length +user.uniSites.length+user.workSites.length}</Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text>현재 사용 : {user.keywords.length}</Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>현재 사용 : {user.keywords.length}</Text>
             </View>
           </View>
         </View>
@@ -57,7 +81,7 @@ const MyPage = () => {
 
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={{ fontSize: 16, fontWeight: 400 }}>
-          {name}님이 구독 중인 키워드/사이트
+            {name}님이 구독 중인 키워드/사이트
           </Text>
         </View>
 
@@ -115,16 +139,20 @@ const MyPage = () => {
           </View>
         </View>
         <View>
-            <Button title="로그아웃" onPress={()=>{
-                 dispatch({
-                    type : LOGOUT,
-                    login : false,
-                });
-                navigation.replace("Login")
-                AsyncStorage.clear();
-                }} />
+          <Button
+            title="로그아웃"
+            onPress={() => {
+              navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+              navigation.replace("Login");
+              dispatch({
+                type: LOGOUT,
+                login: false,
+              });
+              AsyncStorage.clear();
+            }}
+          />
         </View>
-        <View style={{flex:1}}></View>
+        <View style={{ flex: 1 }}></View>
       </View>
     </View>
   );
@@ -133,16 +161,18 @@ const MyPage = () => {
 export default MyPage;
 
 const styles = StyleSheet.create({
-    usingContainer:{
-        flex: 1, flexDirection: "row" 
-    },
-    usingText : {
-        fontSize: 12,
-        textAlign: "center",
-        fontWeight: "bold",
-    },
-    countContainer:{
-        borderWidth: 1, flex: 4, flexDirection: "row" 
-    }
+  usingContainer: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  usingText: {
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  countContainer: {
+    borderWidth: 1,
+    flex: 4,
+    flexDirection: "row",
+  },
 });
-  
