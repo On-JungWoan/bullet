@@ -13,7 +13,7 @@ class UserFullDataSerializer(serializers.Serializer):
   #  keywords = serializers.SerializerMethodField()
     announce = serializers.SerializerMethodField()
     news = serializers.SerializerMethodField()
-    jobs = serializers.SerializerMethodField()
+    job = serializers.SerializerMethodField()
     image = serializers.ImageField(use_url=True)
 
 
@@ -23,25 +23,31 @@ class UserFullDataSerializer(serializers.Serializer):
         category = 1
         listfield = []
         sites_in_category = user.sites.filter(category=category)
-        for site in sites_in_category:
-            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
-            listfield.append({site.name:keywords})
+        # for site in sites_in_category:
+        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
+        listfield.append({"keysords":keywords})
+
+        print(listfield)
         return listfield
     def get_news(self, user):
         category = 2
         listfield = []
         sites_in_category = user.sites.filter(category=category)
-        for site in sites_in_category:
-            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
-            listfield.append({site.name:keywords})
+        # for site in sites_in_category:
+        #     keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
+        #     listfield.append({site.name:keywords})
+        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
+        listfield.append({"keysords":keywords})
         return listfield
     def get_jobs(self, user):
         category = 3
         listfield = []
         sites_in_category = user.sites.filter(category=category)
-        for site in sites_in_category:
-            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
-            listfield.append({site.name:keywords})
+        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
+        listfield.append({"keysords":keywords})
         return listfield
 
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
