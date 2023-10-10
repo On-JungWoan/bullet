@@ -10,6 +10,7 @@ class UserFullDataSerializer(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.EmailField()
     keywordCount = serializers.IntegerField()
+    siteCount = serializers.IntegerField()
   #  keywords = serializers.SerializerMethodField()
     announce = serializers.SerializerMethodField()
     news = serializers.SerializerMethodField()
@@ -43,7 +44,7 @@ class UserFullDataSerializer(serializers.Serializer):
         #     listfield.append({site.name:keywords})
         keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
-        listfield.append({"keysords":keywords})
+        listfield.append({"keywords":keywords})
         return listfield
     def get_job(self, user):
         category = 3
