@@ -13,7 +13,7 @@ class UserFullDataSerializer(serializers.Serializer):
   #  keywords = serializers.SerializerMethodField()
     announce = serializers.SerializerMethodField()
     news = serializers.SerializerMethodField()
-    jobs = serializers.SerializerMethodField()
+    job = serializers.SerializerMethodField()
     image = serializers.ImageField(use_url=True)
 
 
@@ -23,25 +23,37 @@ class UserFullDataSerializer(serializers.Serializer):
         category = 1
         listfield = []
         sites_in_category = user.sites.filter(category=category)
-        for site in sites_in_category:
-            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
-            listfield.append({site.name:keywords})
+        if sites_in_category.count() == 0:
+            return listfield
+        # for site in sites_in_category:
+        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
+        listfield.append({"keysords":keywords})
+
+        print(listfield)
         return listfield
     def get_news(self, user):
         category = 2
         listfield = []
         sites_in_category = user.sites.filter(category=category)
-        for site in sites_in_category:
-            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
-            listfield.append({site.name:keywords})
+        if sites_in_category.count() == 0:
+            return listfield
+        # for site in sites_in_category:
+        #     keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
+        #     listfield.append({site.name:keywords})
+        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
+        listfield.append({"keysords":keywords})
         return listfield
-    def get_jobs(self, user):
+    def get_job(self, user):
         category = 3
         listfield = []
         sites_in_category = user.sites.filter(category=category)
-        for site in sites_in_category:
-            keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
-            listfield.append({site.name:keywords})
+        if sites_in_category.count() == 0:
+            return listfield
+        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
+        listfield.append({"keysords":keywords})
         return listfield
 
 #유저가 어떤 키워드를 구독했는지 저장하는 클래스.
@@ -137,7 +149,7 @@ class SaveUserKeywordSerializer(serializers.Serializer):
     def save(self, validated_data, user):
         print(validated_data)
         if len(validated_data['keywords']) > 5:
-            return serializers.ValidationError("키워드는 5개까지만 등록할 수 있습니다.")
+            raise serializers.ValidationError("키워드는 5개까지만 등록할 수 있습니다.", code='invalid')
         
         category = Category.objects.get(name=validated_data['category'])
         print(category)
@@ -162,14 +174,14 @@ class SaveUserSiteSerializer(serializers.Serializer):
 
     def save(self, validated_data, user):
         if len(validated_data['sites']) > 5:
-            return serializers.ValidationError("사이트는 5개까지만 등록할 수 있습니다.")
+            raise serializers.ValidationError("사이트는 5개까지만 등록할 수 있습니다.")
         UserSite.objects.filter(user=user).delete()  # 해당 유저의 모든 사이트 삭제
-        sites = validated_data['sites']
-        sites = Site.objects.filter(name__in=sites)
+        non_filtering_sites = validated_data['sites']
+        sites = Site.objects.filter(name__in=non_filtering_sites)
         print(sites)
-        if len(sites) == 0:
+        if len(sites) < len(non_filtering_sites) or sites.count() == 0:
             print("asdfsf")
-            return serializers.ValidationError("존재하지 않는 사이트입니다.")
+            raise serializers.ValidationError("존재하지 않는 사이트가 요청되었습니다.")
         
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites]
         return user_site
