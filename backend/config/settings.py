@@ -192,7 +192,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'exceptions.exception_handlers.custom_exception_handler'
 }
 
 #발급받은 토큰은 7일 후에 파괴된다. 토큰을 갱신할 경우 28일 내에 새로운 토큰으로 교체 가능
