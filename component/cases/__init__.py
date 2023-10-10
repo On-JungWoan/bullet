@@ -93,7 +93,14 @@ def build_obj(args):
             return jobkorea()
         elif args.name == 'saramin':
             from .job import saramin
-            return saramin()                        
+            return saramin()
+        elif args.name == 'incruit':
+            from .job import incruit
+            return incruit()
+        elif args.name == 'intellipick':
+            from .job import intellipick
+            return intellipick()
+
 
         else:
             msg = '매칭되는 사이트가 없습니다.'

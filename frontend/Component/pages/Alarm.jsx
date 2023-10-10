@@ -10,13 +10,13 @@ import {
 // install
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from '@env';
+const URL = API_URL
+
 
 // from
 import { dataContext } from "../../App";
-import { BaseURL } from "../../App";
 import { TOKEN } from "./Main";
-
-let screenWidth = Dimensions.get("window").width;
 
 const Alarm = memo(() => {
   const navigation = useNavigation();
@@ -31,7 +31,7 @@ const Alarm = memo(() => {
   const getAlarm = useCallback(async () => {
     try {
       await axios
-        .get(`${BaseURL}/post/user/`, {
+        .get(`${URL}/post/user/`, {
           headers: {
             Authorization: TOKEN,
           },

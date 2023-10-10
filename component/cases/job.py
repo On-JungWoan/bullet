@@ -44,3 +44,26 @@ class saramin(job):
                        notice_path='https://www.saramin.co.kr/zf_user/company-review-qst-and-ans/sub?page=1',
                        next_btn='//*[@id="qst_and_ans_list"]/div[****PAT****]/a[1]',
                        date_format='%Y-%m-%d')
+
+
+# 인크루트
+class incruit(job):
+    def __init__(self):
+        super().__init__(
+                       date_pat='//*[@id="macy-container"]/div[1]/div/a/em[2]/time/text()',
+                       title_pat='//*[@id="macy-container"]/div[****PAT****]/div/a/strong',
+                       href_pat='//*[@id="macy-container"]/div[****PAT****]/div/a',
+                       notice_path='https://news.incruit.com/news/newslist.asp',
+                       next_btn='//*[@id="Newslist"]/p/a[****PAT****]',
+                       date_format='%Y.%m.%d')
+
+
+# 인텔리픽
+class intellipick(job):
+    def __init__(self):
+        super().__init__(
+                       date_pat='//*[@id="qst_and_ans_list"]/div[1]/li[****PAT****]/div[2]/div/span/text()',
+                       title_pat='//*[@id="__next"]/main/div/div/div/div[3]/div[2]/div[1]/a[****PAT****]/div[2]/div[2]',
+                       notice_path='https://intellipick.spartacodingclub.kr/',
+                       next_btn='//*[@id="qst_and_ans_list"]/div[****PAT****]/a[1]',
+                       date_format='%Y-%m-%d')

@@ -5,11 +5,12 @@ import { Text, View, StyleSheet, TextInput, Dimensions } from "react-native";
 // install
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from '@env';
+const URL = API_URL
 
 // from App.js
 import { dataContext } from "../../App";
 import { AddSITE } from "../../App";
-import { BaseURL } from "../../App";
 import { TOKEN } from "./Main";
 
 // 데이터
@@ -42,11 +43,6 @@ export default function WorkSite() {
       sites: [...user.newsSites, ...user.uniSites, ...transSite],
     };
 
-    console.log(data);
-    console.log("transSite", user.newsSites);
-    console.log("user.uniSites", user.uniSites);
-    console.log("user.workSites", transSite);
-
     dispatch({
       type: AddSITE,
       newsSites: user.newsSites,
@@ -56,7 +52,7 @@ export default function WorkSite() {
 
     try {
       await axios
-        .post(`${BaseURL}/user/site/create/`, data, {
+        .post(`${URL}/user/site/create/`, data, {
           headers: {
             Authorization: TOKEN,
           },

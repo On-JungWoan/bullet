@@ -10,10 +10,11 @@ import * as Notifications from 'expo-notifications';
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
+import { API_URL } from '@env';
+const URL = API_URL
 
 // 상수
 import { AccessTOKEN } from '../../App';
-import { BaseURL } from "../../App";
 
 export let TOKEN = '';
 
@@ -47,10 +48,10 @@ export default function Main() {
     }
 
     const postAlarmToken = useCallback(async (notiToken) =>{
-        // console.log("notiToken2",notiToken)
+        console.log("notiToken2",notiToken)
         try {
             await axios
-                .post(`${BaseURL}/user/fcm/`,
+                .post(`${URL}/user/fcm/`,
                 {
                     "token":notiToken
                 }, {
@@ -74,10 +75,8 @@ export default function Main() {
 
     useEffect(()=>{
         TOKEN = token;
-        // console.log("mainToken",TOKEN);
-        console.log("notiToken",notiToken)
         if(notiToken !==''){
-            postAlarmToken(notiToken);
+            // postAlarmToken(notiToken);
         }
     },[token,notiToken])
 

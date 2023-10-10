@@ -10,12 +10,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { API_URL } from '@env';
+const URL = API_URL
 
 // from App.js
 import { AccessTOKEN, RefreshTOKEN, NAME } from '../../App';
 import { dataContext } from '../../App';
 import { LOGIN } from '../../App';
-import { BaseURL } from '../../App';
 
 // component
 import BasicButton from '../components/Button';
@@ -29,7 +30,6 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [showPass, setShowPass] = useState(true);
 
-    const[getk, setGetk] = useState(false);
     const[getS, setGetS] = useState(false);
 
     const [newsSites, setNewsSites] = useState([]);
@@ -41,7 +41,7 @@ export default function Login() {
     // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
         setLogin(false);
-        getAccessToken(); // token 유무를 확인 후 토큰 재발급
+        // getAccessToken(); // token 유무를 확인 후 토큰 재발급
     }, [])
 
 
@@ -63,7 +63,6 @@ export default function Login() {
             .then(value => {
                 if (value) { // refreshToken
                     token = value;
-
                 }
             })
         reissueToken(token);
@@ -75,13 +74,10 @@ export default function Login() {
             "refresh" : token,
         }
         try {
-            await axios.post(`${BaseURL}/api/token/refresh/`, data)
+            await axios.post(`${URL}/api/token/refresh/`, data)
             .then( function(response) {
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization);
-
-                getKeyword(response.headers.authorization);
                 getSite(response.headers.authorization);
-
                 setLogin(true);
             }
 
@@ -91,29 +87,10 @@ export default function Login() {
         }
     }, [])
 
-    // 자동 로그인시 등록 키워드 가져오기
-    const getKeyword = useCallback(async (token) => {
-        try {
-            await axios.get(`${BaseURL}/user/keyword/`, {
-                headers: {
-                    Authorization: token,
-                }
-            })
-                .then((response) => {
-                    // console.log("setKeywords", response.data.keywords);
-                    setKeywords(response.data.keywords)
-                    setGetk(true);
-                })
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }, []);
-
     // 자동 로그인시 등록 사이트 가져오기
     const getSite = useCallback(async (token) => {
         try {
-            await axios.get(`${BaseURL}/user/site/`, {
+            await axios.get(`${URL}/user/site/`, {
                 headers: {
                     Authorization: token,
                 }
@@ -133,50 +110,59 @@ export default function Login() {
         }
     }, []);
 
-    // login===true면 메인화면으로
-    useEffect(() => {
-        dispatch({
-            type: LOGIN,
-            login: login,
-            newsSites: newsSites,
-            uniSites: uniSites,
-            workSites: workSites,
-            name: AsyncStorage.getItem(NAME),
-            keywords: keywords,
-        });
-        if (login === true && getk ===true && getS===true) {
-            navigation.replace('Main')
+    
+    const loginGetSite= (data)=>{
+        const arr=[];
+        for(let i of data){
+            arr.push(...Object.keys(i))
         }
-    }, [login, getk, getS]);
+        return arr;
+    }
 
     // 로그인
     const checkLogin = async () => {
-        console.log("login");
         const data = {
             email: id,
             password: password
         }
         await axios
-            .post(`${BaseURL}/user/login/`, data)
+            .post(`${URL}/user/login/`, data)
             .then(function (response) {
                 console.log("login", response.data);
+
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
                 AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
-                setNewsSites(response.data.sites?.length !== 0 ? [...response.data.news] : []) // 저장한 뉴스 사이트
-                setUniSites(response.data.sites?.length !== 0 ? [...response.data.announce] : []) // 저장한 학교 사이트
-                setWorkSites(response.data.sites?.length !== 0 ? [...response.data.jobs] : []) // 저장한 일 사이트
-                setKeywords(response.data.keywords?.length !== 0 ? [...response.data.keywords] : []) // 저장한 키워드
-
+                setNewsSites(loginGetSite(response.data.news)) // 저장한 뉴스 사이트
+                setUniSites(loginGetSite(response.data.announce)) // 저장한 학교 사이트
+                setWorkSites(loginGetSite(response.data.jobs)) // 저장한 일 사이트
+                // setKeywords([...response.data.keywords]) // 저장한 키워드
+                // console.log(keywords);
                 setLogin(true);
-                setGetS(true)
-                setGetk(true)
+                setGetS(true);
             })
             .catch(function (error) {
-                alert("아이디 또는 비밀번호가 틀렸습니다.");
-                console.log(error);
+                alert(`로그인 ${error}`);
+                throw(error);
             });
     }
+
+        // login===true면 메인화면으로
+        useEffect(() => {
+            dispatch({
+                type: LOGIN,
+                login: login,
+                newsSites: newsSites,
+                uniSites: uniSites,
+                workSites: workSites,
+                name: AsyncStorage.getItem(NAME),
+                keywords: keywords,
+            });
+    
+            if (login === true && getS===true) {
+                navigation.replace('Main')
+            }
+        }, [login, getS]);
 
     return (
         <View style={{ ...styles.container }}>
