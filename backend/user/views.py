@@ -104,7 +104,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
 #-----------유저별 키워드, 사이트, 포스트 관련-------
 class UserSiteViewSet(viewsets.GenericViewSet):
-    queryset = User.objects.all()
+    queryset = UserSite.objects.all()
     jwt_auth = JWTAuthentication()  
     serializer_class = serializers.SaveUserSiteSerializer
     @swagger_auto_schema(request_body=serializers.SaveUserSiteSerializer, manual_parameters=auth_param)
@@ -151,7 +151,7 @@ class UserSiteViewSet(viewsets.GenericViewSet):
     
 
 class UserKeywordViewSet(viewsets.GenericViewSet):
-    queryset = User.objects.all()
+    queryset = UserKeyword.objects.all()
     jwt_auth = JWTAuthentication()
     serializer_class = serializers.SaveUserKeywordSerializer
     @swagger_auto_schema(request_body=serializers.SaveUserKeywordSerializer, manual_parameters=auth_param)
