@@ -1,5 +1,5 @@
 // basic
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
     Text, View, TextInput, Pressable, StyleSheet
 } from 'react-native';
@@ -22,14 +22,30 @@ export default function KeywordsSelectPage() {
     const { dispatch, user } = useContext(dataContext);
 
     const [searchValue, setSearchValue] = useState(''); // 검색 값
-    const [keywords, setKeywords] = useState(user.keywords?.length ? [...user.keywords] : []);
+    const [keywords, setKeywords] = useState([]);
+    const [postKeywords, setPostKeywords] = useState([]);
     const [category, setCategory] = useState("")
-
-    const textRef = useRef([])
 
     useEffect(()=>{
         setCategory(route.params?.category)
+        checkCategory(route.params?.category);
     },[])
+
+    useEffect(()=>{
+        dispatchKeyword(category);
+    },[keywords])
+
+    const checkCategory = useCallback((text)=>{
+        console.log("checkCategory",text);
+        if(text === "news"){
+            setKeywords(user.newsKeywords?.length ? [...user.newsKeywords] : [])
+        }else if(text==="announce"){
+            setKeywords(user.uniKeywords?.length ? [...user.uniKeywords] : [])
+        }else if(text==="job"){
+            setKeywords(user.workKeywords?.length ? [...user.workKeywords] : [])
+        }
+    },[])
+
 
     // 검색 기능
     onChangeSearch = (e) => {
@@ -43,7 +59,37 @@ export default function KeywordsSelectPage() {
         }
 
         setKeywords([...keywords, searchValue]);
-        setSearchValue('')
+        setSearchValue('');
+    }
+
+    const dispatchKeyword = (text)=>{
+        console.log("dispatchKeyword",text);
+        if(text === "news"){
+            setPostKeywords([...keywords, ...user.uniKeywords, ...user.workKeywords])
+            dispatch({
+                type: AddKEYWORD,
+                newsKeywords:keywords,
+                uniKeywords:user.uniKeywords,
+                workKeywords:user.workKeywords,
+            })
+        }else if(text==="job"){
+            setPostKeywords([...keywords, ...user.uniKeywords, ...user.newsKeywords])
+            dispatch({
+                type: AddKEYWORD,
+                newsKeywords:user.newsKeywords,
+                uniKeywords:user.uniKeywords,
+                workKeywords:keywords,
+            })
+        }else if(text==="announce"){
+            setPostKeywords([...keywords, ...user.newsKeywords, ...user.workKeywords])
+            dispatch({
+                type: AddKEYWORD,
+                newsKeywords:user.newsKeywords,
+                uniKeywords:keywords,
+                workKeywords:user.workKeywords,
+            })
+        }
+
     }
 
     const postKeyword = async () => {
@@ -51,16 +97,14 @@ export default function KeywordsSelectPage() {
             alert('선택한 단어가 없습니다.');
             return;
         }
-
-        dispatch({
-            type: AddKEYWORD,
-            keywords: keywords,
-        })
+        
         const data = {
             category : category,
-            keywords: keywords,
+            keywords: postKeywords,
         }
-        // console.log(data);
+
+        console.log(data);
+
         try {
             await axios
                 .post(`${URL}/user/keyword/create/`, data, {
@@ -82,8 +126,8 @@ export default function KeywordsSelectPage() {
             alert(error);
             throw error;
         }
-
     }
+
     return (
 
         <View style={{ ...styles.container }}>
@@ -93,7 +137,7 @@ export default function KeywordsSelectPage() {
 
                     <TextInput placeholder="키워드를 입력하세요" autoCapitalize="none" autoCorrect={false}
                         style={{ ...styles.searchInput }} value={searchValue} onChangeText={onChangeSearch}
-                        onSubmitEditing={onSubmitText} />
+                        onSubmitEditing={onSubmitText}/>
                 </View>
 
                 <View>

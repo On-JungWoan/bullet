@@ -1,6 +1,6 @@
 // basic
-import React, { useEffect, useState, useContext, useCallback } from "react";
-import { Text, View, StyleSheet, TextInput, Dimensions } from "react-native";
+import React, { useState, useContext } from "react";
+import { Text, View, StyleSheet, TextInput } from "react-native";
 
 // install
 import axios from "axios";
@@ -18,8 +18,6 @@ import { universityData } from "../../university";
 
 // component
 import SitesSelectPage from "../components/SiteContainer";
-
-const windowWidth = Dimensions.get("window").width;
 
 export default function UniSite() {
   const navigation = useNavigation();
@@ -43,8 +41,6 @@ export default function UniSite() {
       sites: [...user.newsSites, ...user.workSites, ...transSite],
     };
 
-    console.log("user.workSites", user.workSites);
-
     dispatch({
       type: AddSITE,
       newsSites: user.newsSites,
@@ -61,7 +57,7 @@ export default function UniSite() {
         })
         .then(function (response) {
           // console.log("SitesSelectPage", response.data);
-          navigation.navigate("Keywords",{category:"대학"});
+          navigation.navigate("Keywords",{category:"announce"});
         })
         .catch(function (error) {
           alert("에러발생");
