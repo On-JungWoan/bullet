@@ -1,6 +1,6 @@
 // basic
-import React, { useEffect, useState, useContext, useCallback } from "react";
-import { Text, View, StyleSheet, TextInput, Dimensions } from "react-native";
+import React, { useState, useContext } from "react";
+import { Text, View, StyleSheet, TextInput } from "react-native";
 
 // install
 import axios from "axios";
@@ -18,8 +18,6 @@ import { newsData } from "../../news";
 
 // component
 import SitesSelectPage from "../components/SiteContainer";
-
-const windowWidth = Dimensions.get("window").width;
 
 export default function NewsSite() {
   const navigation = useNavigation();
@@ -59,7 +57,7 @@ export default function NewsSite() {
         })
         .then(function (response) {
           // console.log("SitesSelectPage", response.data);
-          navigation.navigate("Keywords", {category:"뉴스"});
+          navigation.navigate("Keywords", {category:"news"});
         })
         .catch(function (error) {
           alert("에러발생");

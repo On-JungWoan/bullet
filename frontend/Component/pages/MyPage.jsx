@@ -60,9 +60,7 @@ const MyPage = () => {
             >
               <Text>
                 현재 사용 :{" "}
-                {user.newsSites.length +
-                  user.uniSites.length +
-                  user.workSites.length}
+                {user.siteCount}
               </Text>
             </View>
             <View
@@ -72,7 +70,7 @@ const MyPage = () => {
                 alignItems: "center",
               }}
             >
-              <Text>현재 사용 : {user.keywords.length}</Text>
+              <Text>현재 사용 : {user.newsKeywords.length +user.uniKeywords.length + user.workKeywords.length}</Text>
             </View>
           </View>
         </View>
@@ -142,12 +140,12 @@ const MyPage = () => {
           <Button
             title="로그아웃"
             onPress={() => {
-              navigation.reset({ index: 0, routes: [{ name: "Login" }] });
               navigation.replace("Login");
               dispatch({
                 type: LOGOUT,
                 login: false,
               });
+              navigation.reset({index:0 ,routes: [{name: 'Login'}]})
               AsyncStorage.clear();
             }}
           />
