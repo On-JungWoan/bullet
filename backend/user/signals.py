@@ -9,9 +9,8 @@ import asyncio
 def update_keyword_count(sender, instance, **kwargs):
     count = 0
     # 유저별 소유한 keyword 개수를 업데이트하는 시그널 핸들러
-    user = User.objects.get(id=instance.usersite.user_id)
-    sites = UserSite.objects.filter(user=user)
-    user.keywordCount = len(UserKeyword.objects.filter(usersite__in = sites))
+    user = User.objects.get(id=instance.user_id)
+    user.keywordCount = len(UserKeyword.objects.filter(user = user))
     user.save(update_fields=['keywordCount'])
 
 

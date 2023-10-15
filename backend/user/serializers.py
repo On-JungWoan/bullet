@@ -27,7 +27,7 @@ class UserFullDataSerializer(serializers.Serializer):
         if sites_in_category.count() == 0:
             return listfield
         # for site in sites_in_category:
-        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        keywords = UserKeyword.objects.filter(user = user, category__id=1).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
         listfield.append({"keywords":keywords})
 
@@ -42,7 +42,7 @@ class UserFullDataSerializer(serializers.Serializer):
         # for site in sites_in_category:
         #     keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
         #     listfield.append({site.name:keywords})
-        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        keywords = UserKeyword.objects.filter(user = user, category__id=2).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
         listfield.append({"keywords":keywords})
         return listfield
@@ -52,7 +52,7 @@ class UserFullDataSerializer(serializers.Serializer):
         sites_in_category = user.sites.filter(category=category)
         if sites_in_category.count() == 0:
             return listfield
-        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        keywords = UserKeyword.objects.filter(user = user, category__id=3).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
         listfield.append({"keywords":keywords})
         return listfield
@@ -108,16 +108,16 @@ class GetUserKeywordSerializer(serializers.Serializer):
 
     def get_announce(self, user):
         category = 1
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return list(UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site__name__in=sites_in_category).values_list('name',flat=True))
+        keywords = UserKeyword.objects.filter(user = user, category__id=category).values_list('name', flat=True)
+        return list(keywords)
     def get_news(self, user):
         category = 2
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return list(UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site__name__in=sites_in_category).values_list('name',flat=True))
+        keywords = UserKeyword.objects.filter(user = user, category__id=category).values_list('name', flat=True)
+        return list(keywords)
     def get_job(self, user):
         category = 3
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return list(UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site__name__in=sites_in_category).values_list('name',flat=True))
+        keywords = UserKeyword.objects.filter(user = user, category__id=category).values_list('name', flat=True)
+        return list(keywords)
 
 
 #유저가 어떤 사이트를 구독했는지를 확인하는 클래스
@@ -160,24 +160,15 @@ class SaveUserKeywordSerializer(serializers.Serializer):
         print(validated_data)
         if len(validated_data['keywords']) > 5:
             raise serializers.ValidationError("키워드는 5개까지만 등록할 수 있습니다.", code='invalid')
-        
-        category = Category.objects.get(name=validated_data['category'])
-        print(category)
-        
-        usersites = UserSite.objects.filter(user=user, site__category=category) 
-        print(usersites)
-        UserKeyword.objects.filter(usersite__in = usersites).delete()  # 해당 유저의 모든 키워드 삭제
-        print("Asdfasdfadf")
+        category = validated_data['category']
         keywords = validated_data['keywords']
-        for usersite in usersites:
-            user_keyword = [UserKeyword.objects.get_or_create(usersite=usersite, name=keyword) for keyword in keywords]
+        category_object = Category.objects.get(name=category)
+        UserKeyword.objects.filter(user=user, category=category_object).delete()  # 해당 유저의 모든 키워드 삭제
+        
+        user_keyword = [UserKeyword.objects.get_or_create(user=user, name=keyword, category=category_object) for keyword in keywords]
         # YourModel 객체들을 일괄 저장
         return user_keyword
     
-    def delete(self, validated_data, user):
-        keywords = validated_data['keywords']
-        UserKeyword.objects.filter(site__user=user, keyword=keywords).delete()
-        
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class SaveUserSiteSerializer(serializers.Serializer):
     sites = serializers.ListField(child=serializers.CharField())

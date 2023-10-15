@@ -1,5 +1,5 @@
 from django.db import models
-from service.models import Site
+from service.models import Site,Category
 from post.models import Post
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -88,7 +88,8 @@ class UserSite(models.Model):
 #user가 등록한 keyword를 저장하는 테이블
 class UserKeyword(models.Model):
     id = models.AutoField(primary_key=True)
-    usersite = models.ForeignKey(UserSite, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
