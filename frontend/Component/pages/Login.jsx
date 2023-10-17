@@ -1,8 +1,7 @@
 // basic
 import React, { useEffect, useState, useCallback, useContext } from 'react';
 import {
-    StyleSheet, Text, View, ActivityIndicator,
-    TextInput, Pressable, ScrollView, Image
+    StyleSheet, Text, View, TextInput, Pressable, ScrollView, Image
 } from 'react-native';
 
 // install
@@ -30,28 +29,28 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [showPass, setShowPass] = useState(true);
 
-    const[getS, setGetS] = useState(false);
-
     const [newsSites, setNewsSites] = useState([]);
     const [uniSites, setUniSites] = useState([]);
     const [workSites, setWorkSites] = useState([]);
-    const [keywords, setKeywords] = useState([]);
+    const [newsKeywords, setNewsKeywords] = useState([]);
+    const [uniKeywords, setUniKeywords] = useState([]);
+    const [workKeywords, setWorkKeywords] = useState([]);
 
+    const[checkSite, setCheckSite] = useState(false);
+    const[checkKeyword, setCheckKeyword] = useState(false);
 
     // 로딩 창을 뛰우고 token이 있으면 자동 로그인 없으면 로그인 화면으로
     useEffect(() => {
         setLogin(false);
-        // getAccessToken(); // token 유무를 확인 후 토큰 재발급
+        checkAccessToken();
     }, [])
 
-
-    const getAccessToken = async() =>{
+    const checkAccessToken = async() =>{
         let token;
         await AsyncStorage.getItem(AccessTOKEN)
         .then(value => {
             if (value) { // accessToken
                 token = value;
-                // console.log("login",token)
                 getRefreshToken(); // accessToken이 있으면 refresh를 통해 재 발급
             }
         })
@@ -65,11 +64,11 @@ export default function Login() {
                     token = value;
                 }
             })
-        reissueToken(token);
+            reissueAccessToken(token);
     }
 
     // token 재발급
-    const reissueToken = useCallback(async (token) => {
+    const reissueAccessToken = useCallback(async (token) => {
         const data = {
             "refresh" : token,
         }
@@ -77,7 +76,8 @@ export default function Login() {
             await axios.post(`${URL}/api/token/refresh/`, data)
             .then( function(response) {
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization);
-                getSite(response.headers.authorization);
+
+                getSite(response.headers.authorization);                
                 setLogin(true);
             }
 
@@ -96,13 +96,15 @@ export default function Login() {
                 }
             })
                 .then((response) => {
-                    // console.log("getSites", response.data);
+                    console.log("getSites", response.data);
                     // 사이트 지정
-                    setNewsSites(response.data.news?.length !== 0 ? [...response.data.news] : []) // 저장한 뉴스 사이트
-                    setUniSites(response.data.announce?.length !== 0 ? [...response.data.announce] : []) // 저장한 학교 사이트
-                    setWorkSites(response.data.jobs?.length !== 0 ? [...response.data.jobs] : []) // 저장한 일 사이트
+                    setNewsSites(response.data.news? [...response.data.news] : []) // 저장한 뉴스 사이트
+                    setUniSites(response.data.announce? [...response.data.announce] : []) // 저장한 학교 사이트
+                    setWorkSites(response.data.job? [...response.data.job] : []) // 저장한 일 사이트
 
-                    setGetS(true);
+                    setCheckSite(true);
+
+                    getKeyword(token);
                 })
         } catch (error) {
             console.log(error);
@@ -110,14 +112,27 @@ export default function Login() {
         }
     }, []);
 
-    
-    const loginGetSite= (data)=>{
-        const arr=[];
-        for(let i of data){
-            arr.push(...Object.keys(i))
+    const getKeyword = useCallback(async(token)=>{
+        try {
+            await axios.get(`${URL}/user/keyword/`, {
+                headers: {
+                    Authorization: token,
+                }
+            })
+                .then((response) => {
+                    console.log("getKeyword", response.data);
+                    // 키워드 지정
+                    setNewsKeywords(response.data.news? [...response.data.news] : []) // 저장한 뉴스 사이트
+                    setUniKeywords(response.data.announce? [...response.data.announce] : []) // 저장한 학교 사이트
+                    setWorkKeywords(response.data.job? [...response.data.job] : []) // 저장한 일 사이트
+
+                    setCheckKeyword(true);
+                })
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        return arr;
-    }
+    },[])
 
     // 로그인
     const checkLogin = async () => {
@@ -133,13 +148,18 @@ export default function Login() {
                 AsyncStorage.setItem(AccessTOKEN, response.headers.authorization); // AccessTOKEN 저장
                 AsyncStorage.setItem(RefreshTOKEN, response.headers["refresh-token"]); // RefreshTOKEN 저장
                 AsyncStorage.setItem(NAME, response.data.username); // 이름은 로컬에 저장
-                setNewsSites(loginGetSite(response.data.news)) // 저장한 뉴스 사이트
-                setUniSites(loginGetSite(response.data.announce)) // 저장한 학교 사이트
-                setWorkSites(loginGetSite(response.data.jobs)) // 저장한 일 사이트
-                // setKeywords([...response.data.keywords]) // 저장한 키워드
-                // console.log(keywords);
+                setNewsSites(response.data.news? response.data.news[0].sites : []) // 저장한 뉴스 사이트
+                setUniSites(response.data.announce? response.data.announce[0].sites : []) // 저장한 학교 사이트
+                setWorkSites(response.data.job? response.data.job[0].sites : []) // 저장한 일 사이트
+
+                setNewsKeywords(response.data.news? response.data.news[1].keywords : [])
+                setUniKeywords(response.data.announce? response.data.announce[1].keywords : []) 
+                setWorkKeywords(response.data.job? response.data.job[1].keywords : [])
+
                 setLogin(true);
-                setGetS(true);
+                setCheckSite(true);
+                setCheckKeyword(true);
+
             })
             .catch(function (error) {
                 alert(`로그인 ${error}`);
@@ -156,13 +176,15 @@ export default function Login() {
                 uniSites: uniSites,
                 workSites: workSites,
                 name: AsyncStorage.getItem(NAME),
-                keywords: keywords,
+                newsKeywords:newsKeywords,
+                uniKeywords:uniKeywords,
+                workKeywords:workKeywords,
             });
     
-            if (login === true && getS===true) {
+            if (login === true && checkSite===true && checkKeyword===true) {
                 navigation.replace('Main')
             }
-        }, [login, getS]);
+        }, [login, checkSite, checkKeyword]);
 
     return (
         <View style={{ ...styles.container }}>

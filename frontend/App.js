@@ -8,17 +8,19 @@ const initState = {
   login: false, // true면 로그인
   user: {
     "name": "",
-    "keywords": [], // 키워드
-    "newsSites": [], // 사이트
-    "uniSites": [], // 사이트
-    "workSites": [], // 사이트
+    "newsSites": [], // 뉴스 사이트
+    "uniSites": [], // 대학 사이트
+    "workSites": [], // 일 사이트
+    "newsKeywords":[], // 뉴스 키워드
+    "uniKeywords" : [], // 대학 키워드
+    "workKeywords" : [], // 일 키워드
   },
 }
 
 // dispatch 상수
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"
-export const AddKEYWORD = "ADDKEYWORD"
+export const AddKEYWORD = "AddKEYWORD"
 export const AddSITE = "AddSITE"
 export const TEST = "TEST";
 
@@ -31,11 +33,13 @@ const reducer = (state, action) => {
         ...state,
         login: action.login,
         user: {
-          "keywords": action.keywords,
           "name": action.name,
           "newsSites": action.newsSites,
           "uniSites": action.uniSites,
           "workSites": action.workSites,
+          "newsKeywords": action.newsKeywords,
+          "uniKeywords": action.uniKeywords,
+          "workKeywords": action.workKeywords,
         }
       }
     case LOGOUT: // 로그아웃
@@ -51,7 +55,9 @@ const reducer = (state, action) => {
           "uniSites": action.uniSites,
           "workSites": action.workSites,
           "name": state.user.name,
-          "keywords": state.user.keywords,
+          "newsKeywords": state.user.newsKeywords,
+          "uniKeywords": state.user.uniKeywords,
+          "workKeywords": state.user.workKeywords,
         }
       }
     case AddKEYWORD: // 키워드 추가
@@ -62,7 +68,9 @@ const reducer = (state, action) => {
           "uniSites": state.user.uniSites,
           "workSites": state.user.workSites,
           "name": state.user.name,
-          "keywords": action.keywords,
+          "newsKeywords": action.newsKeywords,
+          "uniKeywords": action.uniKeywords,
+          "workKeywords": action.workKeywords,
         }
       }
 
