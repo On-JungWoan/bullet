@@ -20,7 +20,6 @@ npm install @react-native-async-storage/async-storage
 npm install axios
 
 -navigation
-npm install @react-navigation/bottom-tabs
 npm install @react-navigation/native
 npm install @react-navigation/native-stack
 

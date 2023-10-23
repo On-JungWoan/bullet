@@ -22,8 +22,7 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000"
       },
-      "package": "com.leeseungmin.frontend",
-      "googleServicesFile": "./google-services.json"
+      "package": "com.leeseungmin.frontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"

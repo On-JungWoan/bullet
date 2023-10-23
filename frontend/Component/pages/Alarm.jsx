@@ -22,7 +22,7 @@ const Alarm = memo(() => {
   const navigation = useNavigation();
 
   const { user } = useContext(dataContext);
-  const keywords = [...user?.keywords];
+  const keywords = [...user?.newsKeywords, ...user?.uniKeywords, ...user?.workKeywords]
 
   const [allAlarm, setAllAlarm] = useState([]); // 전체 알림 보관
   const [showAlarm, setShowAlarm] = useState([]); // 키워드에 대응하는 알람
@@ -37,7 +37,7 @@ const Alarm = memo(() => {
           },
         })
         .then((response) => {
-          // console.log("alarm data", response.data);
+          console.log("alarm data", response.data);
           setAllAlarm([...response.data]);
         });
     } catch (error) {
