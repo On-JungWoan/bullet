@@ -58,10 +58,7 @@ const MyPage = () => {
                 alignItems: "center",
               }}
             >
-              <Text>
-                현재 사용 :{" "}
-                {user.siteCount}
-              </Text>
+              <Text>현재 사용 : {user.newsSites.length +user.uniSites.length + user.workSites.length}</Text>
             </View>
             <View
               style={{

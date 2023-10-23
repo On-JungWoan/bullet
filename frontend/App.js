@@ -89,7 +89,7 @@ export const dataContext = createContext({
 
 // basic
 // import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, StatusBar, Dimensions} from 'react-native';
+import { View, StatusBar, Dimensions} from 'react-native';
 import React, {
   useMemo, createContext, useReducer
 } from 'react';
@@ -162,12 +162,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

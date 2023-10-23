@@ -23,7 +23,6 @@ export default function KeywordsSelectPage() {
 
     const [searchValue, setSearchValue] = useState(''); // 검색 값
     const [keywords, setKeywords] = useState([]);
-    const [postKeywords, setPostKeywords] = useState([]);
     const [category, setCategory] = useState("")
 
     useEffect(()=>{
@@ -63,9 +62,7 @@ export default function KeywordsSelectPage() {
     }
 
     const dispatchKeyword = (text)=>{
-        console.log("dispatchKeyword",text);
         if(text === "news"){
-            setPostKeywords([...keywords, ...user.uniKeywords, ...user.workKeywords])
             dispatch({
                 type: AddKEYWORD,
                 newsKeywords:keywords,
@@ -73,7 +70,6 @@ export default function KeywordsSelectPage() {
                 workKeywords:user.workKeywords,
             })
         }else if(text==="job"){
-            setPostKeywords([...keywords, ...user.uniKeywords, ...user.newsKeywords])
             dispatch({
                 type: AddKEYWORD,
                 newsKeywords:user.newsKeywords,
@@ -81,7 +77,6 @@ export default function KeywordsSelectPage() {
                 workKeywords:keywords,
             })
         }else if(text==="announce"){
-            setPostKeywords([...keywords, ...user.newsKeywords, ...user.workKeywords])
             dispatch({
                 type: AddKEYWORD,
                 newsKeywords:user.newsKeywords,
@@ -100,7 +95,7 @@ export default function KeywordsSelectPage() {
         
         const data = {
             category : category,
-            keywords: postKeywords,
+            keywords: keywords,
         }
 
         console.log(data);
