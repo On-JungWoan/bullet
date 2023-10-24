@@ -41,9 +41,9 @@ export default function Main() {
     },[])
 
     const getNotiToken = () =>{
-        Notifications.getDevicePushTokenAsync().then(value=>{
-            setNotiToken(value["data"].slice(value["data"].indexOf('[')+1,value["data"].indexOf(']')));
-            // setNotiToken(value["data"]);
+        Notifications.getExpoPushTokenAsync().then(value=>{
+            setNotiToken(value["data"]);
+            postAlarmToken(value["data"])
         })
     }
 
@@ -75,10 +75,7 @@ export default function Main() {
 
     useEffect(()=>{
         TOKEN = token;
-        if(notiToken !==''){
-            // postAlarmToken(notiToken);
-        }
-    },[token,notiToken])
+    },[token])
 
     return (
         <View style={{ ...styles.container }}>

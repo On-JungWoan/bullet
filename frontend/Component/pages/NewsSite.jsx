@@ -25,13 +25,10 @@ export default function NewsSite() {
   const { user, dispatch } = useContext(dataContext);
 
   const [searchValue, setSearchValue] = useState(""); // 검색 값
-  const [keywords, setKeywords] = useState(
-    user.keywords?.length ? [...user.keywords] : []
-  );
-
   const [transSite, setTransSite] = useState([...user.newsSites]); // 선택한 사이트
 
   const postSite = async () => {
+    
     if (transSite.length === 0) {
       alert("선택한 사이트가 없습니다.");
       return;
@@ -60,12 +57,10 @@ export default function NewsSite() {
           navigation.navigate("Keywords", {category:"news"});
         })
         .catch(function (error) {
-          alert("에러발생");
-          console.log("error", error);
           throw error;
         });
     } catch (error) {
-      console.log("error", error);
+      alert(`ERROR ${error}`);
       throw error;
     }
   };
@@ -81,7 +76,6 @@ export default function NewsSite() {
       return;
     }
 
-    setKeywords([...keywords, searchValue]);
     setSearchValue("");
   };
 
@@ -94,7 +88,7 @@ export default function NewsSite() {
           </Text>
 
           <TextInput
-            placeholder="사이트를 검색하세요"
+            placeholder="아직 구현 x"
             autoCapitalize="none"
             autoCorrect={false}
             style={{ ...styles.searchInput }}

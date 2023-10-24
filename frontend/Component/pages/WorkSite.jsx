@@ -1,6 +1,6 @@
 // basic
 import React, { useState, useContext } from "react";
-import { Text, View, StyleSheet, TextInput } from "react-native";
+import { Text, View, StyleSheet, TextInput, Alert } from "react-native";
 
 // install
 import axios from "axios";
@@ -25,11 +25,9 @@ export default function WorkSite() {
   const { user, dispatch } = useContext(dataContext);
 
   const [searchValue, setSearchValue] = useState(""); // 검색 값
-  const [keywords, setKeywords] = useState(
-    user.keywords?.length ? [...user.keywords] : []
-  );
-
   const [transSite, setTransSite] = useState([...user.workSites]); // 선택한 사이트
+
+
 
   const postSite = async () => {
     if (transSite.length === 0) {
@@ -56,16 +54,14 @@ export default function WorkSite() {
           },
         })
         .then(function (response) {
-          console.log("SitesSelectPage", response.data);
+          // console.log("SitesSelectPage", response.data);
           navigation.navigate("Keywords",{category:"job"});
         })
         .catch(function (error) {
-          alert("에러발생");
-          console.log("error", error);
           throw error;
         });
     } catch (error) {
-      console.log("error", error);
+      alert(`ERROR ${error}`);
       throw error;
     }
   };
@@ -81,7 +77,6 @@ export default function WorkSite() {
       return;
     }
 
-    setKeywords([...keywords, searchValue]);
     setSearchValue("");
   };
 
@@ -94,7 +89,7 @@ export default function WorkSite() {
           </Text>
 
           <TextInput
-            placeholder="사이트를 검색하세요"
+            placeholder="아직 구현 x"
             autoCapitalize="none"
             autoCorrect={false}
             style={{ ...styles.searchInput }}

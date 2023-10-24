@@ -53,7 +53,7 @@ export default function SitesSelectPage({numColumns, transData, transSite, setTr
         <Pressable
           style={{ ...styles.button }}
           onPress={() => {
-            postSite();
+            postSite(transSite);
           }}
         >
           <Text style={{ color: "white", textAlign: "center" }}>등록하기</Text>
