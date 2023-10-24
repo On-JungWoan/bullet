@@ -1,7 +1,7 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from user.models import User
-
+from .models import Notification
 from multiprocessing import Process
 from .notice import notice_main
 from .crawler import crawler_main
@@ -22,11 +22,18 @@ def proc2_main():
     print('done')
 
 # 새로운 알림이 생성되었을 때 신호를 전달받고, 프로세스 종료절차를 밟은 후 재실행하는 함수
-@receiver(post_save, sender=User.interval)
+@receiver(post_save, sender=Notification)
+@receiver(post_delete, sender=Notification)
 def new_notification_handler(sender, instance, **kwargs):
     print("Cancelling current notification loop...")
     if proc1.is_alive():
         print("Terminating the current notification loop...")
+        try:
+            proc1.terminate()
+            proc1.join()
+        except Exception as e:
+            print(f"Error while terminating: {e}")
+        print("Closing the current notification loop...")
         proc1.close()
         print("Starting a new notification loop...")
         proc1_main()

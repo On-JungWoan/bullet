@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, UserKeyword, UserSite, UserPost, Device
-from post.models import Post
+from post.models import Post, Notification
 from post.serializers import PostSerializer
 from service.models import Site, Category
 
@@ -27,7 +27,7 @@ class UserFullDataSerializer(serializers.Serializer):
         if sites_in_category.count() == 0:
             return listfield
         # for site in sites_in_category:
-        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        keywords = UserKeyword.objects.filter(user = user, category__id=1).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
         listfield.append({"keywords":keywords})
 
@@ -42,7 +42,7 @@ class UserFullDataSerializer(serializers.Serializer):
         # for site in sites_in_category:
         #     keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=site.id).values_list('name', flat=True)
         #     listfield.append({site.name:keywords})
-        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        keywords = UserKeyword.objects.filter(user = user, category__id=2).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
         listfield.append({"keywords":keywords})
         return listfield
@@ -52,7 +52,7 @@ class UserFullDataSerializer(serializers.Serializer):
         sites_in_category = user.sites.filter(category=category)
         if sites_in_category.count() == 0:
             return listfield
-        keywords = UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site_id=sites_in_category[0].id).values_list('name', flat=True)
+        keywords = UserKeyword.objects.filter(user = user, category__id=3).values_list('name', flat=True)
         listfield.append({"sites":sites_in_category.values_list('name', flat=True)})
         listfield.append({"keywords":keywords})
         return listfield
@@ -108,16 +108,16 @@ class GetUserKeywordSerializer(serializers.Serializer):
 
     def get_announce(self, user):
         category = 1
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return list(UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site__name__in=sites_in_category).values_list('name',flat=True))
+        keywords = UserKeyword.objects.filter(user = user, category__id=category).values_list('name', flat=True)
+        return list(keywords)
     def get_news(self, user):
         category = 2
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return list(UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site__name__in=sites_in_category).values_list('name',flat=True))
+        keywords = UserKeyword.objects.filter(user = user, category__id=category).values_list('name', flat=True)
+        return list(keywords)
     def get_job(self, user):
         category = 3
-        sites_in_category = user.sites.filter(category=category).values_list('name', flat=True)
-        return list(UserKeyword.objects.filter(usersite__user_id = user.id, usersite__site__name__in=sites_in_category).values_list('name',flat=True))
+        keywords = UserKeyword.objects.filter(user = user, category__id=category).values_list('name', flat=True)
+        return list(keywords)
 
 
 #유저가 어떤 사이트를 구독했는지를 확인하는 클래스
@@ -160,24 +160,15 @@ class SaveUserKeywordSerializer(serializers.Serializer):
         print(validated_data)
         if len(validated_data['keywords']) > 5:
             raise serializers.ValidationError("키워드는 5개까지만 등록할 수 있습니다.", code='invalid')
-        
-        category = Category.objects.get(name=validated_data['category'])
-        print(category)
-        
-        usersites = UserSite.objects.filter(user=user, site__category=category) 
-        print(usersites)
-        UserKeyword.objects.filter(usersite__in = usersites).delete()  # 해당 유저의 모든 키워드 삭제
-        print("Asdfasdfadf")
+        category = validated_data['category']
         keywords = validated_data['keywords']
-        for usersite in usersites:
-            user_keyword = [UserKeyword.objects.get_or_create(usersite=usersite, name=keyword) for keyword in keywords]
+        category_object = Category.objects.get(name=category)
+        UserKeyword.objects.filter(user=user, category=category_object).delete()  # 해당 유저의 모든 키워드 삭제
+        
+        user_keyword = [UserKeyword.objects.get_or_create(user=user, name=keyword, category=category_object) for keyword in keywords]
         # YourModel 객체들을 일괄 저장
         return user_keyword
     
-    def delete(self, validated_data, user):
-        keywords = validated_data['keywords']
-        UserKeyword.objects.filter(site__user=user, keyword=keywords).delete()
-        
 #유저가 어떤 사이트를 구독했는지 저장하는 클래스
 class SaveUserSiteSerializer(serializers.Serializer):
     sites = serializers.ListField(child=serializers.CharField())
@@ -188,10 +179,14 @@ class SaveUserSiteSerializer(serializers.Serializer):
         UserSite.objects.filter(user=user).delete()  # 해당 유저의 모든 사이트 삭제
         non_filtering_sites = validated_data['sites']
         sites = Site.objects.filter(name__in=non_filtering_sites)
-        print(sites)
-        if len(sites) < len(non_filtering_sites) or sites.count() == 0:
+
+        if len(sites) < len(non_filtering_sites):
             print("asdfsf")
             raise serializers.ValidationError("존재하지 않는 사이트가 요청되었습니다.")
+        
+        for category_id in range(1, 4):
+            if category_id not in sites.values_list('category', flat=True):
+                UserKeyword.objects.filter(user=user, category__id=category_id).delete()
         
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites]
         return user_site
@@ -204,9 +199,10 @@ class SaveUserSiteSerializer(serializers.Serializer):
 class SetIntervalSerializer(serializers.Serializer):
     interval = serializers.IntegerField()
     def save(self, validated_data, user):
-        user.interval = validated_data['interval']
-        user.save(update_fields=['interval'])
-        return user.interval
+        notification = Notification.objects.update_or_create(user=user, 
+                                                          interval_minutes=validated_data['interval'],
+                                                          time=datetime.datetime.now()+datetime.timedelta(minutes=validated_data['interval']))[0]
+        return notification.interval_minutes
     
 class SaveFcmTokenSerializer(serializers.Serializer):
     token = serializers.CharField()

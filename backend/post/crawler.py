@@ -5,6 +5,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+sched = BackgroundScheduler()
+
 def crawler():
     print("crawler")
     crawling_path = os.path.join(CRAWLING_PATH, 'crawling.py') 
@@ -12,20 +14,15 @@ def crawler():
 
 def crawler_main():
     print("crawler_main")
-    scheduler=BackgroundScheduler()
-    scheduler.remove_all_jobs()
+    scheduler= BackgroundScheduler(daemon=True, timezone='Asia/Seoul')
+    
     scheduler.add_job(
         crawler,
         'interval',
-        minutes = 2,
+        seconds=60,
         id="crawler",
         misfire_grace_time=60,
         replace_existing=True,
     )
-    try:
-        logger.info("Starting scheduler...")
-        scheduler.start()
-        print(scheduler.get_jobs())
-    except KeyboardInterrupt:
-        logger.info("Stopping scheduler...")
-        scheduler.shutdown()
+
+    scheduler.start()
