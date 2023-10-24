@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 
 // from App.js
 
-export default function SitesSelectPage({numColumns, transData, transSite, setTransSite, postSite,}) {
+export default function SitesSelectPage({numColumns, transData, transSite, setTransSite, checkSiteLength,}) {
   const navigation = useNavigation();
   
   const renderItem = ({item, index}) =>{
@@ -53,7 +53,7 @@ export default function SitesSelectPage({numColumns, transData, transSite, setTr
         <Pressable
           style={{ ...styles.button }}
           onPress={() => {
-            postSite(transSite);
+            checkSiteLength(transSite);
           }}
         >
           <Text style={{ color: "white", textAlign: "center" }}>등록하기</Text>

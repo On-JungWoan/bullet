@@ -23,6 +23,8 @@ const Alarm = memo(() => {
 
   const { user } = useContext(dataContext);
   const keywords = [...user?.newsKeywords, ...user?.uniKeywords, ...user?.workKeywords]
+  const setKeywords = new Set(keywords);
+
 
   const [allAlarm, setAllAlarm] = useState([]); // 전체 알림 보관
   const [showAlarm, setShowAlarm] = useState([]); // 키워드에 대응하는 알람
@@ -70,7 +72,7 @@ const Alarm = memo(() => {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            {keywords?.map((keyword, index) => {
+            {[...setKeywords]?.map((keyword, index) => {
               return (
                 <Pressable style={{ ...styles.keyBox }} key={keyword}>
                   <Text

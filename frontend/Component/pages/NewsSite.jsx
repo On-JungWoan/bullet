@@ -1,6 +1,6 @@
 // basic
 import React, { useState, useContext } from "react";
-import { Text, View, StyleSheet, TextInput } from "react-native";
+import { Text, View, StyleSheet, TextInput, Alert } from "react-native";
 
 // install
 import axios from "axios";
@@ -10,7 +10,7 @@ const URL = API_URL
 
 // from App.js
 import { dataContext } from "../../App";
-import { AddSITE } from "../../App";
+import { AddSITE, AddKEYWORD } from "../../App";
 import { TOKEN } from "./Main";
 
 // 데이터
@@ -27,14 +27,35 @@ export default function NewsSite() {
   const [searchValue, setSearchValue] = useState(""); // 검색 값
   const [transSite, setTransSite] = useState([...user.newsSites]); // 선택한 사이트
 
-  const postSite = async () => {
-    
-    if (transSite.length === 0) {
-      alert("선택한 사이트가 없습니다.");
-      return;
+    // site를 선택한지 학인
+    const checkSiteLength = (sites) => {
+      const count = sites.length;
+  
+      if (count === 0) {
+        Alert.alert('사이트를 선택하지 않았습니다.', '사이트를 삭제하시는 건가요?', [
+          {
+            text: '아니요',
+            onPress: () => postSite("Keywords"),
+            style: 'cancel',
+          },
+          {text: '네', onPress: () => {
+            dispatch({
+              type: AddKEYWORD,
+              newsKeywords:[],
+              uniKeywords:user.uniKeywords,
+              workKeywords:user.workKeywords,
+            })
+            postSite("Register")
+          }},
+        ]);
+      } else {
+        postSite("Keywords")
+      }
     }
+  
 
-    const data = {
+  const postSite = (where) => {
+      const data = {
       sites: [...user.uniSites, ...user.workSites, ...transSite],
     };
 
@@ -45,25 +66,24 @@ export default function NewsSite() {
       workSites: user.workSites,
     });
 
-    try {
-      await axios
-        .post(`${URL}/user/site/create/`, data, {
-          headers: {
-            Authorization: TOKEN,
-          },
-        })
-        .then(function (response) {
-          // console.log("SitesSelectPage", response.data);
-          navigation.navigate("Keywords", {category:"news"});
-        })
-        .catch(function (error) {
-          throw error;
-        });
-    } catch (error) {
-      alert(`ERROR ${error}`);
-      throw error;
-    }
-  };
+    axios
+    .post(`${URL}/user/site/create/`, data, {
+      headers: {
+        Authorization: TOKEN,
+      }
+    })
+    .then(function (response) {
+      // console.log("SitesSelectPage", response.data);
+      if(where === "Keywords"){
+        navigation.navigate("Keywords", {category:"news"});
+      } else if(where === "Register"){
+        navigation.navigate("Register");
+      }
+    })
+    .catch(function (error) {
+      throw alert(`ERROR ${error}`);
+    });
+  }
 
   // 검색 기능
   onChangeSearch = (e) => {
@@ -103,7 +123,7 @@ export default function NewsSite() {
             transData={newsData}
             transSite={transSite}
             setTransSite={setTransSite}
-            postSite={postSite}
+            checkSiteLength={checkSiteLength}
           />
         </View>
         <View style={{ flex: 1 }}></View>
