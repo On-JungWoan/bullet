@@ -54,7 +54,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     sites = models.ManyToManyField(Site, through='UserSite')
     posts = models.ManyToManyField(Post, through='UserPost')
-    interval = models.IntegerField(default=0)
     
     USERNAME_FIELD = 'email'
     # 필수로 작성해야하는 field

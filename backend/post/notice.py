@@ -10,10 +10,6 @@ from firebase_admin import messaging, credentials
 from config.settings import FIREBASE_PATH
 import requests as r
 
-def firebase_init():
-    #파이어베이스 토큰을 가져오기 위한 인증
-    cred = credentials.Certificate(FIREBASE_PATH)
-    firebase_admin.initialize_app(cred)
 
 #정해진 시간동안 비동기로 자고있다가 깨어나는 함수. 
 async def send_notification(db_config):
@@ -22,9 +18,10 @@ async def send_notification(db_config):
     select_query = "SELECT * FROM post_notification ORDER BY time;"
     cursor.execute(select_query)
     data = cursor.fetchall()
+    print(data," db checking..")
     if len(data) > 0:
         post_data = data[0]
-        post_time = post_data[1]
+        post_time = datetime.datetime.strptime(post_data[1],"%Y-%m-%d %H:%M:%S.%f")
         post_interval = post_data[2]
         # 유저에게 알림을 보냄
         current_time = datetime.datetime.now()
@@ -50,6 +47,7 @@ async def send_notification(db_config):
         else:
             print("Target time has already passed.")
 
+
         # 알림을 보내고 난 후에 다음 시간으로 업데이트
         next_time = post_time + timedelta(minutes=post_interval)
         update_query = f"UPDATE post_notification SET time = '{next_time}' WHERE id = {post_data[0]};"
@@ -60,7 +58,8 @@ async def send_notification(db_config):
         conn.close()
         return "Notification sent successfully."
     else:
-        return "No notification to send."
+        print("No notification to send.")
+        await asyncio.sleep(100)
 #비동기 함수를 실행시키는 함수. 새로운 프로세스는 같은 환경이 아니기 때문에 native sql과 connector사용
 def notice_main():
     print(Path(__file__).resolve().parent.parent)
@@ -88,36 +87,33 @@ if __name__ == '__main__':
 def send_to_firebase_cloud_messaging(token, count):
     #firebase_init()
     registration_token = token
-    # message = messaging.Message(
-    #     notification=messaging.Notification(
-    #         title="알림",
-    #         body="새 소식이 %s개 도착했습니다.".format(count),
-    #     ),
-    #     token=registration_token
-    # )
-    # try:
-    #     response = messaging.send(message)
-    #     print(f"Successfully sent message: {response}")
-    # except Exception as e:
-    #     print("예외가 발생했습니다.", e)
-    message = {
-    'to' : token,
-    'title' : "알림",
-    'body' : "새 소식이 %s개 도착했습니다.".format(count),
-  }
-    return r.post('https://exp.host/--/api/v2/push/send', json = message)
+    url = "https://exp.host/--/api/v2/push/send"
+
+    headers = {
+        "Content-Type": "application/json",
+    }
+
+    data = {
+        "to": registration_token,
+        "title": "알림",
+        "body": f"새 소식이 {count}개 도착했습니다."
+    }
+
+    response = r.post(url, headers=headers, json=data)
+    print(response)
+    return response
 
 #유저에게 해당하는 사이트, 키워드에 대한 첫번째 포스트만 가져온다. 리팩토링해야함.
 def find_message(cur, user_id):
     #유저 아이디로 구분하는데 기기가 여러개일 경우 행이 여러개가 출력될 수 있음
     select_query = '''SELECT ud.fcmtoken, COUNT(*) FROM user_user AS u
-        JOIN user_device AS ud ON u.id = ud.user_id
-        JOIN user_userkeyword AS uk ON u.id = uk.user_id
-        JOIN service_keyword AS k ON uk.keyword_id = k.id
-        JOIN user_usersite AS us ON u.id = us.user_id
-        JOIN service_site AS s ON us.site_id = s.id
-        JOIN post_post AS p ON (k.name = p.keyword AND s.code = p.site)
-        WHERE u.id = %s
+        join user_device AS ud ON u.id = ud.user_id
+		join user_userkeyword uk on uk.user_id = u.id
+		join service_category c on uk.category_id = c.id
+		join service_site s on s.category_id = c.id
+		join user_usersite us on s.id = us.site_id
+        join post_post p on (uk.name = p.keyword and s.code = p.site)
+        WHERE u.id = %d
         GROUP BY ud.id;'''
     cur.execute(select_query, (user_id,))
     data = cur.fetchone()

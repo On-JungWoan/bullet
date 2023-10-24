@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, UserKeyword, UserSite, UserPost, Device
-from post.models import Post
+from post.models import Post, Notification
 from post.serializers import PostSerializer
 from service.models import Site, Category
 
@@ -179,10 +179,14 @@ class SaveUserSiteSerializer(serializers.Serializer):
         UserSite.objects.filter(user=user).delete()  # 해당 유저의 모든 사이트 삭제
         non_filtering_sites = validated_data['sites']
         sites = Site.objects.filter(name__in=non_filtering_sites)
-        print(sites)
-        if len(sites) < len(non_filtering_sites) or sites.count() == 0:
+
+        if len(sites) < len(non_filtering_sites):
             print("asdfsf")
             raise serializers.ValidationError("존재하지 않는 사이트가 요청되었습니다.")
+        
+        for category_id in range(1, 4):
+            if category_id not in sites.values_list('category', flat=True):
+                UserKeyword.objects.filter(user=user, category__id=category_id).delete()
         
         user_site = [UserSite.objects.get_or_create(user=user, site=site) for site in sites]
         return user_site
@@ -195,9 +199,10 @@ class SaveUserSiteSerializer(serializers.Serializer):
 class SetIntervalSerializer(serializers.Serializer):
     interval = serializers.IntegerField()
     def save(self, validated_data, user):
-        user.interval = validated_data['interval']
-        user.save(update_fields=['interval'])
-        return user.interval
+        notification = Notification.objects.update_or_create(user=user, 
+                                                          interval_minutes=validated_data['interval'],
+                                                          time=datetime.datetime.now()+datetime.timedelta(minutes=validated_data['interval']))[0]
+        return notification.interval_minutes
     
 class SaveFcmTokenSerializer(serializers.Serializer):
     token = serializers.CharField()

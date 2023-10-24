@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework import viewsets
 #models
 from .models import Post
-from user.models import User
+from user.models import User, UserKeyword
 from .serializers import PostSerializer
 #유저는 데이터를 조회 이외에는 하지 않는다. 유저는 데이터 조회를 위해 토큰 소유를 인증해야 한다.
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -35,7 +35,7 @@ class PostViewSet(viewsets.GenericViewSet):
             user, _ = user_and_token
             user = User.objects.get(id=user.id)
             # 해당 유저와 관련된 뉴스 인스턴스들을 가져오되, 키워드 정보도 함께 로드하기
-            keywords = list(user.keywords.values_list('name',flat=True))
+            keywords = list(UserKeyword.objects.filter(user=user).values_list('name',flat=True))
             sites = list(user.sites.values_list('code', flat=True))
 
             q_objects = Q()

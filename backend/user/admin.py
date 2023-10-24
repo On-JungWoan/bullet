@@ -6,8 +6,7 @@ from .models import User, UserKeyword, UserSite
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display=['id','username','email','interval']
-    list_filter = ('username','email','interval')
+    list_display=['id','username','email','keywordCount','siteCount']
 
 @admin.register(UserKeyword)
 class UserKeywordAdmin(admin.ModelAdmin):

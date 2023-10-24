@@ -6,6 +6,7 @@ class PostsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'post'
     def ready(self):
-        from .utils import proc1_main, proc2_main
+        from .utils import proc1_main
+        from .crawler import crawler_main
         # proc1_main()
-        # proc2_main()
+        # crawler_main()
