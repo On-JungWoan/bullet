@@ -13,7 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 import { API_URL } from '@env';
 const URL = API_URL
 
-
 // from
 import { dataContext } from "../../App";
 import { TOKEN } from "./Main";
@@ -22,13 +21,24 @@ const Alarm = memo(() => {
   const navigation = useNavigation();
 
   const { user } = useContext(dataContext);
-  const keywords = [...user?.newsKeywords, ...user?.uniKeywords, ...user?.workKeywords]
-  const setKeywords = new Set(keywords);
-
+  const userKeywords = new Set([...user?.newsKeywords, ...user?.uniKeywords, ...user?.workKeywords]);
 
   const [allAlarm, setAllAlarm] = useState([]); // 전체 알림 보관
   const [showAlarm, setShowAlarm] = useState([]); // 키워드에 대응하는 알람
+  const [selectedKeyword, setSelectedKeyword] = useState('');
+  const [keywords, setKeywords] = useState([]);
 
+
+  const makeKeyword = () =>{
+    const arr=[];
+    [...userKeywords].map((keyword, index) => {
+      let obj = {}
+      obj.id = index;
+      obj.keyword = keyword;
+      arr.push(obj)
+    })
+    setKeywords(arr)
+  }
   
   const getAlarm = useCallback(async () => {
     try {
@@ -39,7 +49,7 @@ const Alarm = memo(() => {
           },
         })
         .then((response) => {
-          console.log("alarm data", response.data);
+          // console.log("alarm data", response.data);
           setAllAlarm([...response.data]);
         });
     } catch (error) {
@@ -61,6 +71,7 @@ const Alarm = memo(() => {
   }
 
   useEffect(() => {
+    makeKeyword();
     getAlarm();
   }, []);
 
@@ -69,23 +80,24 @@ const Alarm = memo(() => {
       <View style={{ ...styles.main }}>
         <View style={{ ...styles.keyContainer }}>
           <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
-            {[...setKeywords]?.map((keyword, index) => {
+            horizontal showsHorizontalScrollIndicator={false}
+          > 
+            {keywords?.map((item, index) => {
               return (
-                <Pressable style={{ ...styles.keyBox }} key={keyword}>
+                <Pressable style={ selectedKeyword === index ? styles.keyBoxSelected :styles.keyBox } key={item.keyword}>
                   <Text
-                    style={{ ...styles.key }}
+                    style={ selectedKeyword === index ? styles.keySelected : styles.key }
                     onPress={() => {
-                      onPressKeyword(keyword);
+                      setSelectedKeyword(item.id);
+                      onPressKeyword(item.keyword);
                     }}
                   >
-                    {keyword}
+                    {item.keyword}
                   </Text>
                 </Pressable>
-              );
-            })}
+                );
+              })
+            }
           </ScrollView>
         </View>
 
@@ -93,15 +105,15 @@ const Alarm = memo(() => {
             <ScrollView>
             {showAlarm?.map((ann, index) => {
               return (
-                <View style={{ borderBottomWidth: 1 }} key={ann.title}>
+                <View style={{ borderBottomWidth: 1, paddingHorizontal: 10 }} key={ann.title}>
                   <Pressable
                     onPress={() => {
                       navigation.navigate('AlarmDetail', {data:showAlarm, index:index})
                     }}>
-                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.title}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.content}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.url}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail">{ann.keyword}</Text>
+                    <Text style={{marginVertical:2}} numberOfLines={1} ellipsizeMode="tail">{ann.title}</Text>
+                    <Text style={{marginVertical:2}} numberOfLines={1} ellipsizeMode="tail">{ann.content}</Text>
+                    <Text style={{marginVertical:2}} numberOfLines={1} ellipsizeMode="tail">{ann.url}</Text>
+                    <Text style={{marginVertical:2}} numberOfLines={1} ellipsizeMode="tail">{ann.keyword}</Text>
                   </Pressable>
                 </View>
               );
@@ -140,12 +152,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginHorizontal: 10,
     paddingVertical: 5,
-    paddingHorizontal: 8,
+    paddingHorizontal: 13,
     borderRadius: 30,
+  },
+  keyBoxSelected:{
+    borderWidth: 1,
+    marginHorizontal: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 13,
+    borderRadius: 30,
+    backgroundColor : 'black'
   },
   key: {
     textAlign: "center",
     fontSize: 20,
+  },
+  keySelected :{
+    textAlign: "center",
+    fontSize: 20,
+    color: 'white'
   },
   infoContainer: {
     flex: 6,
