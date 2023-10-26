@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import React, { useEffect, useState, useContext } from "react";
-import { Text, Button, View, StyleSheet } from "react-native";
+import { Text, Button, View, StyleSheet, Image, ScrollView } from "react-native";
 import { NAME } from "../../App";
 
 import { useNavigation } from "@react-navigation/native";
@@ -19,7 +19,7 @@ const MyPage = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor:'#fff' }}>
       <View style={{ flex: 1, width: "90%", marginLeft: "5%" }}>
         <View style={{ flex: 0.5 }}></View>
 
@@ -42,32 +42,18 @@ const MyPage = () => {
             </View>
           </View>
           <View style={{ ...styles.countContainer }}>
-            <View
-              style={{
-                flex: 1,
-                borderRightWidth: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            ></View>
-            <View
-              style={{
-                flex: 1,
-                borderRightWidth: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text>현재 사용 : {user.newsSites.length +user.uniSites.length + user.workSites.length}</Text>
+            <View style={{...styles.rating }}>
+            <Image style={{width:"70%", height:"60%", resizeMode : "stretch"}} source={require("../../assets/rating.png")}/>
             </View>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text>현재 사용 : {user.newsKeywords.length +user.uniKeywords.length + user.workKeywords.length}</Text>
+            <View style={{...styles.sitesCount}}>
+              <Text>
+                현재 사용 : {user.newsSites.length+user.uniSites.length+user.workSites.length}
+              </Text>
+            </View>
+            <View style={{...styles.keywordsCount}}>
+              <Text>
+                현재 사용 : {user.newsKeywords.length +user.uniKeywords.length + user.workKeywords.length}
+              </Text>
             </View>
           </View>
         </View>
@@ -81,56 +67,59 @@ const MyPage = () => {
         </View>
 
         <View style={{ flex: 2, marginVertical: "3%" }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "black",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View style={{...styles.showBox}}>
             <Text style={{ color: "white" }}>뉴스</Text>
           </View>
           <View style={{ borderWidth: 1, flex: 3, flexDirection: "row" }}>
-            <View style={{ flex: 1, borderRightWidth: 1 }}></View>
-            <View style={{ flex: 1, borderRightWidth: 1 }}></View>
-            <View style={{ flex: 1 }}></View>
+            <ScrollView>
+              {
+                [...user.newsSites]?.map((site, index) => {
+                  return(
+                    <View style={{alignItems:'center', marginVertical:5}} key={site}> 
+                      <Text>{site} : {user.newsKeywords.join(', ')}</Text>
+                    </View>
+                  )
+                })
+              }
+            </ScrollView>
           </View>
         </View>
 
         <View style={{ flex: 2, marginVertical: "3%" }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "black",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View style={{...styles.showBox}}>
             <Text style={{ color: "white" }}>대학</Text>
           </View>
           <View style={{ borderWidth: 1, flex: 3, flexDirection: "row" }}>
-            <View style={{ flex: 1, borderRightWidth: 1 }}></View>
-            <View style={{ flex: 1, borderRightWidth: 1 }}></View>
-            <View style={{ flex: 1 }}></View>
+          <ScrollView>
+              {
+                [...user.uniSites]?.map((site, index) => {
+                  return(
+                    <View key={site} style={{alignItems:'center', marginVertical:5}}> 
+                      <Text>{site} : {user.uniKeywords.join(', ')}</Text>
+                    </View>
+                  )
+                })
+              }
+            </ScrollView>
           </View>
         </View>
 
         <View style={{ flex: 2, marginVertical: "3%" }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "black",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View style={{...styles.showBox}}>
             <Text style={{ color: "white" }}>취업</Text>
           </View>
           <View style={{ borderWidth: 1, flex: 3, flexDirection: "row" }}>
-            <View style={{ flex: 1, borderRightWidth: 1 }}></View>
-            <View style={{ flex: 1, borderRightWidth: 1 }}></View>
-            <View style={{ flex: 1 }}></View>
+            <ScrollView>
+              {
+                [...user.workSites]?.map((site, index) => {
+                  return(
+                    <View style={{alignItems:'center', marginVertical:5}} key={site}> 
+                      <Text>{site} : {user.workKeywords.join(', ')}</Text>
+                    </View>
+                  )
+                })
+              }
+            </ScrollView>
           </View>
         </View>
         <View>
@@ -170,4 +159,27 @@ const styles = StyleSheet.create({
     flex: 4,
     flexDirection: "row",
   },
+  rating : {
+    flex: 1,
+    borderRightWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sitesCount:{
+    flex: 1,
+    borderRightWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  keywordsCount : {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  showBox : {
+    flex: 1,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+  }
 });
